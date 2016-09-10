@@ -1,6 +1,6 @@
 package WhatboxSync;
 
-import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Represents files stored on a remote FTP server.

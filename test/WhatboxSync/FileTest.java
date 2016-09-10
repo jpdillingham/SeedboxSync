@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class FileTest {
     @Test
     public void testConstructor() {
-        File test = new WhatboxSync.File("filename", new Date(1999, 1, 1));
+        File test = new File("filename", new Date(1999, 1, 1));
 
         assertEquals("filename", test.getName());
         assertEquals(new Date(1999, 1,1), test.getTimestamp());
