@@ -6,19 +6,23 @@ import java.util.Date;
  * Represents files stored on a remote FTP server.
  */
 public class File {
-    /** the fully qualified filename of the file. */
+    /** The fully qualified filename of the file. */
     private String name;
 
-    /** the timestamp of the last modification to the file. */
+    /** The size of the file in bytes. */
+    private Long size;
+
+    /** The timestamp of the last modification to the file. */
     private Date timestamp;
 
     /**
      * Initializes a new instance of the File class using the specified name and timestamp.
-     * @param name  the fully qualified filename of the file.
-     * @param timestamp the timestamp of the last modification to the file.
+     * @param name  The fully qualified filename of the file.
+     * @param timestamp The timestamp of the last modification to the file.
      */
-    public File(String name, Date timestamp) {
+    public File(String name, Long size, Date timestamp) {
         this.name = name;
+        this.size = size;
         this.timestamp = timestamp;
     }
 
