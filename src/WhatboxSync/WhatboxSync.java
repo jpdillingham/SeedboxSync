@@ -1,11 +1,14 @@
 package WhatboxSync;
 
 import java.util.List;
-import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WhatboxSync {
     public static void main(String[] args) {
-	    System.out.println("Hello world!");
+        Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
+
+	    logger.info("Hello world!");
 
         Server server = new Server("127.0.0.1");
 
