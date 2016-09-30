@@ -1,5 +1,12 @@
 package WhatboxSync;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -7,8 +14,14 @@ import java.util.ArrayList;
  * Represents an FTP server.
  */
 class Server implements IServer {
+    /** The logger for this class. */
+    Logger logger = LoggerFactory.getLogger(Server.class);
+
     /** The default port. */
     private static final Integer defaultPort = 21;
+
+    /** The FTPClient driving the server */
+    private static FTPClient server;
 
     /** The Server IP address. */
     private String ipAddress;
@@ -26,9 +39,18 @@ class Server implements IServer {
     {
         this.ipAddress = ipAddress;
         this.port = port;
+
+        this.server = new FTPClient();
     }
      /** Opens the Server connection using the specified IP address and the default port. */
     public Boolean connect() {
+        try {
+            server.connect(ipAddress, port);
+        }
+        catch (IOException ex) {
+            logger.error("Exception thrown while connecting to server at '" + ipAddress + ":" + port + "': " + ex.getMessage());
+        }
+
         return true;
     }
 

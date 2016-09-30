@@ -10,7 +10,7 @@ public class WhatboxSync {
 
 	    logger.info("Hello world!");
 
-        Server server = new Server("127.0.0.1");
+        Server server = new Server("sushi.whatbox.ca");
 
         if (server.connect()) {
             System.out.println("Connected!");
