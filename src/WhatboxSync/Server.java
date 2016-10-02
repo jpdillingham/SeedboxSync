@@ -3,6 +3,7 @@ package WhatboxSync;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +30,23 @@ class Server implements IServer {
     /** The Server port. */
     private Integer port;
 
+    /** The username to use when connecting to the Server. */
+    private String username;
+
+    /** The password to use when connecting to the Server. */
+    private String password;
+
     /** Initializes a new instance of the Server class with the specified IP address. */
-    Server(String ipAddress) {
-        this(ipAddress, defaultPort);
+    Server(String ipAddress, String username, String password) {
+        this(ipAddress, username, password, defaultPort);
     }
 
     /** Initializes a new instance of the Server class with the specified IP address and port. */
-    Server(String ipAddress, Integer port)
+    Server(String ipAddress, String username, String password, Integer port)
     {
         this.ipAddress = ipAddress;
+        this.username = username;
+        this.password = password;
         this.port = port;
 
         this.server = new FTPClient();
@@ -46,6 +55,10 @@ class Server implements IServer {
     public Boolean connect() {
         try {
             server.connect(ipAddress, port);
+            server.login(username, password);
+
+            // TODO: put this in an external config file
+
         }
         catch (IOException ex) {
             logger.error("Exception thrown while connecting to server at '" + ipAddress + ":" + port + "': " + ex.getMessage());
@@ -67,8 +80,19 @@ class Server implements IServer {
     /** Lists the files in the specified directory. */
     public List<File> list(String directory) {
         List<File> retVal = new ArrayList<File>();
-        retVal.add(new File("test", 0L, new java.util.Date(2016,9,13)));
-        retVal.add(new File("test2", 2L, new java.util.Date(2016,9,13)));
+
+        try {
+            FTPFile[] files = server.listFiles(directory);
+
+            for (FTPFile f : files) {
+                File ff = new File(f.getName(), f.getSize(), f.getTimestamp());
+                retVal.add(ff);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.error("Exception thrown while retrieving file list for directory '" + directory + "': " + ex.getMessage());
+        }
 
         return retVal;
     }

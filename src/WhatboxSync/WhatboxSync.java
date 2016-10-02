@@ -10,12 +10,13 @@ public class WhatboxSync {
 
 	    logger.info("Hello world!");
 
-        Server server = new Server("sushi.whatbox.ca");
+        // TODO: put this in an external config file
+        Server server = new Server("sushi.whatbox.ca", "", "");
 
         if (server.connect()) {
             System.out.println("Connected!");
 
-            List<File> files = server.list("blah");
+            List<File> files = server.list("files");
 
             for (File file : files) {
                 System.out.println(file.getName());
