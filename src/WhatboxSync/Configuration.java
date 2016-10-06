@@ -1,91 +1,67 @@
 package WhatboxSync;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by JP on 10/3/2016.
+ * Represents the application Configuration.
  */
 public class Configuration {
+
+    /** The logger for this class. */
     Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
+
+    /** The file containing the configuration information. */
     private String file;
+
+    /** The configured server address. */
     private String server;
+
+    /** The configured server port. */
     private Integer port;
+
+    /** The configured username for the server. */
     private String username;
+
+    /** The configured password for the server. */
     private String password;
-    private Boolean loaded = false;
-    private String exceptionText = "The configuration has not been loaded.";
 
-    public Configuration(String file) {
-        this.file = file;
+    /** The configured remote directory which is to be synchronized. */
+    private String remoteDirectory;
 
-        try {
-            loadConfiguration();
-            loaded = true;
-        }
-        catch (Exception ex) {
-            logger.error("Exception thrown while attempting to load configuration: " + ex.getMessage());
-        }
+    /** The configured local directory to which files are to be downloaded. */
+    private String localDirectory;
 
-
+    public Configuration(String server, Integer port, String username, String password, String remoteDirectory, String localDirectory) {
+        this.server = server;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+        this.remoteDirectory = remoteDirectory;
+        this.localDirectory = localDirectory;
     }
 
     public String getServer() {
-        if (loaded) {
-            return server;
-        }
-        else {
-            throw new RuntimeException(exceptionText);
-        }
+        return server;
     }
 
     public Integer getPort() {
-        if (loaded) {
-            return port;
-        }
-        else {
-            throw new RuntimeException(exceptionText);
-        }
+        return port;
     }
 
     public String getUsername() {
-        if (loaded) {
-            return username;
-        }
-        else {
-            throw new RuntimeException(exceptionText);
-        }
+        return username;
     }
 
     public String getPassword() {
-        if (loaded) {
-            return password;
-        }
-        else {
-            throw new RuntimeException(exceptionText);
-        }
+        return password;
     }
 
-    private void loadConfiguration() {
-        JSONParser parser = new JSONParser();
-        Object obj;
-        try {
-            obj = parser.parse(new FileReader(file));
-        }
-        catch (Exception ex) {
-            logger.error("Exception parsing configuration file: " + ex.getMessage());
-            throw (RuntimeException)ex;
-        }
+    public String getRemoteDirectory() {
+        return remoteDirectory;
+    }
 
-        JSONObject jsonObject = (JSONObject)obj;
-
-        server = (String)jsonObject.get("server");
-        port = ((Long)jsonObject.get("port")).intValue();
-        username = (String)jsonObject.get("username");
-        password = (String)jsonObject.get("password");
+    public String getLocalDirectory() {
+        return localDirectory;
     }
 }

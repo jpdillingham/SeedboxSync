@@ -5,14 +5,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WhatboxSync {
-    private static Configuration config;
     private static Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
+
+    private static ConfigurationLoader configLoader;
+    private static Configuration config;
 
     public static void main(String[] args) {
 	    logger.info("Retrieving configuration...");
 
         try {
-            config = new Configuration("/Users/JP.WHATNET/config.json");
+            configLoader = new ConfigurationLoader();
+            config = configLoader.Load("/Users/JP.WHATNET/config.json");
+
             logger.info("Configuration retrieved successfully.");
         }
         catch (Exception ex) {
@@ -26,7 +30,7 @@ public class WhatboxSync {
         if (server.connect()) {
             System.out.println("Connected!");
 
-            List<File> files = server.list("files");
+            List<File> files = server.list(config.getRemoteDirectory());
 
             for (File file : files) {
                 System.out.println(file.getName());
