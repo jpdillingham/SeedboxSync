@@ -8,7 +8,7 @@ public class WhatboxSync {
     private static Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
 
     private static ConfigurationLoader configLoader;
-    private static Configuration config;
+    private static IConfiguration config;
 
     public static void main(String[] args) {
 	    logger.info("Retrieving configuration...");

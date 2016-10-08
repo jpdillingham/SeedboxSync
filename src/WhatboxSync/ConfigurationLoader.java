@@ -11,7 +11,7 @@ public class ConfigurationLoader {
     /** The logger for this class. */
     Logger logger = LoggerFactory.getLogger(Server.class);
 
-    public Configuration Load(String file) {
+    public IConfiguration Load(String file) {
         JSONParser parser = new JSONParser();
         Object obj;
         try {

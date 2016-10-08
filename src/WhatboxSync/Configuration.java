@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents the application Configuration.
  */
-public class Configuration {
+public class Configuration implements IConfiguration {
 
     /** The logger for this class. */
     Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
