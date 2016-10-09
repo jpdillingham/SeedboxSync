@@ -1,6 +1,8 @@
 package WhatboxSync;
 
 import java.util.List;
+import org.apache.commons.net.ftp.FTPFile;
+
 
 /**
  * Defines the interface for Server objects.
@@ -16,7 +18,7 @@ interface IServer {
     Boolean isConnected();
 
     /** Lists the files in the specified directory. */
-    List<File> list(String directory);
+    List<FTPFile> list(String directory);
 
     /** Downloads the specified file. */
     Boolean download(String file);

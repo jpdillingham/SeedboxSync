@@ -76,15 +76,14 @@ class Server implements IServer {
     }
 
     /** Lists the files in the specified directory. */
-    public List<File> list(String directory) {
-        List<File> retVal = new ArrayList<File>();
+    public List<FTPFile> list(String directory) {
+        List<FTPFile> retVal = new ArrayList<FTPFile>();
 
         try {
             FTPFile[] files = server.listFiles(directory);
 
             for (FTPFile f : files) {
-                File ff = new File(f.getName(), f.getSize(), f.getTimestamp());
-                retVal.add(ff);
+                retVal.add(f);
             }
         }
         catch (Exception ex)

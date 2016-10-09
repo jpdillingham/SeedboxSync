@@ -28,9 +28,10 @@ public class ConfigurationLoader {
         Integer port = ((Long)jsonObject.get("port")).intValue();
         String username = (String)jsonObject.get("username");
         String password = (String)jsonObject.get("password");
+        Integer interval = ((Long)jsonObject.get("interval")).intValue();
         String remoteDirectory = (String)jsonObject.get("remoteDirectory");
         String localDirectory = (String)jsonObject.get("localDirectory");
 
-        return new Configuration(server, port, username, password, remoteDirectory, localDirectory);
+        return new Configuration(server, port, username, password, interval, remoteDirectory, localDirectory);
     }
 }
