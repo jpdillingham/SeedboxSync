@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by JP on 10/8/2016.
  */
-public class Synchronizer {
+public class Synchronizer implements ISynchronizer {
     /** The logger for this class. */
     private Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
 
@@ -24,6 +24,8 @@ public class Synchronizer {
 
     public void Synchronize() {
         Server server = new Server(config.getServer(), config.getUsername(), config.getPassword(), config.getPort());
+
+        logger.info("Connecting to server '" + config.getServer() + "' on port " + config.getPort() + "...");
 
         if (server.connect()) {
             System.out.println("Connected!");
