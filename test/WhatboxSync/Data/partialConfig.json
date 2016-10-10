@@ -1,0 +1,7 @@
+{
+	"port": 1,
+	"username": "username",
+	"password": "password",
+	"remoteDirectory": "remoteDirectory",
+	"localDirectory": "localDirectory"
+}

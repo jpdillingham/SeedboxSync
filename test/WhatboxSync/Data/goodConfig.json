@@ -1,0 +1,9 @@
+{
+	"server": "server",
+	"port": 1,
+	"username": "username",
+	"password": "password",
+	"interval": 1,
+	"remoteDirectory": "remoteDirectory",
+	"localDirectory": "localDirectory"
+}
