@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Configuration implements IConfiguration {
     /** The logger for this class. */
-    Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
+    private Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
 
     /** The configured server address. */
     private String server;
