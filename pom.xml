@@ -7,6 +7,11 @@
     <groupId>WhatboxSync</groupId>
     <artifactId>WhatboxSync</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
