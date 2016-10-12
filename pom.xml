@@ -93,6 +93,7 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
                 <configuration>
+                    <sourceDirectories>src/WhatboxSync</sourceDirectories>
                     <repoToken>pPauYaMrXoMrYKRqDXRsDSV8tuJOoKqWp</repoToken>
                 </configuration>
             </plugin>
