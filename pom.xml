@@ -64,16 +64,6 @@
         <testOutputDirectory>target/test-classes</testOutputDirectory>
         <sourceDirectory>src/WhatboxSync</sourceDirectory>
         <testSourceDirectory>test/WhatboxSync</testSourceDirectory>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -93,7 +83,6 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
                 <configuration>
-                    <sourceDirectories>src/WhatboxSync</sourceDirectories>
                     <repoToken>pPauYaMrXoMrYKRqDXRsDSV8tuJOoKqWp</repoToken>
                 </configuration>
             </plugin>
