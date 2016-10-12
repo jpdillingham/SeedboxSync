@@ -3,5 +3,7 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+script:
+  - mvn test jacoco:report
 after_success:
-  - mvn coveralls:report
+  - mvn jacoco:report coveralls:jacoco
