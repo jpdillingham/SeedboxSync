@@ -6,4 +6,4 @@ jdk:
 script:
   - mvn test jacoco:report
 after_success:
-  - mvn jacoco:report coveralls:jacoco
+  - mvn coveralls:jacoco
