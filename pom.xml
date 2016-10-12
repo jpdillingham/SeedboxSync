@@ -84,7 +84,7 @@
                 <version>4.3.0</version>
                 <configuration>
                     <sourceDirectories>
-                        <sourceDirectory>src/WhatboxSync</sourceDirectory>
+                        <sourceDirectory>WhatboxSync/src/WhatboxSync</sourceDirectory>
                     </sourceDirectories>
                     <repoToken>pPauYaMrXoMrYKRqDXRsDSV8tuJOoKqWp</repoToken>
                 </configuration>
