@@ -1,8 +1,5 @@
-package WhatboxSync;
-
 import java.util.List;
 import org.apache.commons.net.ftp.FTPFile;
-
 
 /**
  * Defines the interface for Server objects.

@@ -1,5 +1,3 @@
-package WhatboxSync;
-
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,7 @@ import java.util.List;
  */
 public class Synchronizer implements ISynchronizer {
     /** The logger for this class. */
-    private Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
+    private Logger logger = LoggerFactory.getLogger(Synchronizer.class);
 
     /** The configuration for the Synchronizer. */
     private IConfiguration config;
@@ -28,12 +26,12 @@ public class Synchronizer implements ISynchronizer {
         logger.info("Connecting to server '" + config.getServer() + "' on port " + config.getPort() + "...");
 
         if (server.connect()) {
-            System.out.println("Connected!");
+            logger.info("Connected!");
 
             List<FTPFile> files = server.list(config.getRemoteDirectory());
 
             for (FTPFile file : files) {
-                System.out.println(file.getName());
+                logger.info(file.getName());
             }
         }
     }

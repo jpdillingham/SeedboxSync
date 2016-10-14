@@ -23,14 +23,16 @@
  *
  ****************************************************************************/
 
-package WhatboxSync;
-
 import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
 
 /** The main application class. */
 public class WhatboxSync {
@@ -52,6 +54,16 @@ public class WhatboxSync {
     /** The main entry point for the application.
      * @param args The command-line arguments passed to the application when starting. */
     public static void main(String[] args) {
+        ConsoleAppender console = new ConsoleAppender(); //create appender
+        //configure the appender
+        String PATTERN = "%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n";
+        console.setLayout(new PatternLayout(PATTERN));
+        console.setThreshold(Level.INFO);
+        console.activateOptions();
+
+        //add appender to any Logger (here is root)
+        org.apache.log4j.Logger.getRootLogger().addAppender(console);
+
         String configFile = System.getProperty("user.dir") + File.separator + "config.json";
 
 	    logger.info("Retrieving configuration from '" + configFile + "'...");

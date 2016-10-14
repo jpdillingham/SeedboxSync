@@ -23,12 +23,10 @@
  *
  ****************************************************************************/
 
- package WhatboxSync;
-
 /**
  * Defines the interface for Configuration objects.
  */
-public interface IConfiguration {
+interface IConfiguration {
     /** Gets the configured server address.
      * @return The configured server address. */
     String getServer();

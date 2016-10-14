@@ -1,6 +1,4 @@
-package WhatboxSync;
-
-public interface ISynchronizer {
+interface ISynchronizer {
 
     void Synchronize();
 }
