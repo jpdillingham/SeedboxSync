@@ -35,7 +35,7 @@ import java.io.File;
 import java.io.IOException;
 
 /** Loads the application Configuration from disk. */
-class ConfigurationLoader {
+public class ConfigurationLoader implements IConfigurationLoader {
     /** The logger for this class. */
     private Logger logger = LoggerFactory.getLogger(Server.class);
 
@@ -45,7 +45,7 @@ class ConfigurationLoader {
      * @throws IOException Thrown if there is an issue locating or reading the file.
      * @throws ParseException Thrown if the file can't be deserialized to JSON.
      */
-    Configuration Load(String file) throws IOException, ParseException {
+    public Configuration Load(String file) throws IOException, ParseException {
         if (!(new File(file)).exists()) {
             throw new FileNotFoundException("File not found: '" + file + "'");
         }

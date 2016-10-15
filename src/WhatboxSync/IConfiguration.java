@@ -26,7 +26,7 @@
 /**
  * Defines the interface for Configuration objects.
  */
-interface IConfiguration {
+public interface IConfiguration {
     /** Gets the configured server address.
      * @return The configured server address. */
     String getServer();

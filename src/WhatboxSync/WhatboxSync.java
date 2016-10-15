@@ -40,7 +40,7 @@ public class WhatboxSync {
     private static Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
 
     /** The ConfigurationLoader for the application. */
-    private static ConfigurationLoader configLoader;
+    private static IConfigurationLoader configLoader;
 
     /** The IConfiguraiton instance containing the application configuratiom. */
     private static IConfiguration config;
