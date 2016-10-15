@@ -1,5 +1,5 @@
 {
-	"port": 1,
+	"port": null,
 	"username": "username",
 	"password": "password",
 	"remoteDirectory": "remoteDirectory",
