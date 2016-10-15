@@ -35,12 +35,17 @@ import java.io.File;
 import java.io.IOException;
 
 /** Loads the application Configuration from disk. */
-public class ConfigurationLoader {
+class ConfigurationLoader {
     /** The logger for this class. */
     private Logger logger = LoggerFactory.getLogger(Server.class);
 
-
-    public Configuration Load(String file) throws IOException, ParseException {
+    /** Instantiates and loads a Configuration from the specified file.
+     * @param file The file from which the configuration is to be loaded.
+     * @return The loaded Configuration instance.
+     * @throws IOException Thrown if there is an issue locating or reading the file.
+     * @throws ParseException Thrown if the file can't be deserialized to JSON.
+     */
+    Configuration Load(String file) throws IOException, ParseException {
         if (!(new File(file)).exists()) {
             throw new FileNotFoundException("File not found: '" + file + "'");
         }
@@ -58,20 +63,27 @@ public class ConfigurationLoader {
 
         JSONObject jsonObject = (JSONObject)obj;
 
-        String server = this.<String>fetch("server", jsonObject);
+        String server = this.fetch("server", jsonObject);
         Integer port = this.<Long>fetch("port", jsonObject).intValue();
-        String username = this.<String>fetch("username", jsonObject);
+        String username = this.fetch("username", jsonObject);
 
-        String password = this.<String>fetch("password", jsonObject);
+        String password = this.fetch("password", jsonObject);
         Integer interval = this.<Long>fetch("interval", jsonObject).intValue();
-        String remoteDirectory = this.<String>fetch("remoteDirectory", jsonObject);
-        String localDirectory = this.<String>fetch("localDirectory", jsonObject);
+        String remoteDirectory = this.fetch("remoteDirectory", jsonObject);
+        String localDirectory = this.fetch("localDirectory", jsonObject);
 
         return new Configuration(server, port, username, password, interval, remoteDirectory, localDirectory);
     }
 
+    /** Fetches the specified field from the specified JSONObject, or throws a RuntimeException if the fetch fails.
+     * @param fieldName The name of the field to fetch.
+     * @param object The object from which the field is to be fetched.
+     * @param <T> The expected type of the field's value.
+     * @return The fetched value.
+     * @throws RuntimeException Thrown if the field can't be fetched, or if the value is null.
+     */
     @SuppressWarnings("unchecked")
-    private <T> T fetch(String fieldName, JSONObject object) {
+    private <T> T fetch(String fieldName, JSONObject object) throws RuntimeException {
         T retVal = (T)object.get(fieldName);
 
         if (retVal == null) {
@@ -81,7 +93,11 @@ public class ConfigurationLoader {
         return retVal;
     }
 
-    private void badConfiguration(String fieldName) {
+    /** Throws a RuntimeException describing an error with the specified field.
+     * @param fieldName The name of the erroneous field.
+     * @throws RuntimeException Thrown with the name of the specified field.
+     */
+    private void badConfiguration(String fieldName) throws RuntimeException {
         throw new RuntimeException("Bad configuration; field '" + fieldName + "' is missing or contains an invalid value.");
     }
 }
