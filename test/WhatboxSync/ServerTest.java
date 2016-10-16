@@ -1,13 +1,36 @@
 
 import java.util.List;
+
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.apache.commons.net.ftp.FTPFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by JP on 10/15/2016.
  */
 public class ServerTest {
+    /** The logger for this class. */
+    private Logger logger = LoggerFactory.getLogger(Server.class);
+
+    @Before
+    public void ConfigureLogging() {
+        ConsoleAppender console = new ConsoleAppender(); //create appender
+        //configure the appender
+        String PATTERN = "%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n";
+        console.setLayout(new PatternLayout(PATTERN));
+        console.setThreshold(Level.INFO);
+        console.activateOptions();
+
+        //add appender to any Logger (here is root)
+        org.apache.log4j.Logger.getRootLogger().addAppender(console);
+    }
+
     @Test
     public void TestConstructorOne() {
         Server test = new Server("address", "user", "password");
@@ -57,5 +80,7 @@ public class ServerTest {
 
         assertNotEquals(files, null);
         //assertTrue(files.size() > 0);
+
+        logger.info("List size: " + files.size());
     }
 }
