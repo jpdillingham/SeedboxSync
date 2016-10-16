@@ -21,18 +21,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- ****************************************************************************/
+ *************************************************************************** */
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.File;
+import java.io.IOException;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.File;
-import java.io.IOException;
 
 /** Loads the application Configuration from disk. */
 public class ConfigurationLoader implements IConfigurationLoader {
@@ -87,17 +87,9 @@ public class ConfigurationLoader implements IConfigurationLoader {
         T retVal = (T)object.get(fieldName);
 
         if (retVal == null) {
-            badConfiguration(fieldName);
+            throw new RuntimeException("Bad configuration; field '" + fieldName + "' is missing or contains an invalid value.");
         }
 
         return retVal;
-    }
-
-    /** Throws a RuntimeException describing an error with the specified field.
-     * @param fieldName The name of the erroneous field.
-     * @throws RuntimeException Thrown with the name of the specified field.
-     */
-    private void badConfiguration(String fieldName) throws RuntimeException {
-        throw new RuntimeException("Bad configuration; field '" + fieldName + "' is missing or contains an invalid value.");
     }
 }

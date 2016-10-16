@@ -1,16 +1,18 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.Future;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 
 /**
  * Represents an FTP server.
  */
-class Server implements IServer {
+public class Server implements IServer {
     /** The logger for this class. */
     Logger logger = LoggerFactory.getLogger(Server.class);
 
@@ -20,8 +22,8 @@ class Server implements IServer {
     /** The FTPClient driving the server */
     private static FTPClient server;
 
-    /** The Server IP address. */
-    private String ipAddress;
+    /** The Server address. */
+    private String address;
 
     /** The Server port. */
     private Integer port;
@@ -33,48 +35,77 @@ class Server implements IServer {
     private String password;
 
     /** Initializes a new instance of the Server class with the specified IP address. */
-    Server(String ipAddress, String username, String password) {
-        this(ipAddress, username, password, defaultPort);
+    Server(String address, String username, String password) {
+        this(address, username, password, defaultPort);
     }
 
-    /** Initializes a new instance of the Server class with the specified IP address and port. */
-    Server(String ipAddress, String username, String password, Integer port)
+    /** Initializes a new instance of the Server class with the specified IP address, username, password and port.
+     * @param address The Server address.
+     * @param username The username to use when connecting to the Server.
+     * @param password The password to use when connecting to the Server.
+     * @param port The Server port.
+     */
+    public Server(String address, String username, String password, Integer port)
     {
-        this.ipAddress = ipAddress;
+        this.address = address;
         this.username = username;
         this.password = password;
         this.port = port;
 
         this.server = new FTPClient();
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
      /** Opens the Server connection using the specified IP address and the default port. */
-    public Boolean connect() {
+    public void connect() throws Exception {
         try {
-            server.connect(ipAddress, port);
+            server.connect(address, port);
             server.login(username, password);
-
-            // TODO: put this in an external config file
-
         }
-        catch (IOException ex) {
-            logger.error("Exception thrown while connecting to server at '" + ipAddress + ":" + port + "': " + ex.getMessage());
+        catch (Exception ex) {
+            logger.error("Exception thrown while connecting to server at '" + address + ":" + port + "': " + ex.getMessage());
+            throw ex;
         }
-
-        return true;
     }
 
     /** Closes the Server connection. */
-    public Boolean disconnect() {
-        return true;
+    public void disconnect() throws Exception {
+        try {
+            server.disconnect();
+        }
+        catch (Exception ex) {
+            logger.error("Exception thrown while disconnecting from server: " + ex.getMessage());
+            throw ex;
+        }
     }
 
-    /** Returns a value indicating whether the Server connection is open. */
+    /** Returns a value indicating whether the Server is connected.
+     * @return A value indicating whether the Server is connected.
+     */
     public Boolean isConnected() {
         return true;
     }
 
-    /** Lists the files in the specified directory. */
-    public List<FTPFile> list(String directory) {
+    /** Returns a list of files contained within the specified directory.
+     * @param directory The directory for which to return the file list.
+     * @return A list of files contained within the directory.
+     */
+    public List<FTPFile> list(String directory) throws Exception {
         List<FTPFile> retVal = new ArrayList<FTPFile>();
 
         try {
@@ -87,13 +118,20 @@ class Server implements IServer {
         catch (Exception ex)
         {
             logger.error("Exception thrown while retrieving file list for directory '" + directory + "': " + ex.getMessage());
+            throw ex;
         }
 
         return retVal;
     }
 
-    /** Downloads the specified file. */
-    public Boolean download(String file) {
-        return true;
+    /** Downloads the specified file.
+     * @param file The file to download.
+     * @return A value indicating whether the download completed successfully.
+     * @throws Exception Thrown if an exception is encountered during the download.
+     */
+    @Async
+    public Future<Boolean> download(String file) throws Exception {
+        // TODO: Implement this
+        return new AsyncResult<Boolean>(true);
     }
 }

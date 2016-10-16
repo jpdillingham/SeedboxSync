@@ -101,7 +101,9 @@ public class WhatboxSync {
         service.scheduleWithFixedDelay(new Runnable() {
             public void run() {
                 logger.info("Starting Synchronization...");
-                syncher.Synchronize();
+                try {
+                    syncher.synchronize();
+                } catch (Exception ex) {  }
             }
         }, 0, config.getInterval(), TimeUnit.SECONDS);
     }

@@ -1,4 +1,6 @@
 import java.util.List;
+import java.util.concurrent.Future;
+
 import org.apache.commons.net.ftp.FTPFile;
 
 /**
@@ -6,18 +8,19 @@ import org.apache.commons.net.ftp.FTPFile;
  */
 interface IServer {
     /** Opens the Server connection. */
-    Boolean connect();
+    void connect() throws Exception;
 
     /** Closes the Server connection. */
-    Boolean disconnect();
+    void disconnect() throws Exception;
 
-    /** Returns a value indicating whether the Server connection is open. */
+    /** Returns a value indicating whether the Server connection is open.
+     * @return */
     Boolean isConnected();
 
     /** Lists the files in the specified directory. */
-    List<FTPFile> list(String directory);
+    List<FTPFile> list(String directory) throws Exception;
 
     /** Downloads the specified file. */
-    Boolean download(String file);
+    Future<Boolean> download(String file) throws Exception;
 
 }

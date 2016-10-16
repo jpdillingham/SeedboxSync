@@ -14,24 +14,55 @@ public class Synchronizer implements ISynchronizer {
     /** The configuration for the Synchronizer. */
     private IConfiguration config;
 
+    private Server server;
+
+    private Boolean synchronizing;
+
     /** Initializes a new instance of the Synchronizer class with the specified Configuration.
      * @param config The Configuration instance with which the Synchronizer should be configured. */
     public Synchronizer(IConfiguration config) {
         this.config = config;
+
+        server = new Server(config.getServer(), config.getUsername(), config.getPassword(), config.getPort());
     }
 
-    public void Synchronize() {
-        Server server = new Server(config.getServer(), config.getUsername(), config.getPassword(), config.getPort());
-
+    public void synchronize() throws Exception {
         logger.info("Connecting to server '" + config.getServer() + "' on port " + config.getPort() + "...");
 
-        if (server.connect()) {
-            logger.info("Connected!");
+        if (!server.isConnected()) {
+            try {
+                server.connect();
+            }
+            catch (Exception ex)
+            {
+                logger.error("Exception thrown while connecting to server '" + config.getServer() + "': " + ex.getMessage());
+            }
+        }
 
-            List<FTPFile> files = server.list(config.getRemoteDirectory());
+        list(config.getRemoteDirectory());
+    }
 
-            for (FTPFile file : files) {
-                logger.info(file.getName());
+
+    private void list(String directory) throws Exception {
+        logger.info("Listing files for directory '" + directory + "'...");
+
+        List<FTPFile> files;
+
+        try {
+            files = server.list(directory);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Exception thrown while retrieving file list for '" + directory + "': " + ex.getMessage());
+            throw ex;
+        }
+
+        for (FTPFile file : files) {
+            logger.info(directory + "/" + file.getName());
+
+            if (file.isDirectory()) {
+                logger.info("Recursing directory '" + file.getName());
+                list(directory + "/" + file.getName());
             }
         }
     }

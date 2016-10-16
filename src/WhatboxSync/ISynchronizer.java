@@ -1,4 +1,4 @@
 interface ISynchronizer {
 
-    void Synchronize();
+    void synchronize() throws Exception;
 }
