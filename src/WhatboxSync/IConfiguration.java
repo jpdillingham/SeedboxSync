@@ -27,31 +27,45 @@
  * Defines the interface for Configuration objects.
  */
 public interface IConfiguration {
-    /** Gets the configured server address.
-     * @return The configured server address. */
+    /**
+     * Gets the configured server address.
+     * @return The configured server address.
+     */
     String getServer();
 
-    /** Gets the configured server port.
-     * @return The configured server port. */
+    /**
+     * Gets the configured server port.
+     * @return The configured server port.
+     */
     Integer getPort();
 
-    /** Gets the configured username for the server.
-     * @return The configured username for the server. */
+    /**
+     * Gets the configured username for the server.
+     * @return The configured username for the server.
+     */
     String getUsername();
 
-    /** Gets the configured password for the server.
-     * @return The configured password for the server. */
+    /**
+     * Gets the configured password for the server.
+     * @return The configured password for the server.
+     */
     String getPassword();
 
-    /** Gets the configured interval on which the synchronization should take place.
-     * @return The configured interval on which the synchronization should take place. */
+    /**
+     * Gets the configured interval on which the synchronization should take place.
+     * @return The configured interval on which the synchronization should take place.
+     */
     Integer getInterval();
 
-    /** Gets the remote directory which is to be synchronized.
-     * @return The remote directory which is to be synchronized. */
+    /**
+     * Gets the remote directory which is to be synchronized.
+     * @return The remote directory which is to be synchronized.
+     */
     String getRemoteDirectory();
 
-    /** Gets the local directory to which files are to be downloaded.
-     * @return The local directory to which files are to be downloaded. */
+    /**
+     * Gets the local directory to which files are to be downloaded.
+     * @return The local directory to which files are to be downloaded.
+     */
     String getLocalDirectory();
 }

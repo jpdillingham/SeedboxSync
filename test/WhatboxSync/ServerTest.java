@@ -1,30 +1,60 @@
+/****************************************************************************
+ *
+ * ServerTest.java
+ *
+ * Tests the Server class.
+ *
+ ***************************************************************************
+ *
+ * Copyright (C) 2016 JP Dillingham (jp@dillingham.ws)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
 
-import java.util.List;
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.Future;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.apache.commons.net.ftp.FTPFile;
 
 /**
- * Created by JP on 10/15/2016.
+ * Tests the Server class.
  */
 public class ServerTest {
-    /** The logger for this class. */
-    private Logger logger = LoggerFactory.getLogger(ServerTest.class);
+    /**
+     * The logger for this class.
+     */
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    /** A flag used to indicate that the code is being tested under CI.
+    /**
+     * A flag used to indicate that the code is being tested under CI.
      * This is necessary because some tests are failing in Travis CI, presumably because
-     * environment settings are prohibiting the download of data from external sources. */
+     * environment settings are prohibiting the download of data from external sources.
+     */
     private Boolean CI_Flag = true;
 
+    /**
+     * Configure the logger.
+     */
     @Before
     public void ConfigureLogging() {
         ConsoleAppender console = new ConsoleAppender();
@@ -34,6 +64,9 @@ public class ServerTest {
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
     }
 
+    /**
+     * Constructs a new Configuration using the three-tuple constructor.
+     */
     @Test
     public void TestConstructorOne() {
         Server test = new Server("address", "user", "password");
@@ -46,6 +79,9 @@ public class ServerTest {
         assertEquals(test.getPort(), (Integer)21);
     }
 
+    /**
+     * Constructs a new Configuration using the four-tuple constructor.
+     * */
     @Test
     public void TestConstructorTwo() {
         Server test = new Server("address", "user", "password", 1);
@@ -56,6 +92,10 @@ public class ServerTest {
         assertEquals(test.getPort(), (Integer)1);
     }
 
+    /**
+     * Connects to a known bad server.
+     * @throws Exception
+     */
     @Test(expected=Exception.class)
     public void TestBadConnect() throws Exception {
         Server test = new Server("this can't be the name of a server.", "","");
@@ -65,6 +105,10 @@ public class ServerTest {
         assertEquals(test.isConnected(), false);
     }
 
+    /**
+     * Connects to a known good server.
+     * @throws Exception
+     */
     @Test
     public void TestGoodConnect() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
@@ -74,6 +118,10 @@ public class ServerTest {
         assertEquals(test.isConnected(), true);
     }
 
+    /**
+     * Connects, then disconnects from a known good server.
+     * @throws Exception
+     */
     @Test
     public void TestDisconnect() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
@@ -87,6 +135,10 @@ public class ServerTest {
         assertEquals(test.isConnected(), false);
     }
 
+    /**
+     * Connects to a known good server and retrieves a list of files from the home directory.
+     * @throws Exception
+     */
     @Test
     public void TestList() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
@@ -106,6 +158,10 @@ public class ServerTest {
         }
     }
 
+    /**
+     * Connects to a known good server and downloads two known good files.
+     * @throws Exception
+     */
     @Test
     public void TestDownload() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");

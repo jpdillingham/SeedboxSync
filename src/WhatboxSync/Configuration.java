@@ -30,39 +30,56 @@ import org.slf4j.LoggerFactory;
  * Represents the application Configuration model.
  */
 public class Configuration implements IConfiguration {
-    /** The logger for this class. */
-    private Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
+    /**
+     * The logger for this class.
+     */
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    /** The configured server address. */
+    /**
+     * The configured server address.
+     */
     private String server;
 
-    /** The configured server port. */
+    /**
+     * The configured server port.
+     */
     private Integer port;
 
-    /** The configured username for the server. */
+    /**
+     * The configured username for the server.
+     */
     private String username;
 
-    /** The configured password for the server. */
+    /**
+     * The configured password for the server.
+     */
     private String password;
 
-    /** The configured interval on which the synchronization should take place. */
+    /**
+     * The configured interval on which the synchronization should take place.
+     */
     private Integer interval;
 
-    /** The configured remote directory which is to be synchronized. */
+    /**
+     * The configured remote directory which is to be synchronized.
+     */
     private String remoteDirectory;
 
-    /** The configured local directory to which files are to be downloaded. */
+    /**
+     * The configured local directory to which files are to be downloaded.
+     */
     private String localDirectory;
 
-    /** Initializes a new instance of the Configuration class with the specified parameters.
+    /**
+     * Initializes a new instance of the Configuration class with the specified parameters.
      * @param server The server address.
      * @param port The server port.
      * @param username The username for the server.
      * @param password The password for the server.
      * @param interval The interval on which synchronization should take place.
      * @param remoteDirectory The remote directory which is to be synchronized.
-     * @param localDirectory The local directory to which files are to be downloaded. */
-
+     * @param localDirectory The local directory to which files are to be downloaded.
+     */
     public Configuration(String server, Integer port, String username, String password, Integer interval, String remoteDirectory, String localDirectory) {
         this.server = server;
         this.port = port;
@@ -73,44 +90,58 @@ public class Configuration implements IConfiguration {
         this.localDirectory = localDirectory;
     }
 
-    /** Gets the configured server address.
-     * @return The configured server address. */
+    /**
+     * Gets the configured server address.
+     * @return The configured server address.
+     */
     public String getServer() {
         return server;
     }
 
-    /** Gets the configured server port.
-     * @return The configured server port. */
+    /**
+     * Gets the configured server port.
+     * @return The configured server port.
+     */
     public Integer getPort() {
         return port;
     }
 
-    /** Gets the configured username for the server.
-     * @return The configured username for the server. */
+    /**
+     * Gets the configured username for the server.
+     * @return The configured username for the server.
+     */
     public String getUsername() {
         return username;
     }
 
-    /** Gets the configured password for the server.
-     * @return The configured password for the server. */
+    /**
+     * Gets the configured password for the server.
+     * @return The configured password for the server.
+     */
     public String getPassword() {
         return password;
     }
 
-    /** Gets the configured interval on which the synchronization should take place.
-     * @return The configured interval on which the synchronization should take place. */
+    /**
+     * Gets the configured interval on which the synchronization should take place.
+     * @return The configured interval on which the synchronization should take place.
+     */
     public Integer getInterval() {
         return interval;
     }
 
-    /** Gets the remote directory which is to be synchronized.
-     * @return The remote directory which is to be synchronized. */
+    /**
+     * Gets the remote directory which is to be synchronized.
+     * @return The remote directory which is to be synchronized.
+     */
     public String getRemoteDirectory() {
         return remoteDirectory;
     }
 
-    /** Gets the local directory to which files are to be downloaded.
-     * @return The local directory to which files are to be downloaded. */
+    /**
+     * Gets the local directory to which files are to be downloaded.
+     * @return The local directory to which files are to be downloaded.
+     */
     public String getLocalDirectory() {
         return localDirectory;
     }

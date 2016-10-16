@@ -26,6 +26,8 @@
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -34,6 +36,14 @@ import static org.junit.Assert.assertEquals;
  * Tests the Configuration class.
  */
 public class ConfigurationTest {
+    /**
+     * The logger for this class.
+     */
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
+    /**
+     * Configure the logger.
+     */
     @Before
     public void ConfigureLogging() {
         ConsoleAppender console = new ConsoleAppender();
@@ -42,7 +52,10 @@ public class ConfigurationTest {
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
     }
-    /** Constructs an instance of Configuration and tests all accessors. */
+
+    /**
+     * Constructs an instance of Configuration and tests all accessors.
+     */
     @Test
     public void testConfiguration() {
         Configuration test = new Configuration("server", 1, "user", "password", 1, "remote", "local");

@@ -23,13 +23,15 @@
  *
  ****************************************************************************/
 
+import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
-
-/** Defines the interface for ConfigurationLoader objects. */
+/**
+ * Defines the interface for ConfigurationLoader objects.
+ */
 interface IConfigurationLoader {
-    /** Instantiates and loads a Configuration from the specified file.
+    /**
+     * Instantiates and loads a Configuration from the specified file.
      * @param file The file from which the configuration is to be loaded.
      * @return The loaded Configuration instance.
      * @throws IOException Thrown if there is an issue locating or reading the file.

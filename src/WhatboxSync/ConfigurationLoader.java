@@ -21,25 +21,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *************************************************************************** */
+ ****************************************************************************/
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/** Loads the application Configuration from disk. */
+/**
+ * Loads the application Configuration from disk.
+ */
 public class ConfigurationLoader implements IConfigurationLoader {
-    /** The logger for this class. */
-    private Logger logger = LoggerFactory.getLogger(Server.class);
+    /**
+     * The logger for this class.
+     */
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    /** Instantiates and loads a Configuration from the specified file.
+    /**
+     * Instantiates and loads a Configuration from the specified file.
      * @param file The file from which the configuration is to be loaded.
      * @return The loaded Configuration instance.
      * @throws IOException Thrown if there is an issue locating or reading the file.
@@ -75,7 +79,8 @@ public class ConfigurationLoader implements IConfigurationLoader {
         return new Configuration(server, port, username, password, interval, remoteDirectory, localDirectory);
     }
 
-    /** Fetches the specified field from the specified JSONObject, or throws a RuntimeException if the fetch fails.
+    /**
+     * Fetches the specified field from the specified JSONObject, or throws a RuntimeException if the fetch fails.
      * @param fieldName The name of the field to fetch.
      * @param object The object from which the field is to be fetched.
      * @param <T> The expected type of the field's value.

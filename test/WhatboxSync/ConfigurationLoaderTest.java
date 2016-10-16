@@ -23,22 +23,30 @@
  *
  ****************************************************************************/
 
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.io.FileNotFoundException;
-
 import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the ConfigurationLoader class.
  */
 public class ConfigurationLoaderTest {
+    /**
+     * The logger for this class.
+     */
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
+    /**
+     * Configure the logger.
+     */
     @Before
     public void ConfigureLogging() {
         ConsoleAppender console = new ConsoleAppender();
@@ -47,12 +55,19 @@ public class ConfigurationLoaderTest {
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
     }
-    /** Constructs an instance of ConfigurationLoader. */
+    /**
+     * Constructs an instance of ConfigurationLoader.
+     * */
     @Test
     public void testConstructor() {
         ConfigurationLoader test = new ConfigurationLoader();
     }
 
+    /**
+     * Loads a known good configuration file.
+     * @throws IOException
+     * @throws ParseException
+     */
     @Test
     public void testGoodLoad() throws IOException, ParseException {
         ConfigurationLoader test = new ConfigurationLoader();
@@ -69,6 +84,11 @@ public class ConfigurationLoaderTest {
         assertEquals(config.getLocalDirectory(), "localDirectory");
     }
 
+    /**
+     * Loads a known bad configuration file.
+     * @throws IOException
+     * @throws ParseException
+     */
     @Test(expected=ParseException.class)
     public void testBadLoad() throws IOException, ParseException {
         ConfigurationLoader test = new ConfigurationLoader();
@@ -77,12 +97,22 @@ public class ConfigurationLoaderTest {
         Configuration config = test.Load(configFile);
     }
 
+    /**
+     * Loads a configuration from a non-existent file.
+     * @throws IOException
+     * @throws ParseException
+     */
     @Test(expected=FileNotFoundException.class)
     public void testMissingLoad() throws IOException, ParseException {
         ConfigurationLoader test = new ConfigurationLoader();
         Configuration config = test.Load("blah");
     }
 
+    /**
+     * Loads a partially completed configuration file.
+     * @throws IOException
+     * @throws ParseException
+     */
     @Test(expected=RuntimeException.class)
     public void testPartialLoad() throws IOException, ParseException {
         ConfigurationLoader test = new ConfigurationLoader();
