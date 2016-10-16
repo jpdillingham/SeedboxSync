@@ -114,7 +114,7 @@ public class Server implements IServer {
      * @return A value indicating whether the Server is connected.
      */
     public Boolean isConnected() {
-        return true;
+        return server.isConnected();
     }
 
     /** Returns a list of files contained within the specified directory.
