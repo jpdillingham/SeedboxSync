@@ -87,7 +87,7 @@ public class ServerTest {
             assertTrue(files.size() > 0);
         }
         else {
-            logger.Info("List size assertion skipped because CI_Flag=true");
+            logger.info("List size assertion skipped because CI_Flag=true");
         }
     }
 }

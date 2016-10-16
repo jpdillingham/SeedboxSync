@@ -23,7 +23,11 @@
  *
  ****************************************************************************/
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
 import org.json.simple.parser.ParseException;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -35,7 +39,14 @@ import static org.junit.Assert.assertEquals;
  * Tests the ConfigurationLoader class.
  */
 public class ConfigurationLoaderTest {
-
+    @Before
+    public void ConfigureLogging() {
+        ConsoleAppender console = new ConsoleAppender();
+        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
+        console.setThreshold(Level.INFO);
+        console.activateOptions();
+        org.apache.log4j.Logger.getRootLogger().addAppender(console);
+    }
     /** Constructs an instance of ConfigurationLoader. */
     @Test
     public void testConstructor() {
