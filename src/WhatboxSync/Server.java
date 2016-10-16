@@ -34,7 +34,11 @@ public class Server implements IServer {
     /** The password to use when connecting to the Server. */
     private String password;
 
-    /** Initializes a new instance of the Server class with the specified IP address. */
+    /** Initializes a new instance of the Server class with the specified IP address, username and password.
+     * @param address The Server address.
+     * @param username The username to use when connecting to the Server.
+     * @param password The password to use when connecting to the Server.
+     */
     Server(String address, String username, String password) {
         this(address, username, password, defaultPort);
     }
@@ -55,18 +59,30 @@ public class Server implements IServer {
         this.server = new FTPClient();
     }
 
+    /** Gets the Server address.
+     * @return The Server address.
+     */
     public String getAddress() {
         return address;
     }
 
+    /** Gets the username used when connecting to the Server.
+     * @return The username used when connecting to the Server.
+     */
     public String getUsername() {
         return username;
     }
 
+    /** Gets the password used when connecting to the Server.
+     * @return The password used when connecting to the Server.
+     */
     public String getPassword() {
         return password;
     }
 
+    /** Gets the Server port.
+     * @return The Server port.
+     */
     public Integer getPort() {
         return port;
     }
