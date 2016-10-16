@@ -1,5 +1,7 @@
 
 import java.util.List;
+import java.io.File;
+import java.util.concurrent.Future;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -73,6 +75,19 @@ public class ServerTest {
     }
 
     @Test
+    public void TestDisconnect() throws Exception {
+        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+
+        test.connect();
+
+        assertEquals(test.isConnected(), true);
+
+        test.disconnect();
+
+        assertEquals(test.isConnected(), false);
+    }
+
+    @Test
     public void TestList() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
         test.connect();
@@ -89,5 +104,33 @@ public class ServerTest {
         else {
             logger.info("List size assertion skipped because CI_Flag=true");
         }
+    }
+
+    @Test
+    public void TestDownload() throws Exception {
+        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+
+        logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");
+        test.connect();
+
+        File destinationFile = new File("temp.zip");
+
+        logger.info("Downloading file '1MB.zip'");
+        Long start = System.nanoTime();
+
+        Future<Boolean> download = test.download("1MB.zip", "temp.zip");
+
+        // wait for the download to complete
+        while (!download.isDone()) {
+            Thread.sleep(10);
+        }
+
+        long fileSize = destinationFile.length();
+
+        assertNotEquals(fileSize, 0);
+
+        Double duration = (System.nanoTime() - start) / 1000000000.0;
+        logger.info("Downloaded " + fileSize + " bytes in " + duration + " seconds = " + fileSize / duration + "bytes/s");
+
     }
 }

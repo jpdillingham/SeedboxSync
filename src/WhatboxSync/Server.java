@@ -1,6 +1,9 @@
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
+import java.io.File;
+
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -89,25 +92,17 @@ public class Server implements IServer {
 
      /** Opens the Server connection using the specified IP address and the default port. */
     public void connect() throws Exception {
-        try {
-            server.connect(address, port);
-            server.login(username, password);
-        }
-        catch (Exception ex) {
-            logger.error("Exception thrown while connecting to server at '" + address + ":" + port + "': " + ex.getMessage());
-            throw ex;
-        }
+        logger.debug("Connecting to '" + address + "'...");
+        server.connect(address, port);
+
+        logger.debug("Logging in with credentials '" + username + "', '<hidden>'");
+        server.login(username, password);
     }
 
     /** Closes the Server connection. */
     public void disconnect() throws Exception {
-        try {
-            server.disconnect();
-        }
-        catch (Exception ex) {
-            logger.error("Exception thrown while disconnecting from server: " + ex.getMessage());
-            throw ex;
-        }
+        logger.debug("Disconnecting from '" + address + "'...");
+        server.disconnect();
     }
 
     /** Returns a value indicating whether the Server is connected.
@@ -124,17 +119,12 @@ public class Server implements IServer {
     public List<FTPFile> list(String directory) throws Exception {
         List<FTPFile> retVal = new ArrayList<FTPFile>();
 
-        try {
-            FTPFile[] files = server.listFiles(directory);
+        logger.debug("Fetching file list from '" + directory + "'...");
+        FTPFile[] files = server.listFiles(directory);
+        logger.debug("Fetched " + files.length + " files.");
 
-            for (FTPFile f : files) {
-                retVal.add(f);
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.error("Exception thrown while retrieving file list for directory '" + directory + "': " + ex.getMessage());
-            throw ex;
+        for (FTPFile f : files) {
+            retVal.add(f);
         }
 
         return retVal;
@@ -142,12 +132,25 @@ public class Server implements IServer {
 
     /** Downloads the specified file.
      * @param file The file to download.
+     * @param destinationFile The file to which the downloaded file should be saved.
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
     @Async
-    public Future<Boolean> download(String file) throws Exception {
-        // TODO: Implement this
+    public Future<Boolean> download(String file, String destinationFile) throws Exception {
+        server.retrieveFile(file, new FileOutputStream(destinationFile));
         return new AsyncResult<Boolean>(true);
+    }
+
+
+    /** Downloads the specified file.
+     * @param file The file to download.
+     * @param destinationFile The file to which the downloaded file should be saved.
+     * @return A value indicating whether the download completed successfully.
+     * @throws Exception Thrown if an exception is encountered during the download.
+     */
+    @Async
+    public Future<Boolean> download(String file, File destinationFile) throws Exception {
+        return download(file, destinationFile.getAbsolutePath());
     }
 }

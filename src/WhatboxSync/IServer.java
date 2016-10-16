@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.concurrent.Future;
+import java.io.File;
 
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -21,6 +22,7 @@ interface IServer {
     List<FTPFile> list(String directory) throws Exception;
 
     /** Downloads the specified file. */
-    Future<Boolean> download(String file) throws Exception;
+    Future<Boolean> download(String file, String destinationFile) throws Exception;
+    Future<Boolean> download(String file, File destinationFile) throws Exception;
 
 }
