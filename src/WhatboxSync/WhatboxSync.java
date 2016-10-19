@@ -39,9 +39,6 @@ public class WhatboxSync {
     /** The logger for this class. */
     private static Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
 
-    /** The ConfigurationLoader for the application. */
-    private static IConfigurationLoader configLoader;
-
     /** The IConfiguraiton instance containing the application configuratiom. */
     private static IConfiguration config;
 
@@ -88,7 +85,7 @@ public class WhatboxSync {
         // instantiate a Synchronizer with the fetched configuration
         try {
             IServer server = new ServerFactory().createServer(config);
-            syncher = new Synchronizer(config, server);
+            syncher = new Synchronizer(config, server, new Database());
         }
         catch (Exception ex) {
             logger.error("Error creating Synchronizer: " + ex.getMessage());

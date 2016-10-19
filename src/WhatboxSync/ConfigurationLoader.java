@@ -36,11 +36,11 @@ import org.json.simple.parser.ParseException;
 /**
  * Loads the application Configuration from disk.
  */
-public class ConfigurationLoader implements IConfigurationLoader {
+public class ConfigurationLoader {
     /**
      * The logger for this class.
      */
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private static Logger logger = LoggerFactory.getLogger("ConfigurationLoader");
 
     /**
      * Instantiates and loads a Configuration from the specified file.
@@ -49,7 +49,7 @@ public class ConfigurationLoader implements IConfigurationLoader {
      * @throws IOException Thrown if there is an issue locating or reading the file.
      * @throws ParseException Thrown if the file can't be deserialized to JSON.
      */
-    public Configuration load(String file) throws IOException, ParseException {
+    public static Configuration load(String file) throws IOException, ParseException {
         if (!(new File(file)).exists()) {
             throw new FileNotFoundException("File not found: '" + file + "'");
         }
@@ -67,14 +67,14 @@ public class ConfigurationLoader implements IConfigurationLoader {
 
         JSONObject jsonObject = (JSONObject)obj;
 
-        String server = this.fetch("server", jsonObject);
-        Integer port = this.<Long>fetch("port", jsonObject).intValue();
-        String username = this.fetch("username", jsonObject);
+        String server = fetch("server", jsonObject);
+        Integer port = ((Long)fetch("port", jsonObject)).intValue();
+        String username = fetch("username", jsonObject);
 
-        String password = this.fetch("password", jsonObject);
-        Integer interval = this.<Long>fetch("interval", jsonObject).intValue();
-        String remoteDirectory = this.fetch("remoteDirectory", jsonObject);
-        String localDirectory = this.fetch("localDirectory", jsonObject);
+        String password = fetch("password", jsonObject);
+        Integer interval = ((Long)fetch("interval", jsonObject)).intValue();
+        String remoteDirectory = fetch("remoteDirectory", jsonObject);
+        String localDirectory = fetch("localDirectory", jsonObject);
 
         return new Configuration(server, port, username, password, interval, remoteDirectory, localDirectory);
     }
@@ -88,7 +88,7 @@ public class ConfigurationLoader implements IConfigurationLoader {
      * @throws RuntimeException Thrown if the field can't be fetched, or if the value is null.
      */
     @SuppressWarnings("unchecked")
-    private <T> T fetch(String fieldName, JSONObject object) throws RuntimeException {
+    private static <T> T fetch(String fieldName, JSONObject object) throws RuntimeException {
         T retVal = (T)object.get(fieldName);
 
         if (retVal == null) {

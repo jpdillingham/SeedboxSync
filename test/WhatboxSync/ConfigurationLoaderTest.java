@@ -55,13 +55,6 @@ public class ConfigurationLoaderTest {
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
     }
-    /**
-     * Constructs an instance of ConfigurationLoader.
-     * */
-    @Test
-    public void testConstructor() {
-        ConfigurationLoader test = new ConfigurationLoader();
-    }
 
     /**
      * Loads a known good configuration file.
@@ -70,10 +63,8 @@ public class ConfigurationLoaderTest {
      */
     @Test
     public void testGoodLoad() throws IOException, ParseException {
-        ConfigurationLoader test = new ConfigurationLoader();
-
         String configFile = System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodConfig.json";
-        Configuration config = test.Load(configFile);
+        Configuration config = ConfigurationLoader.load(configFile);
 
         assertEquals(config.getServer(), "server");
         assertEquals(config.getPort(), (Integer)1);
@@ -91,10 +82,8 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=ParseException.class)
     public void testBadLoad() throws IOException, ParseException {
-        ConfigurationLoader test = new ConfigurationLoader();
-
         String configFile = System.getProperty("user.dir") + "/test/WhatboxSync/resources/badConfig.json";
-        Configuration config = test.Load(configFile);
+        Configuration config = ConfigurationLoader.load(configFile);
     }
 
     /**
@@ -104,8 +93,7 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=FileNotFoundException.class)
     public void testMissingLoad() throws IOException, ParseException {
-        ConfigurationLoader test = new ConfigurationLoader();
-        Configuration config = test.Load("blah");
+        Configuration config = ConfigurationLoader.load("blah");
     }
 
     /**
@@ -115,9 +103,7 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=RuntimeException.class)
     public void testPartialLoad() throws IOException, ParseException {
-        ConfigurationLoader test = new ConfigurationLoader();
-
         String configFile = System.getProperty("user.dir") + "/test/WhatboxSync/resources/partialConfig.json";
-        Configuration config = test.Load(configFile);
+        Configuration config = ConfigurationLoader.load(configFile);
     }
 }
