@@ -49,7 +49,7 @@ public class ConfigurationLoader implements IConfigurationLoader {
      * @throws IOException Thrown if there is an issue locating or reading the file.
      * @throws ParseException Thrown if the file can't be deserialized to JSON.
      */
-    public Configuration Load(String file) throws IOException, ParseException {
+    public Configuration load(String file) throws IOException, ParseException {
         if (!(new File(file)).exists()) {
             throw new FileNotFoundException("File not found: '" + file + "'");
         }

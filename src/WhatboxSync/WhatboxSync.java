@@ -72,8 +72,7 @@ public class WhatboxSync {
         // the file (config.json) needs to be located in the root of the application directory.
         if ((new File(configFile)).exists()) {
             try {
-                configLoader = new ConfigurationLoader();
-                config = configLoader.Load(configFile);
+                config = new ConfigurationLoader().load(configFile);
 
                 logger.info("Configuration retrieved successfully.");
             } catch (Exception ex) {
@@ -88,7 +87,8 @@ public class WhatboxSync {
 
         // instantiate a Synchronizer with the fetched configuration
         try {
-            syncher = new Synchronizer(config);
+            IServer server = new ServerFactory().createServer(config);
+            syncher = new Synchronizer(config, server);
         }
         catch (Exception ex) {
             logger.error("Error creating Synchronizer: " + ex.getMessage());

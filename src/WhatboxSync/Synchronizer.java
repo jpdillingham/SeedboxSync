@@ -14,16 +14,18 @@ public class Synchronizer implements ISynchronizer {
     /** The configuration for the Synchronizer. */
     private IConfiguration config;
 
-    private Server server;
+    private IServer server;
+
+    private IDatabase database;
 
     private Boolean synchronizing;
 
     /** Initializes a new instance of the Synchronizer class with the specified Configuration.
      * @param config The Configuration instance with which the Synchronizer should be configured. */
-    public Synchronizer(IConfiguration config) {
+    public Synchronizer(IConfiguration config, IServer server, IDatabase database) {
         this.config = config;
-
-        server = new Server(config.getServer(), config.getUsername(), config.getPassword(), config.getPort());
+        this.server = server;
+        this.database = database;
     }
 
     public void synchronize() throws Exception {

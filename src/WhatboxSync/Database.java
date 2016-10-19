@@ -1,8 +1,8 @@
 /****************************************************************************
  *
- * IConfigurationLoader.java
+ * Database.java
  *
- * Defines the interface for ConfigurationLoader objects.
+ * Represents the application Database.
  *
  ***************************************************************************
  *
@@ -23,19 +23,5 @@
  *
  ****************************************************************************/
 
-import java.io.IOException;
-import org.json.simple.parser.ParseException;
-
-/**
- * Defines the interface for ConfigurationLoader objects.
- */
-interface IConfigurationLoader {
-    /**
-     * Instantiates and loads a Configuration from the specified file.
-     * @param file The file from which the configuration is to be loaded.
-     * @return The loaded Configuration instance.
-     * @throws IOException Thrown if there is an issue locating or reading the file.
-     * @throws ParseException Thrown if the file can't be deserialized to JSON.
-     */
-    Configuration load(String file) throws IOException, ParseException;
+public class Database implements IDatabase {
 }

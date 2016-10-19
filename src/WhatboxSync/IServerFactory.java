@@ -1,8 +1,8 @@
 /****************************************************************************
  *
- * IConfigurationLoader.java
+ * IServerFactory.java
  *
- * Defines the interface for ConfigurationLoader objects.
+ * Defines the interface for ServerFactory objects.
  *
  ***************************************************************************
  *
@@ -23,19 +23,14 @@
  *
  ****************************************************************************/
 
-import java.io.IOException;
-import org.json.simple.parser.ParseException;
-
 /**
- * Defines the interface for ConfigurationLoader objects.
+ * Defines the interface for ServerFactory objects.
  */
-interface IConfigurationLoader {
+public interface IServerFactory {
     /**
-     * Instantiates and loads a Configuration from the specified file.
-     * @param file The file from which the configuration is to be loaded.
-     * @return The loaded Configuration instance.
-     * @throws IOException Thrown if there is an issue locating or reading the file.
-     * @throws ParseException Thrown if the file can't be deserialized to JSON.
+     * Initializes and returns a new Server instance using information contained within the specified Configuration.
+     * @param config The Configuration from which the Server settings are taken.
+     * @return The newly instantiated Server instance.
      */
-    Configuration load(String file) throws IOException, ParseException;
+    Server createServer(IConfiguration config);
 }
