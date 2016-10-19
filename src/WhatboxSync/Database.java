@@ -23,5 +23,15 @@
  *
  ****************************************************************************/
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Represents the application Database.
+ */
 public class Database implements IDatabase {
+    /**
+     * The logger for this class.
+     */
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 }

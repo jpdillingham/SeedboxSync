@@ -24,9 +24,25 @@
  *
  ****************************************************************************/
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Loads the application Database from disk, or, in the absence of an existing
  * Database file, creates it and populates the schema.
  */
-public class DatabaseLoader implements IDatabaseLoader {
+public class DatabaseLoader {
+    /**
+     * The logger for this class.
+     */
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
+
+    /**
+     * Instantiates and loads a Database from the specified file.
+     * @param file The file from which the Database is to be loaded.
+     * @return The loaded Database instance.
+     */
+    public static Database load(String file) {
+        return new Database();
+    }
 }
