@@ -74,8 +74,18 @@ public class ConfigurationTest {
      * Constructs an instance of Configuration with a blank server value.
      */
     @Test
-    public void testMissingServer() {
+    public void testBlankServer() {
         Configuration test = new Configuration("", 1, "user", "password", 1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with a missing server value.
+     */
+    @Test
+    public void testMissingServer() {
+        Configuration test = new Configuration(null, 1, "user", "password", 1, "remote", "local");
 
         assertEquals(test.isValid(), false);
     }
@@ -91,11 +101,31 @@ public class ConfigurationTest {
     }
 
     /**
+     * Constructs an instance of Configuration with a missing server port.
+     */
+    @Test
+    public void testMissingPort() {
+        Configuration test = new Configuration("server", null, "user", "password", 1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
      * Constructs an instance of Configuration with an invalid username.
      */
     @Test
     public void testInvalidUsername() {
         Configuration test = new Configuration("server", 1, "", "password", 1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with a missing username.
+     */
+    @Test
+    public void testMissingUsername() {
+        Configuration test = new Configuration("server", 1, null, "password", 1, "remote", "local");
 
         assertEquals(test.isValid(), false);
     }
@@ -121,6 +151,16 @@ public class ConfigurationTest {
     }
 
     /**
+     * Constructs an instance of Configuration with a missing interval.
+     */
+    @Test
+    public void testMissingInterval() {
+        Configuration test = new Configuration("server", 1, "user", "password", null, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
      * Constructs an instance of Configuration with an invalid remote directory.
      */
     @Test
@@ -131,11 +171,31 @@ public class ConfigurationTest {
     }
 
     /**
+     * Constructs an instance of Configuration with a missing remote directory.
+     */
+    @Test
+    public void testMissingRemoteDirectory() {
+        Configuration test = new Configuration("server", 1, "user", "password", 1, null, "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
      * Constructs an instance of Configuration with an invalid local directory.
      */
     @Test
     public void testInvalidLocalDirectory() {
         Configuration test = new Configuration("server", 1, "user", "password", 1, "remote", "");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with a missing local directory.
+     */
+    @Test
+    public void testMissingLocalDirectory() {
+        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote", null);
 
         assertEquals(test.isValid(), false);
     }
