@@ -176,6 +176,7 @@ public class Configuration implements IConfiguration {
         }
 
         if (err != "") {
+            logger.error("Invalid Configuration; " + err);
             return false;
         }
 

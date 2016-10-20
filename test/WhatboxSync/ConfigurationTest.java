@@ -131,11 +131,11 @@ public class ConfigurationTest {
     }
 
     /**
-     * Constructs an instance of Configuration with an invalid password.
+     * Constructs an instance of Configuration with a missing password.
      */
     @Test
-    public void testInvalidPassword() {
-        Configuration test = new Configuration("server", 0, "user", null, 1, "remote", "local");
+    public void testMissingPassword() {
+        Configuration test = new Configuration("server", 1, "user", null, 1, "remote", "local");
 
         assertEquals(test.isValid(), false);
     }
