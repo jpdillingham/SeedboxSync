@@ -53,16 +53,6 @@ public class WhatboxSync {
     /** The main entry point for the application.
      * @param args The command-line arguments passed to the application when starting. */
     public static void main(String[] args) {
-        ConsoleAppender console = new ConsoleAppender(); //create appender
-        //configure the appender
-        String PATTERN = "%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n";
-        console.setLayout(new PatternLayout(PATTERN));
-        console.setThreshold(Level.INFO);
-        console.activateOptions();
-
-        //add appender to any Logger (here is root)
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
-
         String configFile = System.getProperty("user.dir") + File.separator + "config.json";
 
 	    logger.info("Retrieving configuration from '" + configFile + "'...");
@@ -105,5 +95,17 @@ public class WhatboxSync {
                 } catch (Exception ex) {  }
             }
         }, 0, config.getInterval(), TimeUnit.SECONDS);
+    }
+
+    private static void configureLogging() {
+        ConsoleAppender console = new ConsoleAppender(); //create appender
+        //configure the appender
+        String PATTERN = "%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n";
+        console.setLayout(new PatternLayout(PATTERN));
+        console.setThreshold(Level.INFO);
+        console.activateOptions();
+
+        //add appender to any Logger (here is root)
+        org.apache.log4j.Logger.getRootLogger().addAppender(console);
     }
 }

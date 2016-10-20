@@ -48,7 +48,7 @@ public class ConfigurationLoaderTest {
      * Configure the logger.
      */
     @Before
-    public void ConfigureLogging() {
+    public void configureLogging() {
         ConsoleAppender console = new ConsoleAppender();
         console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
         console.setThreshold(Level.INFO);

@@ -23,5 +23,41 @@
  *
  ****************************************************************************/
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertEquals;
+
+/**
+ * Tests the DatabaseLoader class.
+ */
 public class DatabaseLoaderTest {
+    /**
+     * The logger for this class.
+     */
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
+    /**
+     * Configure the logger.
+     */
+    @Before
+    public void configureLogging() {
+        ConsoleAppender console = new ConsoleAppender();
+        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
+        console.setThreshold(Level.INFO);
+        console.activateOptions();
+        org.apache.log4j.Logger.getRootLogger().addAppender(console);
+    }
+
+    /**
+     * Constructs an instance of DatabaseLoader.
+     */
+    @Test
+    public void testConstructor() {
+        DatabaseLoader test = new DatabaseLoader();
+    }
 }
