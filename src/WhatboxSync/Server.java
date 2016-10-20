@@ -42,7 +42,7 @@ public class Server implements IServer {
     /**
      * The logger for this class.
      */
-    Logger logger = LoggerFactory.getLogger(Server.class);
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
      * The default port.

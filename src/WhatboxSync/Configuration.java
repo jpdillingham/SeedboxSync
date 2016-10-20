@@ -33,7 +33,7 @@ public class Configuration implements IConfiguration {
     /**
      * The logger for this class.
      */
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
      * The configured server address.
@@ -144,5 +144,41 @@ public class Configuration implements IConfiguration {
      */
     public String getLocalDirectory() {
         return localDirectory;
+    }
+
+    /**
+     * Returns a value indicating whether the configuration is valid.
+     * @return A value indicating whether the configuration is valid.
+     */
+    public Boolean isValid() {
+        String err = "";
+
+        if (server == null || server == "") {
+            err = "Server is missing or blank.";
+        }
+        else if (port == null || port <= 0) {
+            err = "Server port is null or invalid.";
+        }
+        else if (username == null || username == "") {
+            err = "Username is missing or blank.";
+        }
+        else if (password == null) {
+            err = "Password is missing.";
+        }
+        else if (interval == null || interval <= 0) {
+            err = "Interval is missing or too low.";
+        }
+        else if (remoteDirectory == null || remoteDirectory == "") {
+            err = "Remote directory is missing or blank.";
+        }
+        else if (localDirectory == null || localDirectory == "") {
+            err = "Local directory is missing or blank.";
+        }
+
+        if (err != "") {
+            return false;
+        }
+
+        return true;
     }
 }

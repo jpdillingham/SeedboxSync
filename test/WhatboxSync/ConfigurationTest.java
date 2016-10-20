@@ -67,5 +67,76 @@ public class ConfigurationTest {
         assertEquals(test.getInterval(), (Integer)1);
         assertEquals(test.getRemoteDirectory(), "remote");
         assertEquals(test.getLocalDirectory(), "local");
+        assertEquals(test.isValid(), true);
+    }
+
+    /**
+     * Constructs an instance of Configuration with a blank server value.
+     */
+    @Test
+    public void testMissingServer() {
+        Configuration test = new Configuration("", 1, "user", "password", 1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with an invalid server port.
+     */
+    @Test
+    public void testInvalidPort() {
+        Configuration test = new Configuration("server", 0, "user", "password", 1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with an invalid username.
+     */
+    @Test
+    public void testInvalidUsername() {
+        Configuration test = new Configuration("server", 1, "", "password", 1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with an invalid password.
+     */
+    @Test
+    public void testInvalidPassword() {
+        Configuration test = new Configuration("server", 0, "user", null, 1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with an invalid interval.
+     */
+    @Test
+    public void testInvalidInterval() {
+        Configuration test = new Configuration("server", 1, "user", "password", -1, "remote", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with an invalid remote directory.
+     */
+    @Test
+    public void testInvalidRemoteDirectory() {
+        Configuration test = new Configuration("server", 1, "user", "password", 1, "", "local");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with an invalid local directory.
+     */
+    @Test
+    public void testInvalidLocalDirectory() {
+        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote", "");
+
+        assertEquals(test.isValid(), false);
     }
 }

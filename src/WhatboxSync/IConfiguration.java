@@ -68,4 +68,10 @@ public interface IConfiguration {
      * @return The local directory to which files are to be downloaded.
      */
     String getLocalDirectory();
+
+    /**
+     * Returns a value indicating whether the configuration is valid.
+     * @return A value indicating whether the configuration is valid.
+     */
+    Boolean isValid();
 }

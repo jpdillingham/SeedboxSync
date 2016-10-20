@@ -36,8 +36,10 @@ import org.apache.log4j.Level;
 
 /** The main application class. */
 public class WhatboxSync {
-    /** The logger for this class. */
-    private static Logger logger = LoggerFactory.getLogger(WhatboxSync.class);
+    /**
+     * The logger for this class.
+     */
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /** The IConfiguraiton instance containing the application configuratiom. */
     private static IConfiguration config;

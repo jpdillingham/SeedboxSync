@@ -23,16 +23,28 @@
  *
  ****************************************************************************/
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Generates Server instances based on a given Configuration.
  */
-public class ServerFactory implements IServerFactory {
+public class ServerFactory {
+    /**
+     * The logger for this class.
+     */
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
+
     /**
      * Initializes and returns a new Server instance using information contained within the specified Configuration.
      * @param config The Configuration from which the Server settings are taken.
      * @return The newly instantiated Server instance.
      */
-    public Server createServer(IConfiguration config) {
+    public static Server createServer(IConfiguration config) {
+        if (!config.isValid()) {
+            throw new RuntimeException("Unable to create Server; configuration is invalid.");
+        }
+
         return new Server(config.getServer(), config.getUsername(), config.getPassword(), config.getPort());
     }
 }

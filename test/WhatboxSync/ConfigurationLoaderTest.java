@@ -58,7 +58,7 @@ public class ConfigurationLoaderTest {
 
     /**
      * Constructs an instance of ConfigurationLoader.
-     * */
+     */
     @Test
     public void testConstructor() {
         ConfigurationLoader test = new ConfigurationLoader();

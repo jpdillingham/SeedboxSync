@@ -23,5 +23,61 @@
  *
  ****************************************************************************/
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ServerFactoryTest {
+    /**
+     * The logger for this class.
+     */
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
+    /**
+     * Configure the logger.
+     */
+    @Before
+    public void ConfigureLogging() {
+        ConsoleAppender console = new ConsoleAppender();
+        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
+        console.setThreshold(Level.INFO);
+        console.activateOptions();
+        org.apache.log4j.Logger.getRootLogger().addAppender(console);
+    }
+
+    /**
+     * Constructs an instance of ServerFactory.
+     */
+    @Test
+    public void testConstructor() {
+        ServerFactory test = new ServerFactory();
+    }
+
+    /**
+     * Constructs a Server using ServerFactory, providing a known good configuration.
+     */
+    @Test
+    public void testGoodConfig() {
+        Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local");
+        Server test = ServerFactory.createServer(config);
+
+        assertEquals(test.getAddress(), "server");
+        assertEquals(test.getPort(), (Integer)1);
+        assertEquals(test.getUsername(), "user");
+        assertEquals(test.getPassword(), "password");
+    }
+
+    /**
+     * Constructs a Server using ServerFactory, providing a known bad configuration.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBadConfig() {
+        Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local");
+        Server test = ServerFactory.createServer(config);
+    }
 }

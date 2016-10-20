@@ -40,7 +40,7 @@ public class ConfigurationLoader {
     /**
      * The logger for this class.
      */
-    private static Logger logger = LoggerFactory.getLogger("ConfigurationLoader");
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
      * Instantiates and loads a Configuration from the specified file.

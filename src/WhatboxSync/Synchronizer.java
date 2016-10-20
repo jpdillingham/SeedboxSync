@@ -8,8 +8,10 @@ import java.util.List;
  * Created by JP on 10/8/2016.
  */
 public class Synchronizer implements ISynchronizer {
-    /** The logger for this class. */
-    private Logger logger = LoggerFactory.getLogger(Synchronizer.class);
+    /**
+     * The logger for this class.
+     */
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /** The configuration for the Synchronizer. */
     private IConfiguration config;
