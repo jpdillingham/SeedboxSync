@@ -25,6 +25,11 @@
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Represents the application Database.
@@ -34,4 +39,41 @@ public class Database implements IDatabase {
      * The logger for this class.
      */
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
+
+    /**
+     * The file backing the Database.
+     */
+    private String file;
+
+    /**
+     * The SQLite database connection.
+     */
+    private Connection connection;
+
+    /**
+     * Initializes a new instance of the Database class with the specified file.
+     * @param file
+     * @throws SQLException Thrown if the database can't be initialized.
+     */
+    public Database(String file) throws SQLException {
+        this.file = file;
+
+        createConnection();
+    }
+
+    /**
+     * Establishes the SQLite database connection.
+     * @throws SQLException Thrown if an exception is encountered while establishing the connection.
+     */
+    private void createConnection() throws SQLException {
+        logger.info("Attempting to connect to database in '" + file + "'...");
+        connection = DriverManager.getConnection("jdbc:sqlite:" + file);
+
+        if (connection == null) {
+            throw new SQLException("Failed to establish database connection to '" + file + "'.");
+        }
+        else {
+            logger.info("Database connection established.");
+        }
+    }
 }

@@ -43,7 +43,7 @@ public class ServerTest {
     /**
      * The logger for this class.
      */
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
      * A flag used to indicate that the code is being tested under CI.

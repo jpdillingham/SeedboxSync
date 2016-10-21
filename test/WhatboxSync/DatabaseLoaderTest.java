@@ -23,23 +23,32 @@
  *
  ****************************************************************************/
 
+import java.io.File;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.After;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.sql.SQLException;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Tests the DatabaseLoader class.
  */
 public class DatabaseLoaderTest {
     /**
+     * Filename for the test database file.
+     */
+    private final String testdb = "test.db";
+
+    /**
      * The logger for this class.
      */
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
      * Configure the logger.
@@ -59,5 +68,25 @@ public class DatabaseLoaderTest {
     @Test
     public void testConstructor() {
         DatabaseLoader test = new DatabaseLoader();
+    }
+
+    /**
+     * Loads a database and ensures that it was created.
+     * @throws SQLException
+     */
+    @Test
+    public void testLoad() throws SQLException {
+        Database db = DatabaseLoader.load(testdb);
+
+        assertNotEquals(db, null);
+        assertEquals((new File(testdb).exists()), true);
+    }
+
+    /**
+     * Remove any files that may have been created.
+     */
+    @After
+    public void cleanup() {
+        (new File(testdb)).delete();
     }
 }

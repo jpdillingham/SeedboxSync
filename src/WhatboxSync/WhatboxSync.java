@@ -71,7 +71,7 @@ public class WhatboxSync {
         // instantiate a Synchronizer with the fetched configuration
         try {
             IServer server = new ServerFactory().createServer(config);
-            synchronizer = new Synchronizer(config, server, new Database());
+            synchronizer = new Synchronizer(config, server, new Database("database.db"));
         }
         catch (Exception ex) {
             logger.error("Error creating Synchronizer: " + ex.getMessage());

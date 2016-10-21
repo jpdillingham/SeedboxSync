@@ -37,7 +37,7 @@ public class DatabaseTest {
     /**
      * The logger for this class.
      */
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
      * Configure the logger.
