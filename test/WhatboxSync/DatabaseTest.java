@@ -77,6 +77,6 @@ public class DatabaseTest {
      */
     @Test(expected=SQLException.class)
     public void testBadConstructor() throws SQLException {
-        Database test = new Database("??");
+        Database test = new Database("/.");
     }
 }
