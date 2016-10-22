@@ -23,12 +23,15 @@
  *
  ****************************************************************************/
 
+import java.io.File;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.sql.SQLException;
 
 /**
  * Tests the Database class.
@@ -40,6 +43,11 @@ public class DatabaseTest {
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
+     * The name of the test database file.
+     */
+    private final String testDB = "test.db";
+
+    /**
      * Configure the logger.
      */
     @Before
@@ -49,5 +57,26 @@ public class DatabaseTest {
         console.setThreshold(Level.INFO);
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
+    }
+
+    /**
+     * Tests instantiation and close
+     * @throws SQLException
+     */
+    @Test
+    public void testConstructor() throws SQLException {
+        Database test = new Database(testDB);
+        test.close();
+
+        (new File(testDB)).deleteOnExit();
+    }
+
+    /**
+     * Tests instantiation with a known bad filename
+     * @throws SQLException
+     */
+    @Test(expected=SQLException.class)
+    public void testBadConstructor() throws SQLException {
+        Database test = new Database("??");
     }
 }

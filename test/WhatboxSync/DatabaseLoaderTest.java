@@ -44,18 +44,14 @@ import static org.junit.Assert.assertNotEquals;
  */
 public class DatabaseLoaderTest {
     /**
+     * Filename for the test database file.
+     */
+    private final String testDB = "test.db";
+
+    /**
      * The logger for this class.
      */
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
-
-    /**
-     * Filename for the test database file.
-     */
-    private String testDB = "test.db";
-    private String testFolder;
 
     /**
      * Configure the logger.
@@ -83,20 +79,13 @@ public class DatabaseLoaderTest {
      */
     @Test
     public void testLoad() throws SQLException, IOException {
-        testFolder = tempFolder.newFolder().getAbsolutePath();
-        Database db = DatabaseLoader.load(testFolder + "/" + testDB);
+        Database db = DatabaseLoader.load(testDB);
 
         assertNotEquals(db, null);
-        assertEquals((new File(testFolder + "/" + testDB).exists()), true);
+        assertEquals((new File(testDB).exists()), true);
 
-        tempFolder.delete();
-    }
+        db.close();
 
-    /**
-     * Remove any files that may have been created.
-     */
-    @After
-    public void cleanup() {
-        tempFolder.delete();
+        (new File(testDB)).delete();
     }
 }

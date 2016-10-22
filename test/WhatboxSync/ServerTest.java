@@ -50,7 +50,7 @@ public class ServerTest {
      * This is necessary because some tests are failing in Travis CI, presumably because
      * environment settings are prohibiting the download of data from external sources.
      */
-    private Boolean CI_Flag = true;
+    private Boolean CI_Flag = false;
 
     /**
      * Configure the logger.
@@ -172,9 +172,9 @@ public class ServerTest {
         File destinationFile1 = new File("temp1.zip");
         File destinationFile2 = new File("temp2.zip");
 
-        logger.info("Downloading files '1MB.zip' and '512KB.zip'");
+        logger.info("Downloading files '1KB.zip' and '512KB.zip'");
 
-        Future<Boolean> download1 = test.download("1MB.zip", destinationFile1.getName());
+        Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName());
         Future<Boolean> download2 = test.download("512KB.zip", destinationFile2);
 
         // wait for the download to complete
@@ -185,6 +185,17 @@ public class ServerTest {
         if (!CI_Flag) {
             assertNotEquals(destinationFile1.length(), 0);
             assertNotEquals(destinationFile2.length(), 0);
+        }
+
+        logger.info("Disconnecting from server...");
+        test.disconnect();
+
+        assertEquals(test.isConnected(), false);
+
+        if (!CI_Flag) {
+            logger.info("Deleting temp files...");
+            destinationFile1.deleteOnExit();
+            destinationFile2.deleteOnExit();
         }
     }
 }

@@ -62,18 +62,20 @@ public class Database implements IDatabase {
     }
 
     /**
+     * Closes the SQLite database connection.
+     * @throws SQLException Thrown if an exception is encountered while closing the connection.
+     */
+    public void close() throws SQLException {
+        connection.close();
+    }
+
+    /**
      * Establishes the SQLite database connection.
      * @throws SQLException Thrown if an exception is encountered while establishing the connection.
      */
     private void createConnection() throws SQLException {
         logger.info("Attempting to connect to database in '" + file + "'...");
         connection = DriverManager.getConnection("jdbc:sqlite:" + file);
-
-        if (connection == null) {
-            throw new SQLException("Failed to establish database connection to '" + file + "'.");
-        }
-        else {
-            logger.info("Database connection established.");
-        }
+        logger.info("Database connection established.");
     }
 }
