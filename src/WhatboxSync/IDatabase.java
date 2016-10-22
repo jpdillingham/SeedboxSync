@@ -23,5 +23,15 @@
  *
  ****************************************************************************/
 
+import java.sql.SQLException;
+
+/**
+ * Defines the itnerface for Database objects.
+ */
 public interface IDatabase {
+    /**
+     * Closes the SQLite database connection.
+     * @throws SQLException Thrown if an exception is encountered while closing the connection.
+     */
+    void close() throws SQLException;
 }
