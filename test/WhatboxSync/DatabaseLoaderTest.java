@@ -24,12 +24,15 @@
  ****************************************************************************/
 
 import java.io.File;
+import java.io.IOException;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.After;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
@@ -41,20 +44,24 @@ import static org.junit.Assert.assertNotEquals;
  */
 public class DatabaseLoaderTest {
     /**
-     * Filename for the test database file.
-     */
-    private final String testdb = "test.db";
-
-    /**
      * The logger for this class.
      */
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
+    /**
+     * Filename for the test database file.
+     */
+    private String testDB = "test.db";
+    private String testFolder;
 
     /**
      * Configure the logger.
      */
     @Before
-    public void configureLogging() {
+    public void configureLogging() throws IOException {
         ConsoleAppender console = new ConsoleAppender();
         console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
         console.setThreshold(Level.INFO);
@@ -75,11 +82,14 @@ public class DatabaseLoaderTest {
      * @throws SQLException
      */
     @Test
-    public void testLoad() throws SQLException {
-        Database db = DatabaseLoader.load(testdb);
+    public void testLoad() throws SQLException, IOException {
+        testFolder = tempFolder.newFolder().getAbsolutePath();
+        Database db = DatabaseLoader.load(testFolder + "/" + testDB);
 
         assertNotEquals(db, null);
-        assertEquals((new File(testdb).exists()), true);
+        assertEquals((new File(testFolder + "/" + testDB).exists()), true);
+
+        tempFolder.delete();
     }
 
     /**
@@ -87,6 +97,6 @@ public class DatabaseLoaderTest {
      */
     @After
     public void cleanup() {
-        (new File(testdb)).delete();
+        tempFolder.delete();
     }
 }
