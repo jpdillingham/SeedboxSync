@@ -58,11 +58,24 @@ public class Database implements IDatabase {
     public Database(String file) throws SQLException {
         this.file = file;
 
+        logger.info("Establishing database connection to '" + file + "'...");
         createConnection();
+        logger.info("Connection established successfully.");
+
+        logger.info("Verifying schema...");
+        if (!schemaExists()) {
+            logger.info("Application schema is missing from '" + file + "'... creating...");
+            initializeSchema();
+            logger.info("Schema created successfully.");
+        }
+
+        logger.info("Schema verified; database connection is ready.");
     }
 
+
+
     /**
-     * Closes the SQLite database connection.
+     * Closes the database connection.
      * @throws SQLException Thrown if an exception is encountered while closing the connection.
      */
     public void close() throws SQLException {
@@ -70,7 +83,47 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Establishes the SQLite database connection.
+     * Returns a value indicating whether the schema exists within the database.
+     * @return A value indicating whether the schema exists within the database.
+     */
+    private Boolean schemaExists() throws SQLException {
+        Boolean retVal = false;
+        String query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='Files'";
+
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery(query);
+
+        result.next();
+
+        if (result.getInt(1) == 1) {
+            retVal = true;
+        }
+        else {
+            return false;
+        }
+
+        return retVal;
+    }
+
+    /**
+     * Initializes the database schema.
+     * @throws SQLException Thrown if an exception is encountered while creating the schema.
+     */
+    private void initializeSchema() throws SQLException {
+        String query = "CREATE TABLE Files (" +
+                "Name TEXT PRIMARY KEY NOT NULL, " +
+                "Size BIGINT NOT NULL, " +
+                "Timestamp DATETIME NOT NULL, " +
+                "Added DATETIME NOT NULL, " +
+                "Downloaded DATETIME NOT NULL)";
+
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+        statement.close();
+    }
+
+    /**
+     * Establishes the database connection.
      * @throws SQLException Thrown if an exception is encountered while establishing the connection.
      */
     private void createConnection() throws SQLException {

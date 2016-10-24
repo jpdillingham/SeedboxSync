@@ -72,6 +72,15 @@ public class DatabaseTest {
     }
 
     /**
+     * Tests instantiation with known good file
+     * @throws SQLException
+     */
+    @Test
+    public void testGoodDatabase() throws SQLException {
+        Database test = new Database(System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodDatabase.db");
+    }
+
+    /**
      * Tests instantiation with a known bad filename
      * @throws SQLException
      */
