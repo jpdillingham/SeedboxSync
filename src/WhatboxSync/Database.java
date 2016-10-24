@@ -23,6 +23,7 @@
  *
  ****************************************************************************/
 
+import java.util.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
@@ -72,14 +73,38 @@ public class Database implements IDatabase {
         logger.info("Schema verified; database connection is ready.");
     }
 
-
-
     /**
      * Closes the database connection.
      * @throws SQLException Thrown if an exception is encountered while closing the connection.
      */
     public void close() throws SQLException {
         connection.close();
+    }
+
+    /**
+     * Adds the specified File to the database.
+     * @param file The File to add.
+     */
+    public void addFile(File file) {
+        throw new RuntimeException("");
+    }
+
+    /**
+     * Sets the downloaded column of the specified File to the current timestamp, indicating that the file
+     * was successfully downloaded.
+     * @param file The File to update.
+     */
+    public void setDownloaded(File file) {
+        throw new RuntimeException("");
+    }
+
+    /**
+     * Retrieves the record matching the specified name.
+     * @param name The name of the File to retrieve.
+     * @return The record matching the specified name.
+     */
+    public File getFile(String name) {
+        throw new RuntimeException("");
     }
 
     /**
