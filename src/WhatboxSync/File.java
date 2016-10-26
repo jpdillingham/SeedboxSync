@@ -28,7 +28,7 @@ import java.sql.Timestamp;
 /**
  * Represents a remote File.
  */
-public class File implements IFile {
+public class File {
     /**
      * The name of the File.
      */

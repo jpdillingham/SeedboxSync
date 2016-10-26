@@ -44,9 +44,9 @@ public class WhatboxSync {
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
-     * The IConfiguraiton instance containing the application configuratiom.
+     * The Configuraiton instance containing the application configuratiom.
      */
-    private static IConfiguration config;
+    private static Configuration config;
 
     /**
      * The ISynchronizer instance containing the Synchronizer for the application.

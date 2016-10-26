@@ -15,7 +15,7 @@ public class Synchronizer implements ISynchronizer {
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /** The configuration for the Synchronizer. */
-    private IConfiguration config;
+    private Configuration config;
 
     private IServer server;
 
@@ -25,7 +25,7 @@ public class Synchronizer implements ISynchronizer {
 
     /** Initializes a new instance of the Synchronizer class with the specified Configuration.
      * @param config The Configuration instance with which the Synchronizer should be configured. */
-    public Synchronizer(IConfiguration config, IServer server, IDatabase database) {
+    public Synchronizer(Configuration config, IServer server, IDatabase database) {
         this.config = config;
         this.server = server;
         this.database = database;

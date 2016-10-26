@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents the application Configuration model.
  */
-public class Configuration implements IConfiguration {
+public class Configuration {
     /**
      * The logger for this class.
      */

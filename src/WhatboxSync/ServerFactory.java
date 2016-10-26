@@ -40,7 +40,7 @@ public class ServerFactory {
      * @param config The Configuration from which the Server settings are taken.
      * @return The newly instantiated Server instance.
      */
-    public static Server createServer(IConfiguration config) {
+    public static Server createServer(Configuration config) {
         if (!config.isValid()) {
             throw new RuntimeException("Unable to create Server; configuration is invalid.");
         }
