@@ -138,11 +138,14 @@ public class DatabaseTest {
 
         test.addFile(new File("test", 0L, new Timestamp(0L)));
 
-        test.setDownloadedTimestamp(new File("test"));
+        File startFile = test.getFile(new File("test"));
+        assertEquals(startFile.getDownloadedTimestamp(), null);
 
+        test.setDownloadedTimestamp(new File("test"));
         File testFile = test.getFile(new File("test"));
 
         assertEquals(testFile.getName(), "test");
+        assertNotEquals(testFile.getDownloadedTimestamp(), null);
 
         (new java.io.File(file)).deleteOnExit();
     }

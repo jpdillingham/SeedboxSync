@@ -144,8 +144,16 @@ public class Database implements IDatabase {
      * indicating that the file was successfully downloaded.
      * @param name The name of the File to update.
      */
-    public void setDownloadedTimestamp(String name) {
-        throw new RuntimeException("");
+    public void setDownloadedTimestamp(String name) throws SQLException {
+        logger.info("Updating download timestamp for file '" + name + "'...");
+
+        String query = "UPDATE Files SET DownloadedTimestamp = '"  +
+                new Timestamp((new Date()).getTime()).toString() + "' WHERE Name = '" +
+                name + "'";
+
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+        statement.close();
     }
 
     /**
@@ -153,7 +161,7 @@ public class Database implements IDatabase {
      * was successfully downloaded.
      * @param file The File to update.
      */
-    public void setDownloadedTimestamp(File file) {
+    public void setDownloadedTimestamp(File file) throws SQLException {
         setDownloadedTimestamp(file.getName());
     }
 
