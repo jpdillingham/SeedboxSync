@@ -218,7 +218,7 @@ public class Database implements IDatabase {
             retVal = true;
         }
         else {
-            return false;
+            retVal = false;
         }
 
         return retVal;

@@ -171,4 +171,33 @@ public class DatabaseTest {
 
         (new java.io.File(file)).deleteOnExit();
     }
+
+    /**
+     * Tests retrieval of files from a blank database.
+     * @throws SQLException
+     */
+    @Test
+    public void testBadGetFile() throws SQLException {
+        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/emptyDatabase.db";
+        Database test = new Database(file);
+
+        File testFile = test.getFile(new File("test"));
+
+        assertEquals(testFile, null);
+
+        (new java.io.File(file)).deleteOnExit();
+    }
+
+    /**
+     * Tests instantiation of a database from an existing file.
+     */
+    @Test
+    public void testDoubleDatabase() throws SQLException {
+        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/emptyDatabase.db";
+        Database test = new Database(file);
+
+        Database testTwo = new Database(file);
+
+        (new java.io.File(file)).deleteOnExit();
+    }
 }
