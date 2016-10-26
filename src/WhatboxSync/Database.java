@@ -23,7 +23,10 @@
  *
  ****************************************************************************/
 
-import java.util.Calendar;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
@@ -82,10 +85,66 @@ public class Database implements IDatabase {
     }
 
     /**
+     * Gets the list of Files stored in the database.
+     */
+    public List<File> getFiles() throws SQLException {
+        logger.info("Fetching list of files from the database...");
+
+        List<File> retVal = new ArrayList<File>();
+
+        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Files";
+
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery(query);
+
+        while (result.next()) {
+            String name = result.getString("Name");
+            Long size = result.getLong("Size");
+            Timestamp timestamp = result.getTimestamp("Timestamp");
+            Timestamp addedTimestamp = result.getTimestamp("AddedTimestamp");
+            Timestamp downloadedTimestamp = result.getTimestamp("DownloadedTimestamp");
+
+            retVal.add(new File(name, size, timestamp, addedTimestamp, downloadedTimestamp));
+        }
+
+        return retVal;
+    }
+
+    /**
      * Adds the specified File to the database.
      * @param file The File to add.
      */
-    public void addFile(File file) {
+    public void addFile(File file) throws SQLException {
+        logger.info("Adding file '" + file.getName() + "' to database...");
+
+        String query = "INSERT INTO Files (Name, Size, Timestamp, AddedTimestamp)" +
+                " VALUES('" + file.getName() + "', " +
+                file.getSize() + ", '" + file.getTimestamp() + "', '" +
+                new Timestamp((new Date()).getTime()).toString() + "')";
+
+        Statement statement = connection.createStatement();
+
+        try {
+            statement.executeUpdate(query);
+        }
+        catch (SQLException ex) {
+            if (ex.getErrorCode() == 19) {
+                // constraint violated, reasonably certain it is the unique constraint on name.  ignore it.
+            }
+            else {
+                throw ex;
+            }
+        }
+
+        statement.close();
+    }
+
+    /**
+     * Sets the downloaded column of the record matching the specified name to the current timestamp,
+     * indicating that the file was successfully downloaded.
+     * @param name The name of the File to update.
+     */
+    public void setDownloadedTimestamp(String name) {
         throw new RuntimeException("");
     }
 
@@ -94,17 +153,44 @@ public class Database implements IDatabase {
      * was successfully downloaded.
      * @param file The File to update.
      */
-    public void setDownloaded(File file) {
-        throw new RuntimeException("");
+    public void setDownloadedTimestamp(File file) {
+        setDownloadedTimestamp(file.getName());
     }
 
     /**
      * Retrieves the record matching the specified name.
-     * @param name The name of the File to retrieve.
+     * @param fileName The name of the File to retrieve.
      * @return The record matching the specified name.
      */
-    public File getFile(String name) {
-        throw new RuntimeException("");
+    public File getFile(String fileName) throws SQLException {
+        logger.info("Fetching list of files from the database...");
+
+        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Files " +
+                "WHERE Name = '" + fileName + "'";
+
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery(query);
+
+        while (result.next()) {
+            String name = result.getString("Name");
+            Long size = result.getLong("Size");
+            Timestamp timestamp = result.getTimestamp("Timestamp");
+            Timestamp addedTimestamp = result.getTimestamp("AddedTimestamp");
+            Timestamp downloadedTimestamp = result.getTimestamp("DownloadedTimestamp");
+
+            return new File(name, size, timestamp, addedTimestamp, downloadedTimestamp);
+        }
+
+        return null;
+    }
+
+    /**
+     * Retrieves the record matching the specified File.
+     * @param file The File to retrieve.
+     * @return The retrieved record.
+     */
+    public File getFile(File file) throws SQLException {
+        return getFile(file.getName());
     }
 
     /**
@@ -139,8 +225,8 @@ public class Database implements IDatabase {
                 "Name TEXT PRIMARY KEY NOT NULL, " +
                 "Size BIGINT NOT NULL, " +
                 "Timestamp DATETIME NOT NULL, " +
-                "Added DATETIME NOT NULL, " +
-                "Downloaded DATETIME NOT NULL)";
+                "AddedTimestamp DATETIME NOT NULL, " +
+                "DownloadedTimestamp DATETIME)";
 
         Statement statement = connection.createStatement();
         statement.executeUpdate(query);

@@ -23,7 +23,7 @@
  *
  ****************************************************************************/
 
-import java.util.Calendar;
+import java.sql.Timestamp;
 
 /**
  * Represents a remote File.
@@ -42,17 +42,22 @@ public class File implements IFile {
     /**
      * The remote timestamp of the File.
      */
-    private Calendar timestamp;
+    private Timestamp timestamp;
 
     /**
      * The timestamp at which the File was added to the Database.
      */
-    private Calendar added;
+    private Timestamp addedTimestamp;
 
     /**
      * The timestamp at which the File was downloaded successfully.
      */
-    private Calendar downloaded;
+    private Timestamp downloadedTimestamp;
+
+    /**
+     * Initializes a new instance of the File class with the specified name.
+     */
+    public File(String name) { this(name, 0L, null, null, null); }
 
     /**
      * Initializes a new instance of the File class with the specified name, size and timestamp.
@@ -60,22 +65,22 @@ public class File implements IFile {
      * @param size The size of the File.
      * @param timestamp The remote timestamp of the File.
      */
-    public File(String name, Long size, Calendar timestamp) { this(name, size, timestamp, null, null); }
+    public File(String name, Long size, Timestamp timestamp) { this(name, size, timestamp, null, null); }
 
     /**
      * Initializes a new instance of the File class.
      * @param name The name of the File.
      * @param size The size of the File.
      * @param timestamp The remote timestamp of the File.
-     * @param added The timestamp at which the File was added to the Database.
-     * @param downloaded The timestamp at which the File was downloaded successfully.
+     * @param addedTimestamp The timestamp at which the File was added to the Database.
+     * @param downloadedTimestamp The timestamp at which the File was downloaded successfully.
      */
-    public File(String name, Long size, Calendar timestamp, Calendar added, Calendar downloaded) {
+    public File(String name, Long size, Timestamp timestamp, Timestamp addedTimestamp, Timestamp downloadedTimestamp) {
         this.name = name;
         this.size = size;
         this.timestamp = timestamp;
-        this.added = added;
-        this.downloaded = downloaded;
+        this.addedTimestamp = addedTimestamp;
+        this.downloadedTimestamp = downloadedTimestamp;
     }
 
     /**
@@ -98,7 +103,7 @@ public class File implements IFile {
      * Gets the File's remote timestamp.
      * @return The File's remote timestamp.
      */
-    public Calendar getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 
@@ -106,19 +111,19 @@ public class File implements IFile {
      * Gets the timestamp at which the File was added to the Database.
      * @return The timestamp at which the File was added to the Database.
      */
-    public Calendar getAdded() { return added; }
+    public Timestamp getAddedTimestamp() { return addedTimestamp; }
 
     /**
      * Gets the timestamp at which the File was downloaded successfully.
      * @return The timestamp at which the File was downloaded successfully.
      */
-    public Calendar getDownloaded() { return downloaded; }
+    public Timestamp getDownloadedTimestamp() { return downloadedTimestamp; }
 
     /**
      * Gets a value indicating whether the File has been downloaded successfully.
      * @return A value indicating whether the File has been downloaded successfully.
      */
     public Boolean isDownloaded() {
-        return (downloaded != null);
+        return (downloadedTimestamp != null);
     }
 }

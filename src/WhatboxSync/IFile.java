@@ -23,7 +23,7 @@
  *
  ****************************************************************************/
 
-import java.util.Calendar;
+import java.sql.Timestamp;
 
 /**
  * Represents a remote File.
@@ -45,5 +45,23 @@ public interface IFile {
      * Gets the File's remote timestamp.
      * @return The File's remote timestamp.
      */
-    Calendar getTimestamp();
+    Timestamp getTimestamp();
+
+    /**
+     * Gets the timestamp at which the File was added to the Database.
+     * @return The timestamp at which the File was added to the Database.
+     */
+    Timestamp getAddedTimestamp();
+
+    /**
+     * Gets the timestamp at which the File was downloaded successfully.
+     * @return The timestamp at which the File was downloaded successfully.
+     */
+    Timestamp getDownloadedTimestamp();
+
+    /**
+     * Gets a value indicating whether the File has been downloaded successfully.
+     * @return A value indicating whether the File has been downloaded successfully.
+     */
+    Boolean isDownloaded();
 }

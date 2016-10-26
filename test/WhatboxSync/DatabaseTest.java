@@ -23,7 +23,7 @@
  *
  ****************************************************************************/
 
-import java.io.File;
+import java.sql.Timestamp;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -32,6 +32,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests the Database class.
@@ -68,7 +70,7 @@ public class DatabaseTest {
         Database test = new Database(testDB);
         test.close();
 
-        (new File(testDB)).deleteOnExit();
+        (new java.io.File(testDB)).deleteOnExit();
     }
 
     /**
@@ -77,7 +79,9 @@ public class DatabaseTest {
      */
     @Test
     public void testGoodDatabase() throws SQLException {
-        Database test = new Database(System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodDatabase.db");
+        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodDatabase.db";
+        Database test = new Database(file);
+        (new java.io.File(file)).deleteOnExit();
     }
 
     /**
@@ -87,5 +91,24 @@ public class DatabaseTest {
     @Test(expected=SQLException.class)
     public void testBadConstructor() throws SQLException {
         Database test = new Database("/.");
+    }
+
+    @Test
+    public void testGoodAdd() throws SQLException {
+        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodAddDatabase.db";
+        Database test = new Database(file);
+
+        try {
+            test.addFile(new File("test", 0L, new Timestamp(0L)));
+        }
+        catch (SQLException ex) {
+
+        }
+
+        File testFile = test.getFile("test");
+
+        assertEquals(testFile.getName(), "test");
+
+        (new java.io.File(file)).deleteOnExit();
     }
 }

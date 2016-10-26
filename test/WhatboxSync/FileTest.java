@@ -23,7 +23,7 @@
  *
  ****************************************************************************/
 
-import java.util.Calendar;
+import java.sql.Timestamp;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -60,12 +60,17 @@ public class FileTest {
      */
     @Test
     public void testConstructor() {
-        Calendar cal = Calendar.getInstance();
+        Timestamp ts = new Timestamp(0L);
+        Timestamp ats = new Timestamp(1L);
+        Timestamp dts = new Timestamp(2L);
 
-        File test = new File("test", new Long(1), cal);
+        File test = new File("test", new Long(1), ts, ats, dts);
 
         assertEquals(test.getName(), "test");
         assertEquals(test.getSize(), new Long(1));
-        assertEquals(test.getTimestamp(), cal);
+        assertEquals(test.getTimestamp(), ts);
+        assertEquals(test.getAddedTimestamp(), ats);
+        assertEquals(test.getDownloadedTimestamp(), dts);
+        assertEquals(test.isDownloaded(), true);
     }
 }

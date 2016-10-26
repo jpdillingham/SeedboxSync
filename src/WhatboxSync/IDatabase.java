@@ -34,4 +34,10 @@ public interface IDatabase {
      * @throws SQLException Thrown if an exception is encountered while closing the connection.
      */
     void close() throws SQLException;
+
+    /**
+     * Adds the specified File to the database.
+     * @param file The File to add.
+     */
+    void addFile(File file) throws SQLException;
 }

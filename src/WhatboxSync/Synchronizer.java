@@ -1,8 +1,9 @@
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.sql.SQLException;
 import java.util.List;
+import java.sql.Timestamp;
 
 /**
  * Created by JP on 10/8/2016.
@@ -62,7 +63,12 @@ public class Synchronizer implements ISynchronizer {
         }
 
         for (FTPFile file : files) {
-            logger.info(directory + "/" + file.getName());
+            try {
+                database.addFile(new File(directory + "/" + file.getName(), file.getSize(), new Timestamp(0L)));
+            }
+            catch (SQLException ex) {
+
+            }
 
             if (file.isDirectory()) {
                 logger.info("Recursing directory '" + file.getName());
