@@ -24,6 +24,7 @@
  ****************************************************************************/
 
 import java.sql.Timestamp;
+import java.util.List;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -93,21 +94,77 @@ public class DatabaseTest {
         Database test = new Database("/.");
     }
 
+    /**
+     * Tests the addition of a "good" file record
+     * @throws SQLException
+     */
     @Test
     public void testGoodAdd() throws SQLException {
         String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodAddDatabase.db";
         Database test = new Database(file);
 
-        try {
-            test.addFile(new File("test", 0L, new Timestamp(0L)));
-        }
-        catch (SQLException ex) {
-
-        }
+        test.addFile(new File("test", 0L, new Timestamp(0L)));
 
         File testFile = test.getFile("test");
 
         assertEquals(testFile.getName(), "test");
+
+        (new java.io.File(file)).deleteOnExit();
+    }
+
+    /**
+     * Tests the addition of a duplicate file records
+     * @throws SQLException
+     */
+    @Test
+    public void testDuplicateAdd() throws SQLException {
+        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/duplicateAddDatabase.db";
+        Database test = new Database(file);
+
+        test.addFile(new File("test", 0L, new Timestamp(0L)));
+        test.addFile(new File("test"));
+
+        (new java.io.File(file)).deleteOnExit();
+    }
+
+    /**
+     * Tests the update of the downloaded column
+     * @throws SQLException
+     */
+    @Test
+    public void testDownloadUpdate() throws SQLException {
+        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/updateDatabase.db";
+        Database test = new Database(file);
+
+        test.addFile(new File("test", 0L, new Timestamp(0L)));
+
+        test.setDownloadedTimestamp(new File("test"));
+
+        File testFile = test.getFile(new File("test"));
+
+        assertEquals(testFile.getName(), "test");
+
+        (new java.io.File(file)).deleteOnExit();
+    }
+
+    /**
+     * Tests retrieval of the file list
+     * @throws SQLException
+     */
+    @Test
+    public void testGetFiles() throws SQLException {
+        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/listDatabase.db";
+        Database test = new Database(file);
+
+        test.addFile(new File("test", 0L, new Timestamp(0L)));
+        test.addFile(new File("test2", 0L, new Timestamp(0L)));
+        test.addFile(new File("test3", 0L, new Timestamp(0L)));
+
+        List<File> list = test.getFiles();
+
+        assertEquals(list.size(), 3);
+        assertEquals(list.get(0).getName(), "test");
+        assertEquals(list.get(2).getName(), "test3");
 
         (new java.io.File(file)).deleteOnExit();
     }

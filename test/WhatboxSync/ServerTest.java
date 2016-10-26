@@ -50,7 +50,7 @@ public class ServerTest {
      * This is necessary because some tests are failing in Travis CI, presumably because
      * environment settings are prohibiting the download of data from external sources.
      */
-    private Boolean CI_Flag = true;
+    private Boolean CI_Flag = false;
 
     /**
      * Configure the logger.
