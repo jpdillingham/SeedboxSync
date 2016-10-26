@@ -72,5 +72,9 @@ public class FileTest {
         assertEquals(test.getAddedTimestamp(), ats);
         assertEquals(test.getDownloadedTimestamp(), dts);
         assertEquals(test.isDownloaded(), true);
+
+        File test2 = new File("test");
+
+        assertEquals(test2.isDownloaded(), false);
     }
 }
