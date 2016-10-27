@@ -134,16 +134,26 @@ public class DatabaseTest {
     @Test
     public void testDownloadUpdate() throws SQLException {
         String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/updateDatabase.db";
+
+        // cleanup previous run
+        java.io.File fileInstance = new java.io.File(System.getProperty("user.dir") + "/test/WhatboxSync/resources/updateDatabase.db");
+        if (fileInstance.exists()) {
+            fileInstance.delete();
+        }
+
+        // create new db
         Database test = new Database(file);
 
+        // add a file with null timestamp
         test.addFile(new File("test", 0L, new Timestamp(0L)));
 
+        // fetch the file we just added and test the timestamp
         File startFile = test.getFile(new File("test"));
         assertEquals(startFile.getDownloadedTimestamp(), null);
 
+        // set the timestamp, then fetch and test
         test.setDownloadedTimestamp(new File("test"));
         File testFile = test.getFile(new File("test"));
-
         assertEquals(testFile.getName(), "test");
         assertNotEquals(testFile.getDownloadedTimestamp(), null);
 

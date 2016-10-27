@@ -23,18 +23,10 @@
  *
  ****************************************************************************/
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Represents the application Configuration model.
  */
 public class Configuration {
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
     /**
      * The configured server address.
      */
@@ -176,7 +168,6 @@ public class Configuration {
         }
 
         if (err != "") {
-            logger.error("Invalid Configuration; " + err);
             return false;
         }
 

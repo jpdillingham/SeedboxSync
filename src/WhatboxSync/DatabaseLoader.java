@@ -24,10 +24,10 @@
  *
  ****************************************************************************/
 
+import java.sql.SQLException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
 
 /**
  * Loads the application Database from disk, or, in the absence of an existing
@@ -46,6 +46,12 @@ public class DatabaseLoader {
      * @throws SQLException Thrown if an exception is encountered while instantiating the databse.
      */
     public static Database load(String file) throws SQLException {
-        return new Database(file);
+        logger.debug("Attempting to initialize a new instance of Database from file '" + file + "'...");
+
+        Database retVal = new Database(file);
+
+        logger.debug("Instantiated successfully.");
+
+        return retVal;
     }
 }

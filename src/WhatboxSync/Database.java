@@ -27,8 +27,10 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -63,13 +65,17 @@ public class Database implements IDatabase {
         this.file = file;
 
         logger.info("Establishing database connection to '" + file + "'...");
-        createConnection();
-        logger.info("Connection established successfully.");
 
+        createConnection();
+
+        logger.info("Connection established successfully.");
         logger.info("Verifying schema...");
+
         if (!schemaExists()) {
             logger.info("Application schema is missing from '" + file + "'... creating...");
+
             initializeSchema();
+
             logger.info("Schema created successfully.");
         }
 
@@ -77,15 +83,47 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Closes the database connection.
-     * @throws SQLException Thrown if an exception is encountered while closing the connection.
+     * Retrieves the record matching the specified File.
+     * @param file The File to retrieve.
+     * @return The retrieved record.
+     * @throws SQLException Thrown if an exception is encountered while retrieving the record.
      */
-    public void close() throws SQLException {
-        connection.close();
+    public File getFile(File file) throws SQLException {
+        return getFile(file.getName());
+    }
+
+    /**
+     * Retrieves the record matching the specified name.
+     * @param fileName The name of the File to retrieve.
+     * @return The record matching the specified name.
+     * @throws SQLException Thrown if an exception is encountered while retrieving the record.
+     */
+    public File getFile(String fileName) throws SQLException {
+        logger.info("Fetching list of files from the database...");
+
+        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Files " +
+                "WHERE Name = '" + fileName + "'";
+
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery(query);
+
+        while (result.next()) {
+            String name = result.getString("Name");
+            Long size = result.getLong("Size");
+            Timestamp timestamp = result.getTimestamp("Timestamp");
+            Timestamp addedTimestamp = result.getTimestamp("AddedTimestamp");
+            Timestamp downloadedTimestamp = result.getTimestamp("DownloadedTimestamp");
+
+            return new File(name, size, timestamp, addedTimestamp, downloadedTimestamp);
+        }
+
+        return null;
     }
 
     /**
      * Gets the list of Files stored in the database.
+     * @return The list of Files.
+     * @throws SQLException Thrown if an exception is encountered while retrieving the list.
      */
     public List<File> getFiles() throws SQLException {
         logger.info("Fetching list of files from the database...");
@@ -113,6 +151,7 @@ public class Database implements IDatabase {
     /**
      * Adds the specified File to the database.
      * @param file The File to add.
+     * @throws SQLException Thrown if an exception is encountered while adding the record.
      */
     public void addFile(File file) throws SQLException {
         logger.info("Adding file '" + file.getName() + "' to database...");
@@ -140,9 +179,20 @@ public class Database implements IDatabase {
     }
 
     /**
+     * Sets the downloaded column of the specified File to the current timestamp, indicating that the file
+     * was successfully downloaded.
+     * @param file The File to update.
+     * @throws SQLException Thrown if an exception is encountered while updating the record.
+     */
+    public void setDownloadedTimestamp(File file) throws SQLException {
+        setDownloadedTimestamp(file.getName());
+    }
+
+    /**
      * Sets the downloaded column of the record matching the specified name to the current timestamp,
      * indicating that the file was successfully downloaded.
      * @param name The name of the File to update.
+     * @throws SQLException Thrown if an exception is encountered while updating the record.
      */
     public void setDownloadedTimestamp(String name) throws SQLException {
         logger.info("Updating download timestamp for file '" + name + "'...");
@@ -157,53 +207,17 @@ public class Database implements IDatabase {
     }
 
     /**
-     * Sets the downloaded column of the specified File to the current timestamp, indicating that the file
-     * was successfully downloaded.
-     * @param file The File to update.
+     * Closes the database connection.
+     * @throws SQLException Thrown if an exception is encountered while closing the connection.
      */
-    public void setDownloadedTimestamp(File file) throws SQLException {
-        setDownloadedTimestamp(file.getName());
-    }
-
-    /**
-     * Retrieves the record matching the specified name.
-     * @param fileName The name of the File to retrieve.
-     * @return The record matching the specified name.
-     */
-    public File getFile(String fileName) throws SQLException {
-        logger.info("Fetching list of files from the database...");
-
-        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Files " +
-                "WHERE Name = '" + fileName + "'";
-
-        Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery(query);
-
-        while (result.next()) {
-            String name = result.getString("Name");
-            Long size = result.getLong("Size");
-            Timestamp timestamp = result.getTimestamp("Timestamp");
-            Timestamp addedTimestamp = result.getTimestamp("AddedTimestamp");
-            Timestamp downloadedTimestamp = result.getTimestamp("DownloadedTimestamp");
-
-            return new File(name, size, timestamp, addedTimestamp, downloadedTimestamp);
-        }
-
-        return null;
-    }
-
-    /**
-     * Retrieves the record matching the specified File.
-     * @param file The File to retrieve.
-     * @return The retrieved record.
-     */
-    public File getFile(File file) throws SQLException {
-        return getFile(file.getName());
+    public void close() throws SQLException {
+        connection.close();
     }
 
     /**
      * Returns a value indicating whether the schema exists within the database.
      * @return A value indicating whether the schema exists within the database.
+     * @throws SQLException Thrown if an exception is encountered while querying the schema.
      */
     private Boolean schemaExists() throws SQLException {
         Boolean retVal = false;

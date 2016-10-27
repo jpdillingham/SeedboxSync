@@ -27,8 +27,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -50,6 +52,10 @@ public class ConfigurationLoader {
      * @throws ParseException Thrown if the file can't be deserialized to JSON.
      */
     public static Configuration load(String file) throws IOException, ParseException {
+        logger.debug("Attempting to initialize a new instance of Configuration from file '" + file + "'...");
+
+        Configuration retVal;
+
         if (!(new File(file)).exists()) {
             throw new FileNotFoundException("File not found: '" + file + "'");
         }
@@ -76,7 +82,11 @@ public class ConfigurationLoader {
         String remoteDirectory = fetch("remoteDirectory", jsonObject);
         String localDirectory = fetch("localDirectory", jsonObject);
 
-        return new Configuration(server, port, username, password, interval, remoteDirectory, localDirectory);
+        retVal = new Configuration(server, port, username, password, interval, remoteDirectory, localDirectory);
+
+        logger.debug("Instantiated successfully.");
+
+        return retVal;
     }
 
     /**

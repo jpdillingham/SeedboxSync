@@ -23,21 +23,64 @@
  *
  ****************************************************************************/
 
+import java.util.List;
+
 import java.sql.SQLException;
 
 /**
- * Defines the itnerface for Database objects.
+ * Defines the interface for Database objects.
  */
 public interface IDatabase {
     /**
-     * Closes the SQLite database connection.
-     * @throws SQLException Thrown if an exception is encountered while closing the connection.
+     * Retrieves the record matching the specified File.
+     * @param file The File to retrieve.
+     * @return The retrieved record.
+     * @throws SQLException Thrown if an exception is encountered while retrieving the record.
      */
-    void close() throws SQLException;
+    File getFile(File file) throws SQLException;
+
+    /**
+     * Retrieves the record matching the specified name.
+     * @param fileName The name of the File to retrieve.
+     * @return The record matching the specified name.
+     * @throws SQLException Thrown if an exception is encountered while retrieving the record.
+     */
+    File getFile(String fileName) throws SQLException;
+
+    /**
+     * Gets the list of Files stored in the database.
+     * @return The list of Files.
+     * @throws SQLException Thrown if an exception is encountered while retrieving the list.
+     */
+    List<File> getFiles() throws SQLException;
 
     /**
      * Adds the specified File to the database.
      * @param file The File to add.
+     * @throws SQLException Thrown if an exception is encountered while adding the record.
      */
     void addFile(File file) throws SQLException;
+
+    /**
+     * Sets the downloaded column of the specified File to the current timestamp, indicating that the file
+     * was successfully downloaded.
+     * @param file The File to update.
+     * @throws SQLException Thrown if an exception is encountered while updating the record.
+     */
+    void setDownloadedTimestamp(File file) throws SQLException;
+
+    /**
+     * Sets the downloaded column of the record matching the specified name to the current timestamp,
+     * indicating that the file was successfully downloaded.
+     * @param name The name of the File to update.
+     * @throws SQLException Thrown if an exception is encountered while updating the record.
+     */
+    void setDownloadedTimestamp(String name) throws SQLException;
+
+    /**
+     * Closes the database connection.
+     * @throws SQLException Thrown if an exception is encountered while closing the connection.
+     */
+    void close() throws SQLException;
+
 }
