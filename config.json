@@ -1,9 +1,0 @@
-{
-	"server": "sushi.whatbox.ca",
-	"port": 21,
-	"username": "jpdillingham",
-	"password": "Jyi98uas",
-	"interval": 60,
-	"remoteDirectory": "files",
-	"localDirectory": "localDirectory"
-}
