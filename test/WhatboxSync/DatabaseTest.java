@@ -25,15 +25,17 @@
 
 import java.sql.Timestamp;
 import java.util.List;
+
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -121,8 +123,9 @@ public class DatabaseTest {
         String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/duplicateAddDatabase.db";
         Database test = new Database(file);
 
-        test.addFile(new File("test", 0L, new Timestamp(0L)));
-        test.addFile(new File("test"));
+        test.addFile(new File("testduplicate", 0L, new Timestamp(0L)));
+
+        //test.addFile(new File("test"));
 
         (new java.io.File(file)).deleteOnExit();
     }

@@ -36,6 +36,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 /**
  * Represents the application Database.
@@ -58,7 +59,7 @@ public class Database implements IDatabase {
 
     /**
      * Initializes a new instance of the Database class with the specified file.
-     * @param file
+     * @param file The file from which the database is to be initialized.
      * @throws SQLException Thrown if the database can't be initialized.
      */
     public Database(String file) throws SQLException {
@@ -99,13 +100,18 @@ public class Database implements IDatabase {
      * @throws SQLException Thrown if an exception is encountered while retrieving the record.
      */
     public File getFile(String fileName) throws SQLException {
-        logger.info("Fetching list of files from the database...");
+        logger.debug("Fetching list of files from the database...");
 
         String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Files " +
-                "WHERE Name = '" + fileName + "'";
+                "WHERE Name = ?";
 
-        Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setString(1, fileName);
+
+        ResultSet result = statement.executeQuery();
+
+        logger.debug("Processing result set...");
 
         while (result.next()) {
             String name = result.getString("Name");
@@ -126,7 +132,7 @@ public class Database implements IDatabase {
      * @throws SQLException Thrown if an exception is encountered while retrieving the list.
      */
     public List<File> getFiles() throws SQLException {
-        logger.info("Fetching list of files from the database...");
+        logger.debug("Fetching list of files from the database...");
 
         List<File> retVal = new ArrayList<File>();
 
@@ -134,6 +140,8 @@ public class Database implements IDatabase {
 
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery(query);
+
+        logger.debug("Processing result set...");
 
         while (result.next()) {
             String name = result.getString("Name");
@@ -154,17 +162,21 @@ public class Database implements IDatabase {
      * @throws SQLException Thrown if an exception is encountered while adding the record.
      */
     public void addFile(File file) throws SQLException {
-        logger.info("Adding file '" + file.getName() + "' to database...");
+        logger.debug("Adding file '" + file.getName() + "' to database...");
 
-        String query = "INSERT INTO Files (Name, Size, Timestamp, AddedTimestamp)" +
-                " VALUES('" + file.getName() + "', " +
-                file.getSize() + ", '" + file.getTimestamp() + "', '" +
-                new Timestamp((new Date()).getTime()).toString() + "')";
+        String query = "INSERT INTO Files (Name, Size, Timestamp, AddedTimestamp) VALUES(?, ?, ?, ?)";
 
-        Statement statement = connection.createStatement();
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setString(1, file.getName());
+        statement.setLong(2, file.getSize());
+        statement.setTimestamp(3, file.getTimestamp());
+        statement.setTimestamp(4, new Timestamp((new Date()).getTime()));
 
         try {
-            statement.executeUpdate(query);
+            logger.debug("Executing update...");
+
+            statement.executeUpdate();
         }
         catch (SQLException ex) {
             if (ex.getErrorCode() == 19) {
@@ -195,14 +207,18 @@ public class Database implements IDatabase {
      * @throws SQLException Thrown if an exception is encountered while updating the record.
      */
     public void setDownloadedTimestamp(String name) throws SQLException {
-        logger.info("Updating download timestamp for file '" + name + "'...");
+        logger.debug("Updating download timestamp for file '" + name + "'...");
 
-        String query = "UPDATE Files SET DownloadedTimestamp = '"  +
-                new Timestamp((new Date()).getTime()).toString() + "' WHERE Name = '" +
-                name + "'";
+        String query = "UPDATE Files SET DownloadedTimestamp = ? WHERE Name = ?";
 
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(query);
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setTimestamp(1, new Timestamp((new Date()).getTime()));
+        statement.setString(2, name);
+
+        logger.debug("Executing update...");
+
+        statement.executeUpdate();
         statement.close();
     }
 
@@ -221,6 +237,7 @@ public class Database implements IDatabase {
      */
     private Boolean schemaExists() throws SQLException {
         Boolean retVal = false;
+
         String query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='Files'";
 
         Statement statement = connection.createStatement();
@@ -260,8 +277,10 @@ public class Database implements IDatabase {
      * @throws SQLException Thrown if an exception is encountered while establishing the connection.
      */
     private void createConnection() throws SQLException {
-        logger.info("Attempting to connect to database in '" + file + "'...");
+        logger.debug("Attempting to connect to database in '" + file + "'...");
+
         connection = DriverManager.getConnection("jdbc:sqlite:" + file);
-        logger.info("Database connection established.");
+
+        logger.debug("Database connection established.");
     }
 }
