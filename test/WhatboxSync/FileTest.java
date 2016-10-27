@@ -61,21 +61,31 @@ public class FileTest {
      */
     @Test
     public void testConstructor() {
+        // initialize timestamps for timestamp, addedTimestamp and downloadedTimestamp fields
         Timestamp ts = new Timestamp(0L);
         Timestamp ats = new Timestamp(1L);
         Timestamp dts = new Timestamp(2L);
 
+        // test complete constructor
         File test = new File("test", new Long(1), ts, ats, dts);
 
+        // test accessors
         assertEquals(test.getName(), "test");
         assertEquals(test.getSize(), new Long(1));
         assertEquals(test.getTimestamp(), ts);
         assertEquals(test.getAddedTimestamp(), ats);
         assertEquals(test.getDownloadedTimestamp(), dts);
         assertEquals(test.isDownloaded(), true);
+    }
 
+    /**
+     * Tests the truncated constructor.
+     */
+    @Test
+    public void testTruncatedConstructor() {
         File test2 = new File("test");
 
+        // ensure that the downloadedTimestamp field is initialized to false.
         assertEquals(test2.isDownloaded(), false);
     }
 }
