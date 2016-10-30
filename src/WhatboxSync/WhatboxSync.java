@@ -89,6 +89,7 @@ public class WhatboxSync {
                 } catch (Exception ex) {  }
             }
         }, 0, config.getInterval(), TimeUnit.SECONDS);
+
     }
 
     /**

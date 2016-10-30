@@ -65,7 +65,7 @@ public class Synchronizer implements ISynchronizer {
         for (FTPFile file : files) {
             try {
                 database.addFile(new File(directory + "/" + file.getName(), file.getSize(), new Timestamp(0L)));
-                server.download(directory + "/" + file.getName(), file.getName());
+                //server.download(directory + "/" + file.getName(), file.getName());
             }
             catch (SQLException ex) {
 
