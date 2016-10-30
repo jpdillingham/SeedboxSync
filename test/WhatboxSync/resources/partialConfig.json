@@ -2,6 +2,6 @@
 	"port": null,
 	"username": "username",
 	"password": "password",
-	"remoteDirectory": "remoteDirectory",
-	"localDirectory": "localDirectory"
+	"remoteDownloadDirectory": "remoteDownloadDirectory",
+	"localDownloadDirectory": "localDownloadDirectory"
 }

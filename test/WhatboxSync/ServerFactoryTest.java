@@ -63,7 +63,7 @@ public class ServerFactoryTest {
      */
     @Test
     public void testGoodConfig() {
-        Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local");
+        Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp");
         Server test = ServerFactory.createServer(config);
 
         assertEquals(test.getAddress(), "server");
@@ -77,7 +77,7 @@ public class ServerFactoryTest {
      */
     @Test(expected=RuntimeException.class)
     public void testBadConfig() {
-        Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local");
+        Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp");
         Server test = ServerFactory.createServer(config);
     }
 }

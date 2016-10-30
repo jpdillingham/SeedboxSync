@@ -79,8 +79,10 @@ public class ConfigurationLoaderTest {
         assertEquals(config.getUsername(), "username");
         assertEquals(config.getPassword(), "password");
         assertEquals(config.getInterval(), (Integer)1);
-        assertEquals(config.getRemoteDirectory(), "remoteDirectory");
-        assertEquals(config.getLocalDirectory(), "localDirectory");
+        assertEquals(config.getRemoteDownloadDirectory(), "remoteDownloadDirectory");
+        assertEquals(config.getLocalDownloadDirectory(), "localDownloadDirectory");
+        assertEquals(config.getRemoteUploadDirectory(), "remoteUploadDirectory");
+        assertEquals(config.getLocalUploadDirectory(), "localUploadDirectory");
     }
 
     /**

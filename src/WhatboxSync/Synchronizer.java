@@ -44,7 +44,7 @@ public class Synchronizer implements ISynchronizer {
             }
         }
 
-        list(config.getRemoteDirectory());
+        list(config.getRemoteDownloadDirectory());
     }
 
 

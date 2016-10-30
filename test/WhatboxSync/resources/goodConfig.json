@@ -4,6 +4,8 @@
 	"username": "username",
 	"password": "password",
 	"interval": 1,
-	"remoteDirectory": "remoteDirectory",
-	"localDirectory": "localDirectory"
+	"remoteDownloadDirectory": "remoteDownloadDirectory",
+	"localDownloadDirectory": "localDownloadDirectory",
+	"remoteUploadDirectory": "remoteUploadDirectory",
+	"localUploadDirectory": "localUploadDirectory"
 }

@@ -79,10 +79,12 @@ public class ConfigurationLoader {
 
         String password = fetch("password", jsonObject);
         Integer interval = ((Long)fetch("interval", jsonObject)).intValue();
-        String remoteDirectory = fetch("remoteDirectory", jsonObject);
-        String localDirectory = fetch("localDirectory", jsonObject);
+        String remoteDownloadDirectory = fetch("remoteDownloadDirectory", jsonObject);
+        String localDownloadDirectory = fetch("localDownloadDirectory", jsonObject);
+        String remoteUploadDirectory = fetch("remoteUploadDirectory", jsonObject);
+        String localUploadDirectory = fetch("localUploadDirectory", jsonObject);
 
-        retVal = new Configuration(server, port, username, password, interval, remoteDirectory, localDirectory);
+        retVal = new Configuration(server, port, username, password, interval, remoteDownloadDirectory, localDownloadDirectory, remoteUploadDirectory, localUploadDirectory);
 
         logger.debug("Instantiated successfully.");
 
