@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.io.File;
 import org.apache.commons.net.ftp.FTPFile;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * Defines the interface for Server objects.
@@ -84,20 +85,39 @@ interface IServer {
 
     /**
      * Downloads the specified file.
-     * @param file The file to download.
+     * @param sourceFile The filename of the file to download.
      * @param destinationFile The file to which the downloaded file should be saved.
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    Future<Boolean> download(String file, String destinationFile) throws Exception;
+    Future<Boolean> download(String sourceFile, String destinationFile) throws Exception;
 
     /**
      * Downloads the specified file.
-     * @param file The file to download.
+     * @param sourceFile The file to download.
      * @param destinationFile The file to which the downloaded file should be saved.
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    Future<Boolean> download(String file, File destinationFile) throws Exception;
+    Future<Boolean> download(String sourceFile, File destinationFile) throws Exception;
 
+    /**
+     * Uploads the specified file.
+     * @param sourceFile The filename of the file to upload.
+     * @param destinationFile The destination filename.
+     * @return A value indicating whether the upload completed successfully.
+     * @throws Exception Thrown if an exception is encountered during the upload.
+     */
+    @Async
+    Future<Boolean> upload(String sourceFile, String destinationFile) throws Exception;
+
+    /**
+     * Uploads the specified file.
+     * @param sourceFile The file to upload.
+     * @param destinationFile The destination filename.
+     * @return A value indicating whether the upload completed successfully.
+     * @throws Exception Thrown if an exception is encountered during the upload.
+     */
+    @Async
+    Future<Boolean> upload(File sourceFile, String destinationFile) throws Exception;
 }

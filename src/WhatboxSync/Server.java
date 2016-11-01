@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.net.ftp.FTPClient;
@@ -184,26 +185,58 @@ public class Server implements IServer {
 
     /**
      * Downloads the specified file.
-     * @param file The file to download.
+     * @param sourceFile The filename of the file to download.
      * @param destinationFile The file to which the downloaded file should be saved.
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
     @Async
-    public Future<Boolean> download(String file, String destinationFile) throws Exception {
-        server.retrieveFile(file, new FileOutputStream(destinationFile));
+    public Future<Boolean> download(String sourceFile, String destinationFile) throws Exception {
+        server.retrieveFile(sourceFile, new FileOutputStream(destinationFile));
+        // TODO: make this actually asynchronous
         return new AsyncResult<Boolean>(true);
     }
 
     /**
      * Downloads the specified file.
-     * @param file The file to download.
+     * @param sourceFile The file to download.
      * @param destinationFile The file to which the downloaded file should be saved.
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
     @Async
-    public Future<Boolean> download(String file, File destinationFile) throws Exception {
-        return download(file, destinationFile.getAbsolutePath());
+    public Future<Boolean> download(String sourceFile, File destinationFile) throws Exception {
+        return download(sourceFile, destinationFile.getAbsolutePath());
+    }
+
+    /**
+     * Uploads the specified file.
+     * @param sourceFile The filename of the file to upload.
+     * @param destinationFile The destination filename.
+     * @return A value indicating whether the upload completed successfully.
+     * @throws Exception Thrown if an exception is encountered during the upload.
+     */
+    @Async
+    public Future<Boolean> upload(String sourceFile, String destinationFile) throws Exception {
+        FileInputStream input = new FileInputStream(sourceFile);
+
+        server.appendFile(destinationFile, input);
+
+        input.close();
+
+        // TODO: make this actually asynchronous
+        return new AsyncResult<Boolean>(true);
+    }
+
+    /**
+     * Uploads the specified file.
+     * @param sourceFile The file to upload.
+     * @param destinationFile The destination filename.
+     * @return A value indicating whether the upload completed successfully.
+     * @throws Exception Thrown if an exception is encountered during the upload.
+     */
+    @Async
+    public Future<Boolean> upload(File sourceFile, String destinationFile) throws Exception {
+        return upload(sourceFile.getAbsolutePath(), destinationFile);
     }
 }

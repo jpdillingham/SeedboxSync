@@ -1,8 +1,8 @@
 /****************************************************************************
  *
- * Uploader.java
+ * Processor.java
  *
- * Coordinates the uploading of files to the remote FTP server.
+ * Coordinates the uploading of files.
  *
  ***************************************************************************
  *
@@ -23,48 +23,101 @@
  *
  ****************************************************************************/
 
-import java.util.Collections;
-import java.util.Queue;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Coordinates the uploading of files to the remote FTP server.
+ * Coordinates the uploading of files.
  */
-public class Uploader {
-    private IServer server;
-    private Queue<String> queue;
+public class Uploader extends Processor {
+    /**
+     * The logger for this class.
+     */
+    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
-     * Initializes a new instance of the Uploader class.
-     * @param server The IServer instance providing the upload functionality.
+     * Initializes a new instance of the Uploader class with the specified server and directories.
+     * @param server
+     * @param localDirectory
+     * @param remoteDirectory
      */
-    public Uploader(IServer server) {
-        this.server = server;
-        this.queue = new LinkedList<String>();
+    public Uploader(IServer server, String localDirectory, String remoteDirectory) {
+        super(server, localDirectory, remoteDirectory);
     }
 
     /**
-     * Adds the specified file to the queue.
-     * @param file The file to add.
+     * Scans the local upload directory and enqueues new files, then uploads the next file in the queue, if applicable.
      */
-    public void enqueue(String file) {
-        queue.add(file);
+    public void process()  {
+        try {
+            scanDirectory();
+            upload();
+        }
+        catch (Exception ex) {
+            logger.error("Error executing Uploader task: " + ex.toString());
+        }
     }
 
     /**
-     * Removes the specified file from the queue.
-     * @param file The file to remove.
+     * Scans the local upload directory for new files and adds them to the queue if not already present.
      */
-    public void dequeue(String file) {
-        queue.remove(file);
+    private void scanDirectory() {
+        File dir = new File(localDirectory);
+
+        logger.info("Scanning local upload directory '" + localDirectory + "'...");
+
+        if (!dir.exists()) {
+            logger.warn("Directory '" + localDirectory + "' does not exist.  Aborting scan.");
+        }
+        else {
+            for (java.io.File file : dir.listFiles()) {
+                if (file.isFile() && (!file.getName().contains("[Uploaded]"))) {
+                    if (!queue.contains(file.getAbsolutePath())) {
+                        logger.info("Adding file '" + file.getAbsolutePath() + "' to the uploader queue.");
+                        enqueue(file.getAbsolutePath());
+                    }
+                }
+            }
+        }
+
+        logger.info("Scan complete.");
     }
 
     /**
-     * Gets the list of queued files to be uploaded.
-     * @return The list of queued files to be uploaded.
+     * Uploads the next file in the queue, if a transfer is not already in progress.
      */
-    public List<String> getQueue() {
-        return Collections.unmodifiableList((List)queue);
+    private void upload() throws Exception {
+        if (transferInProgress) {
+            logger.debug("Upload is already in progress.  Skipping.");
+        }
+        else {
+            if (!queue.isEmpty()) {
+                transferInProgress = true;
+
+                File file = new File(queue.peek());
+
+                logger.info("Uploading file '" + file.getName() + "' to remote directory '" + remoteDirectory + "'...");
+
+                server.upload(file, remoteDirectory + "/" + file.getName());
+
+                logger.info("Upload complete.");
+
+                File newName = new File(file.getParent() + "/[Uploaded] " + file.getName());
+
+                logger.info("Renaming file to '" + newName.getAbsolutePath() + "'...");
+
+                if (file.renameTo(newName)) {
+                    logger.info("Rename successful.  Removing file from the queue...");
+                    queue.remove(file.getAbsolutePath());
+                } else {
+                    logger.warn("Rename failed.  The file will remain in the queue.");
+                }
+
+                logger.info("Upload complete.");
+                transferInProgress = false;
+            }
+        }
     }
 }

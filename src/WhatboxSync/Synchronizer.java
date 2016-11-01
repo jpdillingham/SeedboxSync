@@ -4,6 +4,9 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.List;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by JP on 10/8/2016.
@@ -22,6 +25,8 @@ public class Synchronizer implements ISynchronizer {
     private IDatabase database;
 
     private Boolean synchronizing;
+
+    private Uploader uploader;
 
     /** Initializes a new instance of the Synchronizer class with the specified Configuration.
      * @param config The Configuration instance with which the Synchronizer should be configured. */
@@ -44,9 +49,19 @@ public class Synchronizer implements ISynchronizer {
             }
         }
 
-        list(config.getRemoteDownloadDirectory());
-    }
+        //list(config.getRemoteDownloadDirectory());
 
+        uploader = new Uploader(server, config.getLocalUploadDirectory(), config.getRemoteUploadDirectory());
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                uploader.process();
+            }
+        }, 0, 5000);
+    }
 
     private void list(String directory) throws Exception {
         logger.info("Listing files for directory '" + directory + "'...");
