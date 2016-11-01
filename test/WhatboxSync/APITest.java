@@ -53,6 +53,14 @@ public class APITest {
     }
 
     /**
+     * Tests the constructor.
+     */
+    @Test
+    public void testConstructor() {
+        API test = new API();
+    }
+
+    /**
      * Tests the configure method.
      */
     @Test

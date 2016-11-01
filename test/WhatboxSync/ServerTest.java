@@ -196,4 +196,16 @@ public class ServerTest {
         destinationFile1.deleteOnExit();
         destinationFile2.deleteOnExit();
     }
+
+    @Test
+    public void testUpload() throws Exception {
+        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+
+        logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");
+        test.connect();
+
+        File file = new File("test/WhatboxSync/resources/badConfig.json");
+
+        test.upload(file, "upload/test_" + System.currentTimeMillis());
+    }
 }
