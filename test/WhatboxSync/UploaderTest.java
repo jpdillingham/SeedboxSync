@@ -56,9 +56,24 @@ public class UploaderTest {
      * Tests the constructor.
      */
     @Test
-    public void constructorTest() {
+    public void testConstructor() {
         IServer server = new MockServer();
 
         Uploader uploader = new Uploader(server, "local", "remote");
+    }
+
+    /**
+     * Tests the queue.
+     */
+    @Test
+    public void testQueue() {
+        IServer server = new MockServer();
+
+        Uploader test = new Uploader(server, "local", "remote");
+
+        test.enqueue("hello world!");
+        test.enqueue("hello world!");
+        test.dequeue("hello world!");
+        test.dequeue("hello world!");
     }
 }

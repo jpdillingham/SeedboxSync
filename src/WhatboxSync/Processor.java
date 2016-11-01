@@ -101,14 +101,6 @@ public abstract class Processor {
     }
 
     /**
-     * Gets a value indicating whether a transfer is currently in progress.
-     * @return A value indicating whether a transfer is currently in progress.
-     */
-    public Boolean transferInProgress() {
-        return transferInProgress();
-    }
-
-    /**
      * Processes.
      */
     public abstract void process();
