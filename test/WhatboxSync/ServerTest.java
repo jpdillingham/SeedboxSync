@@ -68,7 +68,7 @@ public class ServerTest {
      * Constructs a new Configuration using the three-tuple constructor.
      */
     @Test
-    public void TestConstructorOne() {
+    public void testConstructorOne() {
         Server test = new Server("address", "user", "password");
 
         assertEquals(test.getAddress(), "address");
@@ -83,7 +83,7 @@ public class ServerTest {
      * Constructs a new Configuration using the four-tuple constructor.
      * */
     @Test
-    public void TestConstructorTwo() {
+    public void testConstructorTwo() {
         Server test = new Server("address", "user", "password", 1);
 
         assertEquals(test.getAddress(), "address");
@@ -97,7 +97,7 @@ public class ServerTest {
      * @throws Exception
      */
     @Test(expected=Exception.class)
-    public void TestBadConnect() throws Exception {
+    public void testBadConnect() throws Exception {
         Server test = new Server("this can't be the name of a server.", "","");
 
         test.connect();
@@ -110,7 +110,7 @@ public class ServerTest {
      * @throws Exception
      */
     @Test
-    public void TestGoodConnect() throws Exception {
+    public void testGoodConnect() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
         test.connect();
@@ -123,7 +123,7 @@ public class ServerTest {
      * @throws Exception
      */
     @Test
-    public void TestDisconnect() throws Exception {
+    public void testDisconnect() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
         test.connect();
@@ -140,7 +140,7 @@ public class ServerTest {
      * @throws Exception
      */
     @Test
-    public void TestList() throws Exception {
+    public void testList() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
         test.connect();
 
@@ -163,7 +163,7 @@ public class ServerTest {
      * @throws Exception
      */
     @Test
-    public void TestDownload() throws Exception {
+    public void testDownload() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
         logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");

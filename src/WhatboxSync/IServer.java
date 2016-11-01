@@ -32,7 +32,7 @@ import org.springframework.scheduling.annotation.Async;
 /**
  * Defines the interface for Server objects.
  */
-interface IServer {
+public interface IServer {
     /**
      * Gets the Server address.
      * @return The Server address.

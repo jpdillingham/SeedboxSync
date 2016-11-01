@@ -23,7 +23,7 @@
  *
  ****************************************************************************/
 
-import org.apache.commons.net.ftp.FTPFile;
+import Mocks.MockServer;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -31,12 +31,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests the Uploader class.

@@ -1,21 +1,14 @@
 import org.apache.commons.net.ftp.FTPFile;
-import org.springframework.scheduling.annotation.Async;
 
-import java.io.*;
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
-import org.springframework.scheduling.annotation.Async;
+
 import org.springframework.scheduling.annotation.AsyncResult;
 
-/**
- * Created by JP on 10/31/2016.
- */
 public class MockServer implements IServer {
-    public MockServer() {
-
-    }
+    public MockServer() { }
 
     public String getAddress() {
         return "address";
