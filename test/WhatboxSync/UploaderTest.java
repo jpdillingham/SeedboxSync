@@ -97,6 +97,10 @@ public class UploaderTest {
         test.dequeue("hello world!");
     }
 
+    /**
+     * Tests a typical process() call
+     * @throws IOException
+     */
     @Test
     public void testProcess() throws IOException {
         File uploadFolder = folder.newFolder("upload");
@@ -117,5 +121,55 @@ public class UploaderTest {
         assertEquals(uploadFile.exists(), false);
 
         assertEquals(new File(uploadFile.getParent() + "/[Uploaded] file.txt").exists(), true);
+    }
+
+    /**
+     * Tests process() with a known bad upload folder.
+     * @throws IOException
+     */
+    @Test
+    public void testMissingDirProcess() throws IOException {
+        IServer server = mock(IServer.class);
+        Uploader uploader = new Uploader(server, "bad folder", "");
+
+        uploader.enqueue("test");
+
+        uploader.process();
+    }
+
+    /**
+     * Tests process() when a transfer is already in process.
+     * @throws IOException
+     */
+    @Test
+    public void testInProgressProcess() throws IOException {
+        IServer server = mock(IServer.class);
+        Uploader uploader = new Uploader(server, "folder" ,"");
+
+        uploader.enqueue("test");
+        assertEquals(uploader.getQueue().size(), 1);
+
+        uploader.transferInProgress = true;
+        uploader.process();
+
+        // assert that the queue still contains our file
+        assertEquals(uploader.getQueue().size(), 1);
+    }
+
+    /**
+     * Tests process() under all possible combinations of file/folders.
+     * @throws IOException
+     */
+    @Test
+    public void testAllFolderPossibilitiesProcess() throws IOException {
+        File uploadFolder = folder.newFolder("upload");
+        File childFolder = folder.newFolder("upload","test");
+        File file = folder.newFile("upload/file.txt");
+        File uploadedFile = folder.newFile("upload/[Uploaded] file2.txt");
+
+        IServer server = mock(IServer.class);
+        Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+
+        uploader.process();
     }
 }

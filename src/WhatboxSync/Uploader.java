@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * Processor.java
+ * Uploader.java
  *
  * Coordinates the uploading of files.
  *
