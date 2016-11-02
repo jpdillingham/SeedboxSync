@@ -103,5 +103,5 @@ public abstract class Processor {
     /**
      * Processes.
      */
-    public abstract void process();
+    public abstract void process() throws Exception;
 }

@@ -58,7 +58,12 @@ public class Synchronizer implements ISynchronizer {
 
             @Override
             public void run() {
-                uploader.process();
+                try {
+                    uploader.process();
+                }
+                catch (Exception ex) {
+                    logger.error("Exception in Uploader: " + ex.getMessage());
+                }
             }
         }, 0, 5000);
     }

@@ -50,14 +50,9 @@ public class Uploader extends Processor {
     /**
      * Scans the local upload directory and enqueues new files, then uploads the next file in the queue, if applicable.
      */
-    public void process()  {
-        try {
-            scanDirectory();
-            upload();
-        }
-        catch (Exception ex) {
-            logger.error("Error executing Uploader task: " + ex.toString());
-        }
+    public void process() throws Exception {
+        scanDirectory();
+        upload();
     }
 
     /**
@@ -111,7 +106,8 @@ public class Uploader extends Processor {
                 if (file.renameTo(newName)) {
                     logger.info("Rename successful.  Removing file from the queue...");
                     queue.remove(file.getAbsolutePath());
-                } else {
+                }
+                else {
                     logger.warn("Rename failed.  The file will remain in the queue.");
                 }
 

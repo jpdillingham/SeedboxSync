@@ -33,6 +33,7 @@ public class API {
      * Configures the API.
      */
     public static void configure() {
+        // TODO: implement this
         get("/hello", (request, response) -> "Hello World!");
     }
 }

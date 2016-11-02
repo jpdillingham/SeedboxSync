@@ -102,7 +102,7 @@ public class UploaderTest {
      * @throws IOException
      */
     @Test
-    public void testProcess() throws IOException {
+    public void testProcess() throws Exception {
         File uploadFolder = folder.newFolder("upload");
         File uploadFile = folder.newFile("upload/file.txt");
 
@@ -128,7 +128,7 @@ public class UploaderTest {
      * @throws IOException
      */
     @Test
-    public void testMissingDirProcess() throws IOException {
+    public void testMissingDirProcess() throws Exception {
         IServer server = mock(IServer.class);
         Uploader uploader = new Uploader(server, "bad folder", "");
 
@@ -142,7 +142,7 @@ public class UploaderTest {
      * @throws IOException
      */
     @Test
-    public void testInProgressProcess() throws IOException {
+    public void testInProgressProcess() throws Exception {
         IServer server = mock(IServer.class);
         Uploader uploader = new Uploader(server, "folder" ,"");
 
@@ -161,7 +161,7 @@ public class UploaderTest {
      * @throws IOException
      */
     @Test
-    public void testAllFolderPossibilitiesProcess() throws IOException {
+    public void testAllFolderPossibilitiesProcess() throws Exception {
         File uploadFolder = folder.newFolder("upload");
         File childFolder = folder.newFolder("upload","test");
         File file = folder.newFile("upload/file.txt");
@@ -178,7 +178,7 @@ public class UploaderTest {
      * @throws IOException
      */
     @Test
-    public void testEmptyQueueProcess() throws IOException {
+    public void testEmptyQueueProcess() throws Exception {
         File uploadFolder = folder.newFolder("upload");
 
         IServer server = mock(IServer.class);
