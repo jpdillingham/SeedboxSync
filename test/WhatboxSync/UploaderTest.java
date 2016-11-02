@@ -172,4 +172,20 @@ public class UploaderTest {
 
         uploader.process();
     }
+
+    /**
+     * Tests process() with an empty queue.
+     * @throws IOException
+     */
+    @Test
+    public void testEmptyQueueProcess() throws IOException {
+        File uploadFolder = folder.newFolder("upload");
+
+        IServer server = mock(IServer.class);
+        Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+
+        // assert that the queue is empty
+        assertEquals(uploader.getQueue().size(), 0);
+        uploader.process();
+    }
 }
