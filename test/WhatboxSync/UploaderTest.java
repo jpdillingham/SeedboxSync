@@ -31,6 +31,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 /**
  * Tests the Uploader class.
  */
@@ -57,7 +60,7 @@ public class UploaderTest {
      */
     @Test
     public void testConstructor() {
-        IServer server = new MockServer();
+        IServer server = mock(IServer.class);
 
         Uploader uploader = new Uploader(server, "local", "remote");
     }
@@ -67,13 +70,23 @@ public class UploaderTest {
      */
     @Test
     public void testQueue() {
-        IServer server = new MockServer();
+        IServer server = mock(IServer.class);
 
         Uploader test = new Uploader(server, "local", "remote");
 
+        // enqueue a string and confirm the size
         test.enqueue("hello world!");
+        assertEquals(test.getQueue().size(), 1);
+
+        // try to enqueue the same string.  it should be discarded.
         test.enqueue("hello world!");
+        assertEquals(test.getQueue().size(), 1);
+
+        // remove the string we enqueued
         test.dequeue("hello world!");
+        assertEquals(test.getQueue().size(), 0);
+
+        // try to remove the same string.  it shouldn't raise an error.
         test.dequeue("hello world!");
     }
 }
