@@ -23,11 +23,15 @@
  *
  ****************************************************************************/
 
+import java.io.IOException;
+import java.io.File;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +46,9 @@ public class UploaderTest {
      * The logger for this class.
      */
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * Configure the logger.
@@ -88,5 +95,27 @@ public class UploaderTest {
 
         // try to remove the same string.  it shouldn't raise an error.
         test.dequeue("hello world!");
+    }
+
+    @Test
+    public void testProcess() throws IOException {
+        File uploadFolder = folder.newFolder("upload");
+        File uploadFile = folder.newFile("upload/file.txt");
+
+        IServer server = mock(IServer.class);
+        Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+
+        uploader.enqueue(uploadFile.getAbsolutePath());
+
+        uploader.process();
+
+        // assert that the file was removed from the queue
+        assertEquals(uploader.getQueue().size(), 0);
+
+        // assert that the original file is now missing, and that a file with
+        // [Uploaded] prepended to the name exists.
+        assertEquals(uploadFile.exists(), false);
+
+        assertEquals(new File(uploadFile.getParent() + "/[Uploaded] file.txt").exists(), true);
     }
 }
