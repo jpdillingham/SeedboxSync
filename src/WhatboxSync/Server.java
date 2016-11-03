@@ -29,10 +29,15 @@ import java.util.concurrent.Future;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.io.CopyStreamAdapter;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 
@@ -76,6 +81,36 @@ public class Server implements IServer {
     private String password;
 
     /**
+     * The currently downloading file.
+     */
+    private String currentDownload;
+
+    /**
+     * The size of the currently downloading file, in bytes.
+     */
+    private Long currentDownloadSize;
+
+    /**
+     * The percentage of completion of the currently downloading file.
+     */
+    private Double currentDownloadPercent;
+
+    /**
+     * The time of the last received progress update
+     */
+    private Long lastProgressUpdate;
+
+    /**
+     * The total progress of the current download at the last check.
+     */
+    private Long lastProgressTotal;
+
+    /**
+     * The interval between progress checks, in nanoseconds.
+     */
+    private Long timeBetweenUpdates = 10000000000L;
+
+    /**
      * Initializes a new instance of the Server class with the specified IP address, username and password.
      * @param address The Server address.
      * @param username The username to use when connecting to the Server.
@@ -100,6 +135,8 @@ public class Server implements IServer {
         this.port = port;
 
         this.server = new FTPClient();
+
+        configureStreamListener();
     }
 
     /**
@@ -134,16 +171,34 @@ public class Server implements IServer {
         return port;
     }
 
-     /**
-      * Opens the Server connection using the specified IP address and the default port.
-      * @throws Exception Thrown if an exception is encountered during the connect or login operations.
-      */
+    /**
+     * Opens the Server connection using the specified IP address and the default port.
+     * @throws Exception Thrown if an exception is encountered during the connect or login operations.
+     */
     public void connect() throws Exception {
-        logger.debug("Connecting to '" + address + "'...");
+        logger.info("Connecting to '" + address + "'...");
         server.connect(address, port);
 
-        logger.debug("Logging in with credentials '" + username + "', '<hidden>'");
+        logger.info("Logging in with credentials '" + username + "', '<hidden>'");
         server.login(username, password);
+
+        logger.info("Configuring connection...");
+        server.setFileType(FTP.BINARY_FILE_TYPE, FTP.BINARY_FILE_TYPE);
+        server.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+
+        logger.info("Connection established.");
+    }
+
+    /**
+     * Restablishes the Server connection.
+     * @throws Exception Thrown if an exception is encountered during the reconnect.
+     */
+    public void reconnect() throws Exception {
+        if (isConnected()) {
+            disconnect();
+        }
+        logger.info("Connection to server lost.  Reconnecting...");
+        connect();
     }
 
     /**
@@ -151,7 +206,7 @@ public class Server implements IServer {
      * @throws Exception Thrown if an exception is encountered during the disconnect operation.
      */
     public void disconnect() throws Exception {
-        logger.debug("Disconnecting from '" + address + "'...");
+        logger.info("Disconnecting from '" + address + "'...");
         server.disconnect();
     }
 
@@ -170,6 +225,10 @@ public class Server implements IServer {
      * @throws Exception Thrown if an exception is encountered during the listFiles operation.
      */
     public List<FTPFile> list(String directory) throws Exception {
+        if (!isConnected()) {
+            reconnect();
+        }
+
         List<FTPFile> retVal = new ArrayList<FTPFile>();
 
         logger.debug("Fetching file list from '" + directory + "'...");
@@ -191,8 +250,27 @@ public class Server implements IServer {
      * @throws Exception Thrown if an exception is encountered during the download.
      */
     @Async
-    public Future<Boolean> download(String sourceFile, String destinationFile) throws Exception {
-        server.retrieveFile(sourceFile, new FileOutputStream(destinationFile));
+    public Future<Boolean> download(String sourceFile, String destinationFile, Long size) throws Exception {
+        if (!isConnected()) {
+            reconnect();
+        }
+
+        File file = new File(sourceFile);
+        currentDownload = file.getName();
+        currentDownloadSize = size;
+        currentDownloadPercent = 0.0;
+
+        lastProgressUpdate = System.nanoTime();
+        lastProgressTotal = 0L;
+
+        logger.info("Retrieving file " + sourceFile);
+
+        FileOutputStream out = new FileOutputStream(destinationFile);
+        server.retrieveFile(sourceFile, out);
+
+        logger.info("Transfer complete.");
+        out.close();
+
         // TODO: make this actually asynchronous
         return new AsyncResult<Boolean>(true);
     }
@@ -205,8 +283,8 @@ public class Server implements IServer {
      * @throws Exception Thrown if an exception is encountered during the download.
      */
     @Async
-    public Future<Boolean> download(String sourceFile, File destinationFile) throws Exception {
-        return download(sourceFile, destinationFile.getAbsolutePath());
+    public Future<Boolean> download(String sourceFile, File destinationFile, Long size) throws Exception {
+        return download(sourceFile, destinationFile.getAbsolutePath(), size);
     }
 
     /**
@@ -218,6 +296,10 @@ public class Server implements IServer {
      */
     @Async
     public Future<Boolean> upload(String sourceFile, String destinationFile) throws Exception {
+        if (!isConnected()) {
+            reconnect();
+        }
+
         FileInputStream input = new FileInputStream(sourceFile);
 
         server.appendFile(destinationFile, input);
@@ -238,5 +320,39 @@ public class Server implements IServer {
     @Async
     public Future<Boolean> upload(File sourceFile, String destinationFile) throws Exception {
         return upload(sourceFile.getAbsolutePath(), destinationFile);
+    }
+
+    /**
+     * Configures and attaches a listener to the server's copy stream, so that downloads can be monitored
+     * for progress.
+     */
+    private void configureStreamListener() {
+        CopyStreamAdapter streamListener = new CopyStreamAdapter() {
+            @Override
+            public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize) {
+                Double currentDownloadPercent = totalBytesTransferred / currentDownloadSize.doubleValue();
+
+                if (System.nanoTime() - lastProgressUpdate >= timeBetweenUpdates) {
+                    // calculate the number of seconds since the last update
+                    Long timeSinceLastUpdate = (System.nanoTime() - lastProgressUpdate) / 1000000000;
+                    // calculate the number of bytes transferred since the last update
+                    Long bytesSinceLastUpdate = totalBytesTransferred - lastProgressTotal;
+                    Double bytesPerSecond = bytesSinceLastUpdate / timeSinceLastUpdate.doubleValue();
+
+                    lastProgressUpdate = System.nanoTime();
+                    lastProgressTotal = totalBytesTransferred;
+
+                    logger.info("Downloading '" + currentDownload + "'; " +
+                            totalBytesTransferred / 1024 / 1024 + " of " + currentDownloadSize / 1024 / 1024 +
+                            " MB (" + String.format("%.2f", currentDownloadPercent * 100) + "%), " +
+                            (bytesPerSecond / 1024 / 1024) + " MB/sec"
+
+                    );
+                }
+            }
+
+        };
+
+        server.setCopyStreamListener(streamListener);
     }
 }

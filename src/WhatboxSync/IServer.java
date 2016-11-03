@@ -64,6 +64,12 @@ public interface IServer {
     void connect() throws Exception;
 
     /**
+     * Restablishes the Server connection.
+     * @throws Exception Thrown if an exception is encountered during the reconnect.
+     */
+    void reconnect() throws Exception;
+
+    /**
      * Closes the Server connection.
      * @throws Exception Thrown if an exception is encountered during the disconnect operation.
      */
@@ -87,19 +93,21 @@ public interface IServer {
      * Downloads the specified file.
      * @param sourceFile The filename of the file to download.
      * @param destinationFile The file to which the downloaded file should be saved.
+     * @param size The size of the file in bytes.
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    Future<Boolean> download(String sourceFile, String destinationFile) throws Exception;
+    Future<Boolean> download(String sourceFile, String destinationFile, Long size) throws Exception;
 
     /**
      * Downloads the specified file.
      * @param sourceFile The file to download.
      * @param destinationFile The file to which the downloaded file should be saved.
+     * @param size The size of the file in bytes.
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    Future<Boolean> download(String sourceFile, File destinationFile) throws Exception;
+    Future<Boolean> download(String sourceFile, File destinationFile, Long size) throws Exception;
 
     /**
      * Uploads the specified file.

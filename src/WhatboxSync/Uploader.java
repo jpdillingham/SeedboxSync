@@ -82,6 +82,7 @@ public class Uploader extends Processor {
 
     /**
      * Uploads the next file in the queue, if a transfer is not already in progress.
+     * @throws Exception Thrown if an exception is encountered during the upload.
      */
     private void upload() throws Exception {
         if (transferInProgress) {
@@ -97,7 +98,7 @@ public class Uploader extends Processor {
 
                 server.upload(file, remoteDirectory + "/" + file.getName());
 
-                logger.info("Upload complete.");
+                logger.info("Transfer complete.");
 
                 File newName = new File(file.getParent() + "/[Uploaded] " + file.getName());
 

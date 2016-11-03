@@ -174,8 +174,8 @@ public class ServerTest {
 
         logger.info("Downloading files '1KB.zip' and '512KB.zip'");
 
-        Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName());
-        Future<Boolean> download2 = test.download("512KB.zip", destinationFile2);
+        Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 1L);
+        Future<Boolean> download2 = test.download("512KB.zip", destinationFile2, 1L);
 
         // wait for the download to complete
         while (!download1.isDone() && !download2.isDone()) {

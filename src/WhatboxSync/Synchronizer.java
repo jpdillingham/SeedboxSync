@@ -28,6 +28,8 @@ public class Synchronizer implements ISynchronizer {
 
     private Uploader uploader;
 
+    private Downloader downloader;
+
     /** Initializes a new instance of the Synchronizer class with the specified Configuration.
      * @param config The Configuration instance with which the Synchronizer should be configured. */
     public Synchronizer(Configuration config, IServer server, IDatabase database) {
@@ -49,9 +51,8 @@ public class Synchronizer implements ISynchronizer {
             }
         }
 
-        //list(config.getRemoteDownloadDirectory());
-
         uploader = new Uploader(server, config.getLocalUploadDirectory(), config.getRemoteUploadDirectory());
+        downloader = new Downloader(server, config.getLocalDownloadDirectory(), config.getRemoteDownloadDirectory(), database);
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -64,37 +65,14 @@ public class Synchronizer implements ISynchronizer {
                 catch (Exception ex) {
                     logger.error("Exception in Uploader: " + ex.getMessage());
                 }
+
+                try {
+                    downloader.process();
+                }
+                catch (Exception ex) {
+                    logger.error("Exception in Downloader: " + ex.getMessage());
+                }
             }
         }, 0, 5000);
-    }
-
-    private void list(String directory) throws Exception {
-        logger.info("Listing files for directory '" + directory + "'...");
-
-        List<FTPFile> files;
-
-        try {
-            files = server.list(directory);
-        }
-        catch (Exception ex)
-        {
-            logger.error("Exception thrown while retrieving file list for '" + directory + "': " + ex.getMessage());
-            throw ex;
-        }
-
-        for (FTPFile file : files) {
-            try {
-                database.addFile(new File(directory + "/" + file.getName(), file.getSize(), new Timestamp(0L)));
-                //server.download(directory + "/" + file.getName(), file.getName());
-            }
-            catch (SQLException ex) {
-
-            }
-
-            if (file.isDirectory()) {
-                logger.info("Recursing directory '" + file.getName());
-                list(directory + "/" + file.getName());
-            }
-        }
     }
 }
