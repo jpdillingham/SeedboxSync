@@ -172,10 +172,10 @@ public class ServerTest {
         File destinationFile1 = new File("temp1.zip");
         File destinationFile2 = new File("temp2.zip");
 
-        logger.info("Downloading files '1KB.zip' and '512KB.zip'");
+        logger.info("Downloading files '1KB.zip' and '10MB.zip'");
 
         Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 1L);
-        Future<Boolean> download2 = test.download("512KB.zip", destinationFile2, 1L);
+        Future<Boolean> download2 = test.download("10MB.zip", destinationFile2, 1L);
 
         // wait for the download to complete
         while (!download1.isDone() && !download2.isDone()) {
@@ -197,6 +197,10 @@ public class ServerTest {
         destinationFile2.deleteOnExit();
     }
 
+    /**
+     * Tests a file upload.
+     * @throws Exception
+     */
     @Test
     public void testUpload() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");

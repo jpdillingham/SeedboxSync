@@ -330,29 +330,38 @@ public class Server implements IServer {
         CopyStreamAdapter streamListener = new CopyStreamAdapter() {
             @Override
             public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize) {
-                Double currentDownloadPercent = totalBytesTransferred / currentDownloadSize.doubleValue();
-
-                if (System.nanoTime() - lastProgressUpdate >= timeBetweenUpdates) {
-                    // calculate the number of seconds since the last update
-                    Long timeSinceLastUpdate = (System.nanoTime() - lastProgressUpdate) / 1000000000;
-                    // calculate the number of bytes transferred since the last update
-                    Long bytesSinceLastUpdate = totalBytesTransferred - lastProgressTotal;
-                    Double bytesPerSecond = bytesSinceLastUpdate / timeSinceLastUpdate.doubleValue();
-
-                    lastProgressUpdate = System.nanoTime();
-                    lastProgressTotal = totalBytesTransferred;
-
-                    logger.info("Downloading '" + currentDownload + "'; " +
-                            totalBytesTransferred / 1024 / 1024 + " of " + currentDownloadSize / 1024 / 1024 +
-                            " MB (" + String.format("%.2f", currentDownloadPercent * 100) + "%), " +
-                            (bytesPerSecond / 1024 / 1024) + " MB/sec"
-
-                    );
-                }
+                progressUpdate(totalBytesTransferred, bytesTransferred, streamSize);
             }
-
         };
 
         server.setCopyStreamListener(streamListener);
+    }
+
+    /**
+     * Report download progress.
+     * @param totalBytesTransferred The total number of bytes transferred during the download.
+     * @param bytesTransferred Bytes transferred during the immediate period.
+     * @param streamSize The size of the stream.
+     */
+    private void progressUpdate(long totalBytesTransferred, int bytesTransferred, long streamSize) {
+        Double currentDownloadPercent = totalBytesTransferred / currentDownloadSize.doubleValue();
+
+        if (System.nanoTime() - lastProgressUpdate >= timeBetweenUpdates) {
+            // calculate the number of seconds since the last update
+            Long timeSinceLastUpdate = (System.nanoTime() - lastProgressUpdate) / 1000000000;
+            // calculate the number of bytes transferred since the last update
+            Long bytesSinceLastUpdate = totalBytesTransferred - lastProgressTotal;
+            Double bytesPerSecond = bytesSinceLastUpdate / timeSinceLastUpdate.doubleValue();
+
+            lastProgressUpdate = System.nanoTime();
+            lastProgressTotal = totalBytesTransferred;
+
+            logger.info("Downloading '" + currentDownload + "'; " +
+                    totalBytesTransferred / 1024 / 1024 + " of " + currentDownloadSize / 1024 / 1024 +
+                    " MB (" + String.format("%.2f", currentDownloadPercent * 100) + "%), " +
+                    (bytesPerSecond / 1024 / 1024) + " MB/sec"
+
+            );
+        }
     }
 }
