@@ -143,6 +143,7 @@ public class ServerTest {
     public void testList() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
         test.connect();
+        test.disconnect();
 
         List<FTPFile> files = test.list("");
 
@@ -168,6 +169,7 @@ public class ServerTest {
 
         logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");
         test.connect();
+        test.disconnect();
 
         File destinationFile1 = new File("temp1.zip");
         File destinationFile2 = new File("temp2.zip");
@@ -207,6 +209,7 @@ public class ServerTest {
 
         logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");
         test.connect();
+        test.disconnect();
 
         File file = new File("test/WhatboxSync/resources/badConfig.json");
 
