@@ -174,16 +174,8 @@ public class ServerTest {
 
         logger.info("Downloading test files...");
 
-        Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 1L);
-        Future<Boolean> download2;
-
-        // if run under travis ci, download a large file to force processUpdate to run
-        if (CI_Flag) {
-            download2 = test.download("10GB.zip", destinationFile2, 1L);
-        }
-        else {
-            download2 = test.download("10MB.zip", destinationFile2, 1L);
-        }
+        Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 0L + 1024);
+        Future<Boolean> download2 = test.download("1MB.zip", destinationFile2, 0L + (1024 * 1024));
 
         // wait for the download to complete
         while (!download1.isDone() && !download2.isDone()) {

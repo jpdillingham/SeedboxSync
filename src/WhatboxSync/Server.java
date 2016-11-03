@@ -268,6 +268,10 @@ public class Server implements IServer {
         FileOutputStream out = new FileOutputStream(destinationFile);
         server.retrieveFile(sourceFile, out);
 
+        // force a final progress update
+        lastProgressUpdate = 0L;
+        progressUpdate(size, size.intValue(), 0L);
+
         logger.info("Transfer complete.");
         out.close();
 
@@ -357,10 +361,9 @@ public class Server implements IServer {
             lastProgressTotal = totalBytesTransferred;
 
             logger.info("Downloading '" + currentDownload + "'; " +
-                    totalBytesTransferred / 1024 / 1024 + " of " + currentDownloadSize / 1024 / 1024 +
+                    totalBytesTransferred / 1024 / 1024.0 + " of " + currentDownloadSize / 1024 / 1024.0 +
                     " MB (" + String.format("%.2f", currentDownloadPercent * 100) + "%), " +
-                    (bytesPerSecond / 1024 / 1024) + " MB/sec"
-
+                    String.format("%.2f", (bytesPerSecond / 1024 / 1024.0)) + " MB/sec"
             );
         }
     }
