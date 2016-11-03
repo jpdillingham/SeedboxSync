@@ -172,13 +172,14 @@ public class ServerTest {
         File destinationFile1 = new File("temp1.zip");
         File destinationFile2 = new File("temp2.zip");
 
-        logger.info("Downloading files '1KB.zip' and '10MB.zip'");
+        logger.info("Downloading test files...");
 
         Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 1L);
         Future<Boolean> download2;
 
+        // if run under travis ci, download a large file to force processUpdate to run
         if (CI_Flag) {
-            download2 = test.download("1GB.zip", destinationFile2, 1L);
+            download2 = test.download("10GB.zip", destinationFile2, 1L);
         }
         else {
             download2 = test.download("10MB.zip", destinationFile2, 1L);
