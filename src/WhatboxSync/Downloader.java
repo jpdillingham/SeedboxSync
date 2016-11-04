@@ -66,6 +66,12 @@ public class Downloader extends Processor {
         download();
     }
 
+    /**
+     * Scans the specified directory for files and adds those that have not yet been downloaded or enqueued
+     * to the download queue.
+     * @param directory The remote directory to scan.
+     * @throws Exception Thrown if an exception is encountered while retrieving the directory listing.
+     */
     private void scanDirectory(String directory) throws Exception {
         logger.debug("Listing files for directory '" + directory + "'...");
 
@@ -108,62 +114,57 @@ public class Downloader extends Processor {
      * @throws Exception Thrown if an exception is encountered during the download.
      */
     private void download() throws Exception {
-        if (transferInProgress) {
-            logger.debug("Download is already in progress.  Skipping.");
+        if (!queue.isEmpty()) {
+            transferInProgress = true;
+
+            logger.debug("Preparing to download " + queue.peek());
+
+            // fetch the next file from the queue
+            String file = queue.peek();
+
+            // split the queue entry and retrieve the filename and size
+            String[] fileParts = file.split(":");
+            String fileName = fileParts[0];
+            Long fileSize = Long.parseLong(fileParts[1]);
+
+            String remoteFileName = remoteDirectory + fileName;
+            String localFileName = localDirectory + fileName;
+
+            logger.debug("Remote filename: " + remoteFileName);
+            logger.debug("Local filename: " + localFileName);
+
+            try {
+                // create the target directory structure
+                (new java.io.File(localFileName)).getParentFile().mkdirs();
+
+                logger.info("Downloading file '" + fileName + "' from remote directory '" + remoteDirectory + "'...");
+
+                server.download(remoteFileName, localFileName, fileSize);
+
+                logger.debug("Transfer complete.");
+
+                File newFile = new File(fileName, fileSize, new Timestamp(System.currentTimeMillis()));
+                database.addFile(newFile);
+                database.setDownloadedTimestamp(newFile);
+
+                logger.debug("File '" + fileName + "' added to the completed file database.");
+
+                dequeue(file);
+
+                logger.debug("File '" + fileName + "' removed from the download queue.");
+
+                logger.info("Download complete.");
+            }
+            catch (Exception ex) {
+                logger.error("Error downloading '" + fileName + "': " + ex.getMessage());
+            }
+            finally {
+                transferInProgress = false;
+            }
         }
-        else {
-            if (!queue.isEmpty()) {
-                transferInProgress = true;
 
-                logger.debug("Preparing to download " + queue.peek());
-
-                // fetch the next file from the queue
-                String file = queue.peek();
-
-                // split the queue entry and retrieve the filename and size
-                String[] fileParts = file.split(":");
-                String fileName = fileParts[0];
-                Long fileSize = Long.parseLong(fileParts[1]);
-
-                String remoteFileName = remoteDirectory + fileName;
-                String localFileName = localDirectory + fileName;
-
-                logger.debug("Remote filename: " + remoteFileName);
-                logger.debug("Local filename: " + localFileName);
-
-                try {
-                    // create the target directory structure
-                    (new java.io.File(localFileName)).getParentFile().mkdirs();
-
-                    logger.info("Downloading file '" + fileName + "' from remote directory '" + remoteDirectory + "'...");
-
-                    server.download(remoteFileName, localFileName, fileSize);
-
-                    logger.debug("Transfer complete.");
-
-                    File newFile = new File(fileName, fileSize, new Timestamp(System.currentTimeMillis()));
-                    database.addFile(newFile);
-                    database.setDownloadedTimestamp(newFile);
-
-                    logger.debug("File '" + fileName + "' added to the completed file database.");
-
-                    dequeue(file);
-
-                    logger.debug("File '" + fileName + "' removed from the download queue.");
-
-                    logger.info("Download complete.");
-                }
-                catch (Exception ex) {
-                    logger.error("Error downloading '" + fileName + "': " + ex.getMessage());
-                }
-                finally {
-                    transferInProgress = false;
-                }
-            }
-
-            if (!queue.isEmpty()) {
-                download();
-            }
+        if (!queue.isEmpty()) {
+            download();
         }
     }
 }
