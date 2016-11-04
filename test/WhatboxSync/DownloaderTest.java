@@ -116,11 +116,58 @@ public class DownloaderTest {
 
         FTPFile two = new FTPFile();
         two.setName("two");
+        two.setType(FTPFile.DIRECTORY_TYPE);
 
         files.add(one);
         files.add(two);
 
         Mockito.when(server.list("remote")).thenReturn(files);
+
+        Downloader test = new Downloader(server, "local", "remote", database);
+
+        test.process();
+    }
+
+    /**
+     * Test the process() method with a known server exception
+     * @throws Exception
+     */
+    @Test(expected=Exception.class)
+    public void testProcessServerException() throws Exception {
+        IServer server = mock(IServer.class);
+        IDatabase database = mock(IDatabase.class);
+
+        Mockito.when(server.list("remote")).thenThrow(Exception.class);
+
+        Downloader test = new Downloader(server, "local", "remote", database);
+
+        test.process();
+    }
+
+    /**
+     * Test the process() method with a known server exception
+     * @throws Exception
+     */
+    @Test
+    public void testProcessDownloadException() throws Exception {
+        IServer server = mock(IServer.class);
+        IDatabase database = mock(IDatabase.class);
+
+        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+
+        FTPFile one = new FTPFile();
+        one.setName("one");
+
+        FTPFile two = new FTPFile();
+        two.setName("two");
+        two.setType(FTPFile.DIRECTORY_TYPE);
+
+        files.add(one);
+        files.add(two);
+
+        Mockito.when(server.list("remote")).thenReturn(files);
+
+        Mockito.when(server.download("one", "one",0L)).thenThrow(Exception.class);
 
         Downloader test = new Downloader(server, "local", "remote", database);
 
