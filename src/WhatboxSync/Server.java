@@ -269,6 +269,7 @@ public class Server implements IServer {
         server.retrieveFile(sourceFile, out);
 
         // force a final progress update
+        lastProgressUpdate = 0L;
         progressUpdate(size, size.intValue(), 0L, true);
 
         logger.info("Transfer complete.");

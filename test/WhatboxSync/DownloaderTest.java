@@ -23,20 +23,20 @@
  *
  ****************************************************************************/
 
+import java.util.List;
+import java.util.ArrayList;
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-
 import static org.junit.Assert.assertEquals;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -98,5 +98,32 @@ public class DownloaderTest {
 
         // try to remove the same string.  it shouldn't raise an error.
         test.dequeue("hello world!");
+    }
+
+    /**
+     * Test the process() method
+     * @throws Exception
+     */
+    @Test
+    public void testProcess() throws Exception {
+        IServer server = mock(IServer.class);
+        IDatabase database = mock(IDatabase.class);
+
+        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+
+        FTPFile one = new FTPFile();
+        one.setName("one");
+
+        FTPFile two = new FTPFile();
+        two.setName("two");
+
+        files.add(one);
+        files.add(two);
+
+        Mockito.when(server.list("remote")).thenReturn(files);
+
+        Downloader test = new Downloader(server, "local", "remote", database);
+
+        test.process();
     }
 }
