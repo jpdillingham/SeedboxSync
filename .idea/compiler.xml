@@ -22,10 +22,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="SeedboxSync" />
         <module name="WhatboxSync" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="SeedboxSync" target="1.8" />
       <module name="WhatboxSync" target="1.8" />
     </bytecodeTargetLevel>
   </component>

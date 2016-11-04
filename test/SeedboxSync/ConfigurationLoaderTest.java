@@ -71,7 +71,7 @@ public class ConfigurationLoaderTest {
      */
     @Test
     public void testGoodLoad() throws IOException, ParseException {
-        String configFile = System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodConfig.json";
+        String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodConfig.json";
         Configuration config = ConfigurationLoader.load(configFile);
 
         assertEquals(config.getServer(), "server");
@@ -92,7 +92,7 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=ParseException.class)
     public void testBadLoad() throws IOException, ParseException {
-        String configFile = System.getProperty("user.dir") + "/test/WhatboxSync/resources/badConfig.json";
+        String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/badConfig.json";
         Configuration config = ConfigurationLoader.load(configFile);
     }
 
@@ -113,7 +113,7 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=RuntimeException.class)
     public void testPartialLoad() throws IOException, ParseException {
-        String configFile = System.getProperty("user.dir") + "/test/WhatboxSync/resources/partialConfig.json";
+        String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/partialConfig.json";
         Configuration config = ConfigurationLoader.load(configFile);
     }
 }

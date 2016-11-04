@@ -211,7 +211,7 @@ public class ServerTest {
         test.connect();
         test.disconnect();
 
-        File file = new File("test/WhatboxSync/resources/badConfig.json");
+        File file = new File("test/SeedboxSync/resources/badConfig.json");
 
         test.upload(file, "upload/test_" + System.currentTimeMillis());
     }

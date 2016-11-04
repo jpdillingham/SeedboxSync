@@ -82,7 +82,7 @@ public class DatabaseTest {
      */
     @Test
     public void testGoodDatabase() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodDatabase.db";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodDatabase.db";
         Database test = new Database(file);
         (new java.io.File(file)).deleteOnExit();
     }
@@ -102,7 +102,7 @@ public class DatabaseTest {
      */
     @Test
     public void testGoodAdd() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/goodAddDatabase.db";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodAddDatabase.db";
         Database test = new Database(file);
 
         test.addFile(new File("test", 0L, new Timestamp(0L)));
@@ -120,7 +120,7 @@ public class DatabaseTest {
      */
     @Test
     public void testDuplicateAdd() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/duplicateAddDatabase.db";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/duplicateAddDatabase.db";
         Database test = new Database(file);
 
         test.addFile(new File("testduplicate", 0L, new Timestamp(0L)));
@@ -136,10 +136,10 @@ public class DatabaseTest {
      */
     @Test
     public void testDownloadUpdate() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/updateDatabase.db";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/updateDatabase.db";
 
         // cleanup previous run
-        java.io.File fileInstance = new java.io.File(System.getProperty("user.dir") + "/test/WhatboxSync/resources/updateDatabase.db");
+        java.io.File fileInstance = new java.io.File(System.getProperty("user.dir") + "/test/SeedboxSync/resources/updateDatabase.db");
         if (fileInstance.exists()) {
             fileInstance.delete();
         }
@@ -169,7 +169,7 @@ public class DatabaseTest {
      */
     @Test
     public void testGetFiles() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/listDatabase.db";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/listDatabase.db";
         Database test = new Database(file);
 
         test.addFile(new File("test", 0L, new Timestamp(0L)));
@@ -191,7 +191,7 @@ public class DatabaseTest {
      */
     @Test
     public void testBadGetFile() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/emptyDatabase.db";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/emptyDatabase.db";
         Database test = new Database(file);
 
         File testFile = test.getFile(new File("test"));
@@ -206,7 +206,7 @@ public class DatabaseTest {
      */
     @Test
     public void testDoubleDatabase() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/WhatboxSync/resources/emptyDatabase.db";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/emptyDatabase.db";
         Database test = new Database(file);
 
         Database testTwo = new Database(file);

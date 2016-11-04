@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * WhatboxSync.java
+ * SeedboxSync.java
  *
  * The main application class.
  *
@@ -39,7 +39,7 @@ import static spark.Spark.*;
 /**
  * The main application class.
  */
-public class WhatboxSync {
+public class SeedboxSync {
     /**
      * The logger for this class.
      */

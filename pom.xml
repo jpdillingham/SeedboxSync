@@ -81,7 +81,7 @@
         <outputDirectory>target/classes</outputDirectory>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <testOutputDirectory>target/test-classes</testOutputDirectory>
-        <sourceDirectory>src/WhatboxSync</sourceDirectory>
+        <sourceDirectory>src/SeedboxSync</sourceDirectory>
         <testSourceDirectory>test/WhatboxSync</testSourceDirectory>
         <plugins>
             <plugin>

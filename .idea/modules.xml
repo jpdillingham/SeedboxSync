@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/WhatboxSync.iml" filepath="$PROJECT_DIR$/WhatboxSync.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SeedboxSync.iml" filepath="$PROJECT_DIR$/SeedboxSync.iml" />
     </modules>
   </component>
 </project>
