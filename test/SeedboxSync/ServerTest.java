@@ -119,6 +119,31 @@ public class ServerTest {
     }
 
     /**
+     * Tests the reconnect functionality.
+     * @throws Exception
+     */
+    @Test
+    public void testReconnect() throws Exception {
+        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+
+        test.connect();
+
+        assertEquals(test.isConnected(), true);
+
+        test.reconnect();
+
+        assertEquals(test.isConnected(), true);
+
+        test.disconnect();
+
+        assertEquals(test.isConnected(), false);
+
+        test.reconnect();
+
+        assertEquals(test.isConnected(), true);
+    }
+
+    /**
      * Connects, then disconnects from a known good server.
      * @throws Exception
      */
@@ -143,9 +168,16 @@ public class ServerTest {
     public void testList() throws Exception {
         Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
         test.connect();
+
         test.disconnect();
 
         List<FTPFile> files = test.list("");
+
+        assertNotEquals(files, null);
+
+        test.reconnect();
+
+        files = test.list("");
 
         assertNotEquals(files, null);
 
@@ -209,9 +241,12 @@ public class ServerTest {
 
         logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");
         test.connect();
-        test.disconnect();
 
         File file = new File("test/SeedboxSync/resources/badConfig.json");
+
+        test.upload(file, "upload/test_" + System.currentTimeMillis());
+
+        test.disconnect();
 
         test.upload(file, "upload/test_" + System.currentTimeMillis());
     }
