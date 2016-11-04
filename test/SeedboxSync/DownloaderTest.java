@@ -200,6 +200,9 @@ public class DownloaderTest {
         Downloader test = new Downloader(server, "local", "remote", database);
 
         test.process();
+
+        test.enqueue("/one:0");
+
         test.process();
     }
 
