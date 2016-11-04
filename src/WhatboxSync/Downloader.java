@@ -67,7 +67,7 @@ public class Downloader extends Processor {
     }
 
     private void scanDirectory(String directory) throws Exception {
-        logger.info("Listing files for directory '" + directory + "'...");
+        logger.debug("Listing files for directory '" + directory + "'...");
 
         List<FTPFile> files;
 
@@ -80,23 +80,24 @@ public class Downloader extends Processor {
             throw ex;
         }
 
-        logger.info("Listing complete.  " + files.size() + " " + (files.size() == 1 ? "record" : "records") + " retrieved.");
+        logger.debug("Listing complete.  " + files.size() + " " + (files.size() == 1 ? "record" : "records") + " retrieved.");
 
         for (FTPFile file : files) {
             if (!file.isDirectory()) {
+                String fullFileName = directory + "/" + file.getName();
+                String relativeFileName = fullFileName.replace(remoteDirectory, "");
+                String relativeFileNameWithSize = relativeFileName + ":" + file.getSize();
+
                 // enqueue the file for downloading only if it doesn't exist in the database
-                if (database.getFile(directory + "/" + file.getName()) == null) {
-                    if (!queue.contains(directory + "/" + file.getName() + ":" + file.getSize())) {
-                        String entry = directory + "/" + file.getName() + ":" + file.getSize();
-                        enqueue(entry);
-                        logger.info(entry);
-                        logger.info("Added file '" + file.getName() + "' to the download queue.");
+                if (database.getFile(relativeFileName) == null) {
+                    if (!queue.contains(relativeFileNameWithSize)) {
+                        enqueue(relativeFileNameWithSize);
+                        logger.info("Added file '" + relativeFileNameWithSize + "' to the download queue.");
                     }
                 }
             }
             // if the file is a directory, recursively list the files within it
             else {
-                logger.info("Recursing directory '" + file.getName());
                 scanDirectory(directory + "/" + file.getName());
             }
         }
@@ -114,36 +115,54 @@ public class Downloader extends Processor {
             if (!queue.isEmpty()) {
                 transferInProgress = true;
 
+                logger.debug("Preparing to download " + queue.peek());
+
                 // fetch the next file from the queue
                 String file = queue.peek();
 
                 // split the queue entry and retrieve the filename and size
                 String[] fileParts = file.split(":");
-                String fullFile = fileParts[0];
+                String fileName = fileParts[0];
                 Long fileSize = Long.parseLong(fileParts[1]);
 
-                // remove the path from the filename and build the destination File
-                String fileName = Paths.get(fullFile).getFileName().toString();
-                java.io.File destinationFile = new java.io.File(localDirectory + "/" + fileName);
+                String remoteFileName = remoteDirectory + fileName;
+                String localFileName = localDirectory + fileName;
 
-                logger.info("Downloading file '" + fileName + "' from remote directory '" + remoteDirectory + "'...");
+                logger.debug("Remote filename: " + remoteFileName);
+                logger.debug("Local filename: " + localFileName);
 
-                server.download(fullFile, destinationFile.getAbsolutePath(), fileSize);
+                try {
+                    // create the target directory structure
+                    (new java.io.File(localFileName)).getParentFile().mkdirs();
 
-                logger.info("Transfer complete.");
+                    logger.info("Downloading file '" + fileName + "' from remote directory '" + remoteDirectory + "'...");
 
-                File newFile = new File(fullFile, fileSize, new Timestamp(System.currentTimeMillis()));
-                database.addFile(newFile);
-                database.setDownloadedTimestamp(newFile);
+                    server.download(remoteFileName, localFileName, fileSize);
 
-                logger.info("File '" + fileName + "' added to the completed file database.");
+                    logger.debug("Transfer complete.");
 
-                dequeue(file);
+                    File newFile = new File(fileName, fileSize, new Timestamp(System.currentTimeMillis()));
+                    database.addFile(newFile);
+                    database.setDownloadedTimestamp(newFile);
 
-                logger.info("File '" + fileName + "' removed from the download queue.");
+                    logger.debug("File '" + fileName + "' added to the completed file database.");
 
-                logger.info("Download complete.");
-                transferInProgress = false;
+                    dequeue(file);
+
+                    logger.debug("File '" + fileName + "' removed from the download queue.");
+
+                    logger.info("Download complete.");
+                }
+                catch (Exception ex) {
+                    logger.error("Error downloading '" + fileName + "': " + ex.getMessage());
+                }
+                finally {
+                    transferInProgress = false;
+                }
+            }
+
+            if (!queue.isEmpty()) {
+                download();
             }
         }
     }

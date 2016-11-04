@@ -269,8 +269,7 @@ public class Server implements IServer {
         server.retrieveFile(sourceFile, out);
 
         // force a final progress update
-        lastProgressUpdate = 0L;
-        progressUpdate(size, size.intValue(), 0L);
+        progressUpdate(size, size.intValue(), 0L, true);
 
         logger.info("Transfer complete.");
         out.close();
@@ -348,6 +347,17 @@ public class Server implements IServer {
      * @param streamSize The size of the stream.
      */
     private void progressUpdate(long totalBytesTransferred, int bytesTransferred, long streamSize) {
+        progressUpdate(totalBytesTransferred, bytesTransferred, streamSize, false);
+    }
+
+    /**
+     * Report download progress.
+     * @param totalBytesTransferred The total number of bytes transferred during the download.
+     * @param bytesTransferred Bytes transferred during the immediate period.
+     * @param streamSize The size of the stream.
+     * @param transferComplete Indicates whether the transfer is complete.
+     */
+    private void progressUpdate(long totalBytesTransferred, int bytesTransferred, long streamSize, boolean transferComplete) {
         Double currentDownloadPercent = totalBytesTransferred / currentDownloadSize.doubleValue();
 
         if (System.nanoTime() - lastProgressUpdate >= timeBetweenUpdates) {
@@ -360,11 +370,17 @@ public class Server implements IServer {
             lastProgressUpdate = System.nanoTime();
             lastProgressTotal = totalBytesTransferred;
 
-            logger.info("Downloading '" + currentDownload + "'; " +
-                    totalBytesTransferred / 1024 / 1024.0 + " of " + currentDownloadSize / 1024 / 1024.0 +
-                    " MB (" + String.format("%.2f", currentDownloadPercent * 100) + "%), " +
-                    String.format("%.2f", (bytesPerSecond / 1024 / 1024.0)) + " MB/sec"
-            );
+            String reportString = "Downloading '" + currentDownload + "'; " +
+                    String.format("%.2f", totalBytesTransferred / 1024 / 1024.0) + " of " +
+                    String.format("%.2f", currentDownloadSize / 1024 / 1024.0) +
+                    " MB (" + String.format("%.2f", currentDownloadPercent * 100) + "%)";
+
+            // report the transfer speed if it isn't complete
+            if (!transferComplete) {
+                reportString += ", " + String.format("%.2f", (bytesPerSecond / 1024 / 1024.0)) + " MB/sec";
+            }
+
+            logger.info(reportString);
         }
     }
 }

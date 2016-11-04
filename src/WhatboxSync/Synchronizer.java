@@ -54,7 +54,10 @@ public class Synchronizer implements ISynchronizer {
         uploader = new Uploader(server, config.getLocalUploadDirectory(), config.getRemoteUploadDirectory());
         downloader = new Downloader(server, config.getLocalDownloadDirectory(), config.getRemoteDownloadDirectory(), database);
 
-        Timer timer = new Timer();
+        uploader.process();
+        downloader.process();
+
+/*        Timer timer = new Timer();
         timer.schedule(new TimerTask() {
 
             @Override
@@ -73,6 +76,6 @@ public class Synchronizer implements ISynchronizer {
                     logger.error("Exception in Downloader: " + ex.getMessage());
                 }
             }
-        }, 0, 5000);
+        }, 0, 5000);*/
     }
 }
