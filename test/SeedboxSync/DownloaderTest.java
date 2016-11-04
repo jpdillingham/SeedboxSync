@@ -144,7 +144,7 @@ public class DownloaderTest {
     }
 
     /**
-     * Test the process() method with one file
+     * Test the process() method with one file and an assured database hit
      * @throws Exception
      */
     @Test
@@ -167,6 +167,32 @@ public class DownloaderTest {
         Downloader test = new Downloader(server, "local", "remote", database);
 
         test.process();
+        test.process();
+    }
+
+    /**
+     * Test the process() method with one file and an assured database miss/queue hit
+     * @throws Exception
+     */
+    @Test
+    public void testProcessOneFileDatabaseMissQueueHit() throws Exception {
+        IServer server = mock(IServer.class);
+        IDatabase database = mock(IDatabase.class);
+
+        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+
+        FTPFile one = new FTPFile();
+        one.setName("one");
+        one.setSize(0L);
+
+        files.add(one);
+
+        Mockito.when(server.list("remote")).thenReturn(files);
+
+        Downloader test = new Downloader(server, "local", "remote", database);
+
+        test.enqueue("/one:0");
+
         test.process();
     }
 

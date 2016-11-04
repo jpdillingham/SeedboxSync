@@ -91,6 +91,8 @@ public class Downloader extends Processor {
                 String relativeFileName = fullFileName.replace(remoteDirectory, "");
                 String relativeFileNameWithSize = relativeFileName + ":" + file.getSize();
 
+                logger.info("r: " + relativeFileNameWithSize);
+
                 // enqueue the file for downloading only if it doesn't exist in the database
                 if (database.getFile(relativeFileName) == null) {
                     if (!queue.contains(relativeFileNameWithSize)) {
