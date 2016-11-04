@@ -101,11 +101,80 @@ public class DownloaderTest {
     }
 
     /**
+     * Test the process() method with one file
+     * @throws Exception
+     */
+    @Test
+    public void testProcessNoFiles() throws Exception {
+        IServer server = mock(IServer.class);
+        IDatabase database = mock(IDatabase.class);
+
+        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+
+        Mockito.when(server.list("remote")).thenReturn(files);
+
+        Downloader test = new Downloader(server, "local", "remote", database);
+
+        test.process();
+        test.process();
+    }
+
+    /**
+     * Test the process() method with one file
+     * @throws Exception
+     */
+    @Test
+    public void testProcessOneFile() throws Exception {
+        IServer server = mock(IServer.class);
+        IDatabase database = mock(IDatabase.class);
+
+        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+
+        FTPFile one = new FTPFile();
+        one.setName("one");
+
+        files.add(one);
+
+        Mockito.when(server.list("remote")).thenReturn(files);
+
+        Downloader test = new Downloader(server, "local", "remote", database);
+
+        test.process();
+        test.process();
+    }
+
+    /**
+     * Test the process() method with one file
+     * @throws Exception
+     */
+    @Test
+    public void testProcessOneFileDatabaseHit() throws Exception {
+        IServer server = mock(IServer.class);
+        IDatabase database = mock(IDatabase.class);
+
+        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+
+        FTPFile one = new FTPFile();
+        one.setName("one");
+
+        files.add(one);
+
+        Mockito.when(server.list("remote")).thenReturn(files);
+
+        Mockito.when(database.getFile("one")).thenReturn(new File("one"));
+
+        Downloader test = new Downloader(server, "local", "remote", database);
+
+        test.process();
+        test.process();
+    }
+
+    /**
      * Test the process() method
      * @throws Exception
      */
     @Test
-    public void testProcess() throws Exception {
+    public void testProcessMultipleFiles() throws Exception {
         IServer server = mock(IServer.class);
         IDatabase database = mock(IDatabase.class);
 
