@@ -231,6 +231,7 @@ public class DownloaderTest {
 
         FTPFile one = new FTPFile();
         one.setName("one");
+        one.setSize(0L);
 
         FTPFile two = new FTPFile();
         two.setName("two");
@@ -241,7 +242,7 @@ public class DownloaderTest {
 
         Mockito.when(server.list("remote")).thenReturn(files);
 
-        Mockito.when(server.download("one", "one",0L)).thenThrow(Exception.class);
+        Mockito.when(server.download("remote/one", "local/one",0L)).thenThrow(Exception.class);
 
         Downloader test = new Downloader(server, "local", "remote", database);
 

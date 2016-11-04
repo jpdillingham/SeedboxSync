@@ -69,11 +69,6 @@
             <artifactId>mockito-all</artifactId>
             <version>1.10.19</version>
         </dependency>
-        <dependency>
-            <groupId>com.sparkjava</groupId>
-            <artifactId>spark-core</artifactId>
-            <version>2.5</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -82,7 +77,7 @@
         <finalName>${project.artifactId}-${project.version}</finalName>
         <testOutputDirectory>target/test-classes</testOutputDirectory>
         <sourceDirectory>src/SeedboxSync</sourceDirectory>
-        <testSourceDirectory>test/WhatboxSync</testSourceDirectory>
+        <testSourceDirectory>test/SeedboxSync</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>

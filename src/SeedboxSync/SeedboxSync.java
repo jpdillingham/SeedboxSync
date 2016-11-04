@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 
-import static spark.Spark.*;
-
 /**
  * The main application class.
  */
@@ -91,8 +89,6 @@ public class SeedboxSync {
                 } catch (Exception ex) {  }
             }
         }, 0, config.getInterval(), TimeUnit.SECONDS);
-
-        API.configure();
     }
 
     /**

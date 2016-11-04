@@ -154,6 +154,10 @@ public class Downloader extends Processor {
                 logger.debug("File '" + fileName + "' removed from the download queue.");
 
                 logger.info("Download complete.");
+
+                if (!queue.isEmpty()) {
+                    download();
+                }
             }
             catch (Exception ex) {
                 logger.error("Error downloading '" + fileName + "': " + ex.getMessage());
@@ -161,10 +165,6 @@ public class Downloader extends Processor {
             finally {
                 transferInProgress = false;
             }
-        }
-
-        if (!queue.isEmpty()) {
-            download();
         }
     }
 }
