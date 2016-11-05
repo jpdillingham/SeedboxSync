@@ -1,15 +1,33 @@
-import org.apache.commons.net.ftp.FTPFile;
+/****************************************************************************
+ *
+ * Synchronizer.java
+ *
+ * Coordinates the synchronization of the local and remote directories.
+ *
+ ***************************************************************************
+ *
+ * Copyright (C) 2016 JP Dillingham (jp@dillingham.ws)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ****************************************************************************/
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.sql.SQLException;
-import java.util.List;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
- * Created by JP on 10/8/2016.
+ * Coordinates the synchronization of the local and remote directories.
  */
 public class Synchronizer implements ISynchronizer {
     /**
@@ -17,65 +35,56 @@ public class Synchronizer implements ISynchronizer {
      */
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
-    /** The configuration for the Synchronizer. */
-    private Configuration config;
+    /**
+     * The configuration for the Synchronizer.
+     */
+    private Configuration configuration;
 
+    /**
+     * The IServer instance for the Synchronizer.
+     */
     private IServer server;
 
+    /**
+     * The IDatabase instance for the Synchronizer.
+     */
     private IDatabase database;
 
-    private Boolean synchronizing;
-
+    /**
+     * The Uploader for the Synchronizer.
+     */
     private Uploader uploader;
 
+    /**
+     * The Downloader for the Synchronizer.
+     */
     private Downloader downloader;
 
     /** Initializes a new instance of the Synchronizer class with the specified Configuration.
-     * @param config The Configuration instance with which the Synchronizer should be configured. */
-    public Synchronizer(Configuration config, IServer server, IDatabase database) {
-        this.config = config;
+     * @param configuration The Configuration instance with which the Synchronizer should be configured.
+     * @param server The IServer instance for the Synchronizer.
+     * @param database The IDatabase instance for the Synchronizer.
+     */
+    public Synchronizer(Configuration configuration, IServer server, IDatabase database) {
+        this.configuration = configuration;
         this.server = server;
         this.database = database;
+
+        uploader = new Uploader(server, configuration.getLocalUploadDirectory(), configuration.getRemoteUploadDirectory());
+        downloader = new Downloader(server, configuration.getLocalDownloadDirectory(), configuration.getRemoteDownloadDirectory(), database);
     }
 
+    /**
+     * Synchronizes the local and remote directories.
+     * @throws Exception Thrown if an exception is encountered during the synchronization.
+     */
     public void synchronize() throws Exception {
-        logger.info("Connecting to server '" + config.getServer() + "' on port " + config.getPort() + "...");
-
-        if (!server.isConnected()) {
-            try {
-                server.connect();
-            }
-            catch (Exception ex)
-            {
-                logger.error("Exception thrown while connecting to server '" + config.getServer() + "': " + ex.getMessage());
-            }
+        try {
+            uploader.process();
+            downloader.process();
         }
-
-        uploader = new Uploader(server, config.getLocalUploadDirectory(), config.getRemoteUploadDirectory());
-        downloader = new Downloader(server, config.getLocalDownloadDirectory(), config.getRemoteDownloadDirectory(), database);
-
-        uploader.process();
-        downloader.process();
-
-/*        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                try {
-                    uploader.process();
-                }
-                catch (Exception ex) {
-                    logger.error("Exception in Uploader: " + ex.getMessage());
-                }
-
-                try {
-                    downloader.process();
-                }
-                catch (Exception ex) {
-                    logger.error("Exception in Downloader: " + ex.getMessage());
-                }
-            }
-        }, 0, 5000);*/
+        catch (Exception ex) {
+            logger.error("Exception encountered during synchronization: " + ex.getMessage());
+        }
     }
 }
