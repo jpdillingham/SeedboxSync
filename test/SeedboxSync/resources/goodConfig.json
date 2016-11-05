@@ -3,7 +3,7 @@
 	"port": 1,
 	"username": "username",
 	"password": "password",
-	"interval": 1,
+	"interval": 3600,
 	"remoteDownloadDirectory": "remoteDownloadDirectory",
 	"localDownloadDirectory": "localDownloadDirectory",
 	"remoteUploadDirectory": "remoteUploadDirectory",
