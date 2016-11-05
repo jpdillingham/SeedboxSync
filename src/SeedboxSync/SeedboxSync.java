@@ -64,7 +64,13 @@ public class SeedboxSync {
      */
     public static void main(String[] args) {
         configureLogging();
-        config = loadConfiguration();
+
+        if (args != null) {
+            config = loadConfiguration(args[0]);
+        }
+        else {
+            config = loadConfiguration("config.json");
+        }
 
         logger.info("Creating a Synchronizer...");
 
@@ -105,9 +111,9 @@ public class SeedboxSync {
     /**
      * Loads the application configuration from file.
      */
-    private static Configuration loadConfiguration() {
+    private static Configuration loadConfiguration(String file) {
         Configuration config;
-        String configFile = System.getProperty("user.dir") + File.separator + "config.json";
+        String configFile = System.getProperty("user.dir") + File.separator + file;
 
         logger.info("Retrieving configuration from '" + configFile + "'...");
 
