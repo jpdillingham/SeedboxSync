@@ -96,6 +96,22 @@ public class DatabaseLoaderTest {
     }
 
     /**
+     * Loads a database from an existing file.
+     * @throws Exception
+     */
+    @Test
+    public void testExistingLoad() throws Exception {
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodConfig.json";
+        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                "local", "remoteUp", "localUp", file);
+
+        Database db = DatabaseLoader.load(test);
+
+        assertNotEquals(db, null);
+        db.close();
+    }
+
+    /**
      * Loads a database with a known bad configuraiton.
      * @throws Exception
      */

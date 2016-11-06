@@ -71,9 +71,9 @@ public class SeedboxSyncTest {
     /**
      * Tests main().
      */
-//    @Test
-//    public void testMain() {
-//        SeedboxSync.main(new String[] { "test/SeedboxSync/resources/goodConfig.json" });
-//    }
+    @Test
+    public void testMain() {
+        SeedboxSync.main(new String[] { "test/SeedboxSync/resources/goodConfig.json" });
+    }
 
 }

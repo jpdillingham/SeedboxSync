@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.FileInputStream;
 
 import org.slf4j.Logger;
@@ -315,15 +316,29 @@ public class Server implements IServer {
 
         logger.info("Uploading file '" + sourceFile + "' to '" + destinationFile + "'...");
 
-        FileInputStream input = new FileInputStream(sourceFile);
+        FileInputStream inputStream = new FileInputStream(sourceFile);
 
-        //server.enterLocalPassiveMode();
-        server.enterRemotePassiveMode();
+//        //server.enterLocalPassiveMode();
+//        server.enterRemotePassiveMode();
+//
+//        server.appendFile(destinationFile, input);
+//
+//        input.close();
+//        //server.completePendingCommand();
 
-        server.appendFile(destinationFile, input);
+        OutputStream outputStream = server.storeFileStream(destinationFile);
 
-        input.close();
-        //server.completePendingCommand();
+        byte[] bytesIn = new byte[4096];
+        int read = 0;
+
+        while ((read = inputStream.read(bytesIn)) != -1) {
+            outputStream.write(bytesIn, 0, read);
+        }
+
+        inputStream.close();
+        outputStream.close();
+
+        server.completePendingCommand();
 
         logger.info("Upload complete.");
 

@@ -89,7 +89,7 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingServer() {
-        Configuration test = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
+        Configuration test = new Configuration(null, 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
 
         assertEquals(test.isValid(), false);
     }
@@ -99,7 +99,7 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidPort() {
-        Configuration test = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
+        Configuration test = new Configuration("", 0, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
 
         assertEquals(test.isValid(), false);
     }
@@ -240,6 +240,26 @@ public class ConfigurationTest {
     @Test
     public void testMissingLocalUploadDirectory() {
         Configuration test = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", null, "db");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with an invalid database filename.
+     */
+    @Test
+    public void testInvalidDatabaseFilename() {
+        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "");
+
+        assertEquals(test.isValid(), false);
+    }
+
+    /**
+     * Constructs an instance of Configuration with a missing database filename.
+     */
+    @Test
+    public void testMissingDatabaseFilename() {
+        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", null);
 
         assertEquals(test.isValid(), false);
     }
