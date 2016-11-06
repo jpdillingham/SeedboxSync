@@ -115,8 +115,10 @@ public class Uploader extends Processor {
                 if (file.renameTo(newName)) {
                     logger.info("Rename successful.  Removing file from the queue...");
                     queue.remove(file.getAbsolutePath());
-                } else {
-                    logger.warn("Rename failed.  The file will remain in the queue.");
+                }
+                else {
+                    logger.warn("Rename failed. The file will be removed from the queue and retried at the next cycle.");
+                    throw new Exception("Failed to rename file.");
                 }
 
                 dequeue(file.getName());
@@ -127,6 +129,9 @@ public class Uploader extends Processor {
             }
             catch (Exception ex) {
                 logger.error("Error uploading '" + file.getName() + "': " + ex.getMessage());
+
+                // dequeue the file; it will be retried next cycle
+                dequeue(queue.peek());
             }
             finally {
                 transferInProgress = false;

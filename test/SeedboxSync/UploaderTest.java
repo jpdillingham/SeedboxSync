@@ -186,11 +186,11 @@ public class UploaderTest {
     public void testProcessUploadException() throws Exception {
         IServer server = mock(IServer.class);
 
-        Mockito.when(server.upload("local/one", "remote/one")).thenThrow(Exception.class);
+        Mockito.when(server.upload(new File("local\\one"), "remote/one")).thenThrow(Exception.class);
 
         Uploader test = new Uploader(server, "local", "remote");
 
-        test.enqueue("one");
+        test.enqueue("local/one");
 
         test.process();
     }

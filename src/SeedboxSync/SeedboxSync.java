@@ -70,7 +70,7 @@ public class SeedboxSync {
         // otherwise, use the default "config.json".
         String configFile;
 
-        if ((args != null) && (args.length > 0)) {
+        if (args.length > 0) {
             configFile = args[0];
         }
         else {

@@ -69,7 +69,13 @@ public class SeedboxSyncTest {
     }
 
     /**
-     * Tests main().
+     * Tests main() with the default config file.
+     */
+    @Test
+    public void vestMainDefault() { SeedboxSync.main(new String[] { }); }
+
+    /**
+     * Tests main() with an explicitly defined config file.
      */
     @Test
     public void testMain() {
