@@ -87,7 +87,8 @@ public class SeedboxSync {
             logger.info("Configuration loaded and validated successfully.");
         }
         catch (Exception ex) {
-            exit("Error: " + ex.getMessage());
+            logger.error("Error: " + ex.getMessage());
+            return;
         }
 
         // config was loaded and validated.  create the synchronizer.
@@ -101,7 +102,8 @@ public class SeedboxSync {
             logger.info("Synchronizer created successfully.");
         }
         catch (Exception ex) {
-            exit("Error creating Synchronizer: " + ex.getMessage());
+            logger.error("Error creating Synchronizer: " + ex.getMessage());
+            return;
         }
 
         // start the application.
@@ -133,12 +135,6 @@ public class SeedboxSync {
                 logger.info("Synchronization will repeat in " + config.getInterval() / 60 + " minute(s).");
             }
         }, 0, config.getInterval(), TimeUnit.SECONDS);
-    }
-
-    private static void exit(String message) {
-        logger.error(message);
-        logger.info("Stopping SeedboxSync.");
-        System.exit(0);
     }
 
     /**
