@@ -25,6 +25,9 @@
 
 import java.io.IOException;
 import java.io.File;
+import java.util.ArrayList;
+
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -32,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,5 +176,20 @@ public class UploaderTest {
         // assert that the queue is empty
         assertEquals(uploader.getQueue().size(), 0);
         uploader.process();
+    }
+
+    /**
+     * Test the process() method with a known server exception
+     * @throws Exception
+     */
+    @Test
+    public void testProcessUploadException() throws Exception {
+        IServer server = mock(IServer.class);
+
+        Mockito.when(server.upload("local/one", "remote/one")).thenThrow(Exception.class);
+
+        Uploader test = new Uploader(server, "local", "remote");
+
+        test.process();
     }
 }

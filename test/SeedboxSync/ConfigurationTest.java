@@ -99,7 +99,7 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidPort() {
-        Configuration test = new Configuration("", 0, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
+        Configuration test = new Configuration("server", 0, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
 
         assertEquals(test.isValid(), false);
     }

@@ -168,9 +168,7 @@ public class Downloader extends Processor {
 
                 logger.info("Download complete.");
 
-                if (!queue.isEmpty()) {
-                    download();
-                }
+                download();
             }
             catch (Exception ex) {
                 logger.error("Error downloading '" + fileName + "': " + ex.getMessage());

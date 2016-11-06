@@ -123,9 +123,7 @@ public class Uploader extends Processor {
 
                 logger.info("Upload complete.");
 
-                if (!queue.isEmpty()) {
-                    upload();
-                }
+                upload();
             }
             catch (Exception ex) {
                 logger.error("Error uploading '" + file.getName() + "': " + ex.getMessage());
