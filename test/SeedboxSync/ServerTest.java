@@ -245,10 +245,12 @@ public class ServerTest {
 
         File file = new File("test/SeedboxSync/resources/badConfig.json");
 
-        test.upload(file, "upload/test_" + System.currentTimeMillis());
+        if (!CI_Flag) {
+            test.upload(file, "upload/test_" + System.currentTimeMillis());
 
-        test.disconnect();
+            test.disconnect();
 
-        test.upload(file, "upload/test_" + System.currentTimeMillis());
+            test.upload(file, "upload/test_" + System.currentTimeMillis());
+        }
     }
 }

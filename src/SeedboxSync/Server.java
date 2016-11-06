@@ -318,14 +318,6 @@ public class Server implements IServer {
 
         FileInputStream inputStream = new FileInputStream(sourceFile);
 
-//        //server.enterLocalPassiveMode();
-//        server.enterRemotePassiveMode();
-//
-//        server.appendFile(destinationFile, input);
-//
-//        input.close();
-//        //server.completePendingCommand();
-
         OutputStream outputStream = server.storeFileStream(destinationFile);
 
         byte[] bytesIn = new byte[4096];
