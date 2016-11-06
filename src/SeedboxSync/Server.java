@@ -129,6 +129,8 @@ public class Server implements IServer {
      */
     public Server(String address, String username, String password, Integer port)
     {
+        logger.info("Configuring FTP client...");
+
         this.address = address;
         this.username = username;
         this.password = password;
@@ -136,7 +138,10 @@ public class Server implements IServer {
 
         this.server = new FTPClient();
 
+        logger.info("Binding transfer stream listener...");
         configureStreamListener();
+
+        logger.info("FTP client is ready.");
     }
 
     /**
@@ -185,6 +190,9 @@ public class Server implements IServer {
         logger.info("Configuring connection...");
         server.setFileType(FTP.BINARY_FILE_TYPE, FTP.BINARY_FILE_TYPE);
         server.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+        server.setBufferSize(1024 * 1024);
+        server.setAutodetectUTF8(true);
+        server.setControlKeepAliveTimeout(300);
 
         logger.info("Connection established.");
     }
@@ -197,7 +205,7 @@ public class Server implements IServer {
         if (isConnected()) {
             disconnect();
         }
-        logger.info("Connection to server lost.  Reconnecting...");
+        logger.debug("Connection to server lost.  Reconnecting...");
         connect();
     }
 
@@ -225,11 +233,12 @@ public class Server implements IServer {
      * @throws Exception Thrown if an exception is encountered during the listFiles operation.
      */
     public List<FTPFile> list(String directory) throws Exception {
-        if (!isConnected()) {
-            reconnect();
-        }
+        // reconnect to the server to reset active/passive mode settings
+        reconnect();
 
         List<FTPFile> retVal = new ArrayList<FTPFile>();
+
+        server.enterLocalPassiveMode();
 
         logger.debug("Fetching file list from '" + directory + "'...");
         FTPFile[] files = server.listFiles(directory);
@@ -251,9 +260,8 @@ public class Server implements IServer {
      */
     @Async
     public Future<Boolean> download(String sourceFile, String destinationFile, Long size) throws Exception {
-        if (!isConnected()) {
-            reconnect();
-        }
+        // reconnect to the server to reset active/passive mode settings
+        reconnect();
 
         File file = new File(sourceFile);
         currentDownload = file.getName();
@@ -264,6 +272,8 @@ public class Server implements IServer {
         lastProgressTotal = 0L;
 
         logger.info("Retrieving file " + sourceFile);
+
+        server.enterLocalActiveMode();
 
         FileOutputStream out = new FileOutputStream(destinationFile);
         server.retrieveFile(sourceFile, out);
@@ -300,15 +310,22 @@ public class Server implements IServer {
      */
     @Async
     public Future<Boolean> upload(String sourceFile, String destinationFile) throws Exception {
-        if (!isConnected()) {
-            reconnect();
-        }
+        // reconnect to the server to reset active/passive mode settings
+        reconnect();
+
+        logger.info("Uploading file '" + sourceFile + "' to '" + destinationFile + "'...");
 
         FileInputStream input = new FileInputStream(sourceFile);
 
-        server.appendFile(destinationFile, input);
+        server.enterLocalPassiveMode();
+        server.enterRemotePassiveMode();
+
+        server.storeFile(destinationFile, input);
 
         input.close();
+        //server.completePendingCommand();
+
+        logger.info("Upload complete.");
 
         // TODO: make this actually asynchronous
         return new AsyncResult<Boolean>(true);

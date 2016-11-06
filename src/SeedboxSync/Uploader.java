@@ -51,8 +51,19 @@ public class Uploader extends Processor {
      * Scans the local upload directory and enqueues new files, then uploads the next file in the queue, if applicable.
      */
     public void process() throws Exception {
+        logger.info("Processing uploads...");
+
         scanDirectory();
-        upload();
+
+        if (queue.size() > 0) {
+            logger.info("Processing upload queue of " + queue.size() + " file(s)...");
+
+            upload();
+
+            logger.info("Upload queue processed.");
+        }
+
+        logger.info("Uploads processed.");
     }
 
     /**
@@ -85,17 +96,14 @@ public class Uploader extends Processor {
      * @throws Exception Thrown if an exception is encountered during the upload.
      */
     private void upload() throws Exception {
-        if (transferInProgress) {
-            logger.debug("Upload is already in progress.  Skipping.");
-        }
-        else {
-            if (!queue.isEmpty()) {
-                transferInProgress = true;
+        if (!queue.isEmpty()) {
+            transferInProgress = true;
 
-                File file = new File(queue.peek());
+            File file = new File(queue.peek());
 
-                logger.info("Uploading file '" + file.getName() + "' to remote directory '" + remoteDirectory + "'...");
+            logger.info("Uploading file '" + file.getName() + "' to remote directory '" + remoteDirectory + "'...");
 
+            try {
                 server.upload(file, remoteDirectory + "/" + file.getName());
 
                 logger.info("Transfer complete.");
@@ -107,12 +115,23 @@ public class Uploader extends Processor {
                 if (file.renameTo(newName)) {
                     logger.info("Rename successful.  Removing file from the queue...");
                     queue.remove(file.getAbsolutePath());
-                }
-                else {
+                } else {
                     logger.warn("Rename failed.  The file will remain in the queue.");
                 }
 
                 logger.info("Upload complete.");
+
+                if (!queue.isEmpty()) {
+                    logger.info("next");
+                    upload();
+                } else {
+                    logger.info("no more files");
+                }
+            }
+            catch (Exception ex) {
+                logger.error("Error uploading '" + file.getName() + "': " + ex.getMessage());
+            }
+            finally {
                 transferInProgress = false;
             }
         }

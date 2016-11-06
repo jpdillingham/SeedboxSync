@@ -2,7 +2,7 @@
  *
  * SynchronizerTest.java
  *
- * Tests the Uploader class.
+ * Tests the Synchronizer class.
  *
  ***************************************************************************
  *
@@ -68,7 +68,7 @@ public class SynchronizerTest {
      */
     @Test
     public void testConstructor() throws Exception {
-        Configuration configuration = new Configuration("server", 1, "user", "pass", 1, "remoteDownload", "localDownload", "remoteUpload", "localUpload");
+        Configuration configuration = new Configuration("server", 1, "user", "pass", 1, "remoteDownload", "localDownload", "remoteUpload", "localUpload", "db");
         IServer server = mock(IServer.class);
         IDatabase database = mock(IDatabase.class);
 

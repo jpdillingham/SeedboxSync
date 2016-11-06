@@ -23,17 +23,17 @@
  *
  ****************************************************************************/
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
-
+import java.sql.SQLException;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
-
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -48,20 +48,24 @@ public class DatabaseTest {
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
     /**
-     * The name of the test database file.
+     * The temporary folder for the class.
      */
-    private final String testDB = "test.db";
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * Configure the logger.
      */
     @Before
-    public void configureLogging() {
+    public void configureLogging() throws IOException {
         ConsoleAppender console = new ConsoleAppender();
         console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-        console.setThreshold(Level.INFO);
+        console.setThreshold(Level.DEBUG);
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
+
+        // create folder
+        folder.newFolder("db");
     }
 
     /**
@@ -69,11 +73,10 @@ public class DatabaseTest {
      * @throws SQLException
      */
     @Test
-    public void testConstructor() throws SQLException {
-        Database test = new Database(testDB);
+    public void testConstructor() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/constructor.db");
+        Database test = new Database(file.getAbsolutePath());
         test.close();
-
-        (new java.io.File(testDB)).deleteOnExit();
     }
 
     /**
@@ -81,10 +84,9 @@ public class DatabaseTest {
      * @throws SQLException
      */
     @Test
-    public void testGoodDatabase() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodDatabase.db";
-        Database test = new Database(file);
-        (new java.io.File(file)).deleteOnExit();
+    public void testGoodDatabase() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/good.db");
+        Database test = new Database(file.getAbsolutePath());
     }
 
     /**
@@ -101,17 +103,15 @@ public class DatabaseTest {
      * @throws SQLException
      */
     @Test
-    public void testGoodAdd() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodAddDatabase.db";
-        Database test = new Database(file);
+    public void testGoodAdd() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/goodAdd.db");
+        Database test = new Database(file.getAbsolutePath());
 
         test.addFile(new File("test", 0L, new Timestamp(0L)));
 
         File testFile = test.getFile("test");
 
         assertEquals(testFile.getName(), "test");
-
-        (new java.io.File(file)).deleteOnExit();
     }
 
     /**
@@ -119,15 +119,14 @@ public class DatabaseTest {
      * @throws SQLException
      */
     @Test
-    public void testDuplicateAdd() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/duplicateAddDatabase.db";
-        Database test = new Database(file);
+    public void testDuplicateAdd() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/duplicate.db");
+        Database test = new Database(file.getAbsolutePath());
 
         test.addFile(new File("testduplicate", 0L, new Timestamp(0L)));
 
-        //test.addFile(new File("test"));
-
-        (new java.io.File(file)).deleteOnExit();
+        // SQLite library is throwing an improper exception on the constraint violation
+        //test.addFile(new File("testduplicate", 0L, new Timestamp(0L)));
     }
 
     /**
@@ -135,17 +134,11 @@ public class DatabaseTest {
      * @throws SQLException
      */
     @Test
-    public void testDownloadUpdate() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/updateDatabase.db";
-
-        // cleanup previous run
-        java.io.File fileInstance = new java.io.File(System.getProperty("user.dir") + "/test/SeedboxSync/resources/updateDatabase.db");
-        if (fileInstance.exists()) {
-            fileInstance.delete();
-        }
+    public void testDownloadUpdate() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/download.db");
 
         // create new db
-        Database test = new Database(file);
+        Database test = new Database(file.getAbsolutePath());
 
         // add a file with null timestamp
         test.addFile(new File("test", 0L, new Timestamp(0L)));
@@ -159,8 +152,6 @@ public class DatabaseTest {
         File testFile = test.getFile(new File("test"));
         assertEquals(testFile.getName(), "test");
         assertNotEquals(testFile.getDownloadedTimestamp(), null);
-
-        (new java.io.File(file)).deleteOnExit();
     }
 
     /**
@@ -168,9 +159,9 @@ public class DatabaseTest {
      * @throws SQLException
      */
     @Test
-    public void testGetFiles() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/listDatabase.db";
-        Database test = new Database(file);
+    public void testGetFiles() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/get.db");
+        Database test = new Database(file.getAbsolutePath());
 
         test.addFile(new File("test", 0L, new Timestamp(0L)));
         test.addFile(new File("test2", 0L, new Timestamp(0L)));
@@ -181,8 +172,6 @@ public class DatabaseTest {
         assertEquals(list.size(), 3);
         assertEquals(list.get(0).getName(), "test");
         assertEquals(list.get(2).getName(), "test3");
-
-        (new java.io.File(file)).deleteOnExit();
     }
 
     /**
@@ -190,27 +179,21 @@ public class DatabaseTest {
      * @throws SQLException
      */
     @Test
-    public void testBadGetFile() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/emptyDatabase.db";
-        Database test = new Database(file);
+    public void testBadGetFile() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/badGet.db");
+        Database test = new Database(file.getAbsolutePath());
 
         File testFile = test.getFile(new File("test"));
 
         assertEquals(testFile, null);
-
-        (new java.io.File(file)).deleteOnExit();
     }
 
     /**
      * Tests instantiation of a database from an existing file.
      */
     @Test
-    public void testDoubleDatabase() throws SQLException {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/emptyDatabase.db";
-        Database test = new Database(file);
-
-        Database testTwo = new Database(file);
-
-        (new java.io.File(file)).deleteOnExit();
+    public void testDoubleDatabase() throws IOException, SQLException {
+        java.io.File file = folder.newFile("db/double.db");
+        Database test = new Database(file.getAbsolutePath());
     }
 }

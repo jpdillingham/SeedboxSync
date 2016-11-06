@@ -59,8 +59,24 @@ public class Downloader extends Processor {
      * Scans the remote download directory and enqueues new files, then uploads the next file in the queue, if applicable.
      */
     public void process() throws Exception {
+        logger.info("Processing downloads...");
+
+        int files = queue.size();
+
+        logger.info("Scanning files for directory '" + remoteDirectory + "'...");
         scanDirectory(remoteDirectory);
-        download();
+
+        logger.info("Scan complete. " + (queue.size() - files) + " new files found.");
+
+        if (queue.size() > 0) {
+            logger.info("Processing download queue of " + queue.size() + "...");
+
+            download();
+
+            logger.info("Download queue processed.");
+        }
+
+        logger.info("Downloads processed.");
     }
 
     /**
@@ -70,7 +86,7 @@ public class Downloader extends Processor {
      * @throws Exception Thrown if an exception is encountered while retrieving the directory listing.
      */
     private void scanDirectory(String directory) throws Exception {
-        logger.debug("Listing files for directory '" + directory + "'...");
+        logger.debug("Scanning files for directory '" + directory + "'...");
 
         List<FTPFile> files;
 
@@ -80,10 +96,8 @@ public class Downloader extends Processor {
         catch (Exception ex)
         {
             logger.error("Exception thrown while retrieving file list for '" + directory + "': " + ex.getMessage());
-            throw ex;
+            throw new Exception("Error retrieving file list for '" + directory + "': " + ex.getMessage());
         }
-
-        logger.debug("Listing complete.  " + files.size() + " " + (files.size() == 1 ? "record" : "records") + " retrieved.");
 
         for (FTPFile file : files) {
             if (!file.isDirectory()) {
@@ -91,7 +105,7 @@ public class Downloader extends Processor {
                 String relativeFileName = fullFileName.replace(remoteDirectory, "");
                 String relativeFileNameWithSize = relativeFileName + ":" + file.getSize();
 
-                logger.info("r: " + relativeFileNameWithSize);
+                logger.debug("Found file: " + relativeFileNameWithSize);
 
                 // enqueue the file for downloading only if it doesn't exist in the database
                 if (database.getFile(relativeFileName) == null) {

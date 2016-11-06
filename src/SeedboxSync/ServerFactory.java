@@ -40,11 +40,23 @@ public class ServerFactory {
      * @param config The Configuration from which the Server settings are taken.
      * @return The newly instantiated Server instance.
      */
-    public static Server createServer(Configuration config) {
-        if (!config.isValid()) {
-            throw new RuntimeException("Unable to create Server; configuration is invalid.");
+    public static Server createServer(Configuration config) throws Exception {
+        if (config == null) {
+            throw new Exception("Unable to create Server; provided configuration is null.");
         }
 
-        return new Server(config.getServer(), config.getUsername(), config.getPassword(), config.getPort());
+        logger.debug("Creating new Server...");
+
+        if (config.isValid()) {
+            logger.debug("s: " + config.getServer() + ", u: " + config.getUsername() + ", p: " + config.getPassword());
+            Server retVal = new Server(config.getServer(), config.getUsername(), config.getPassword(), config.getPort());
+
+            logger.debug("Server created successfully.");
+
+            return retVal;
+        }
+        else {
+            throw new Exception("Invalid configuration; " + config.getValidationMessage());
+        }
     }
 }

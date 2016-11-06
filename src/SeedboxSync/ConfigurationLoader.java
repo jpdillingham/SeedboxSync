@@ -27,10 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -76,15 +74,16 @@ public class ConfigurationLoader {
         String server = fetch("server", jsonObject);
         Integer port = ((Long)fetch("port", jsonObject)).intValue();
         String username = fetch("username", jsonObject);
-
         String password = fetch("password", jsonObject);
         Integer interval = ((Long)fetch("interval", jsonObject)).intValue();
         String remoteDownloadDirectory = fetch("remoteDownloadDirectory", jsonObject);
         String localDownloadDirectory = fetch("localDownloadDirectory", jsonObject);
         String remoteUploadDirectory = fetch("remoteUploadDirectory", jsonObject);
         String localUploadDirectory = fetch("localUploadDirectory", jsonObject);
+        String databaseFilename = fetch("databaseFilename", jsonObject);
 
-        retVal = new Configuration(server, port, username, password, interval, remoteDownloadDirectory, localDownloadDirectory, remoteUploadDirectory, localUploadDirectory);
+        retVal = new Configuration(server, port, username, password, interval, remoteDownloadDirectory,
+                localDownloadDirectory, remoteUploadDirectory, localUploadDirectory, databaseFilename);
 
         logger.debug("Instantiated successfully.");
 
@@ -104,7 +103,7 @@ public class ConfigurationLoader {
         T retVal = (T)object.get(fieldName);
 
         if (retVal == null) {
-            throw new RuntimeException("Bad configuration; field '" + fieldName + "' is missing or contains an invalid value.");
+            throw new RuntimeException("Invalid configuration; field '" + fieldName + "' is missing or contains an invalid value.");
         }
 
         return retVal;

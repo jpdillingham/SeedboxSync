@@ -62,8 +62,8 @@ public class ServerFactoryTest {
      * Constructs a Server using ServerFactory, providing a known good configuration.
      */
     @Test
-    public void testGoodConfig() {
-        Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp");
+    public void testGoodConfig() throws Exception {
+        Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
         Server test = ServerFactory.createServer(config);
 
         assertEquals(test.getAddress(), "server");
@@ -75,9 +75,18 @@ public class ServerFactoryTest {
     /**
      * Constructs a Server using ServerFactory, providing a known bad configuration.
      */
-    @Test(expected=RuntimeException.class)
-    public void testBadConfig() {
-        Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp");
+    @Test(expected=Exception.class)
+    public void testBadConfig() throws Exception {
+        Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
         Server test = ServerFactory.createServer(config);
+    }
+
+    /**
+     * Constructs a Server using ServerFactory, providing a null configuration.
+     * @throws Exception
+     */
+    @Test(expected=Exception.class)
+    public void testNullConfig() throws Exception {
+        Server test = ServerFactory.createServer(null);
     }
 }

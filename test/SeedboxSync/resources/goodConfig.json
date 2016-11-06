@@ -7,5 +7,6 @@
 	"remoteDownloadDirectory": "remoteDownloadDirectory",
 	"localDownloadDirectory": "localDownloadDirectory",
 	"remoteUploadDirectory": "remoteUploadDirectory",
-	"localUploadDirectory": "localUploadDirectory"
+	"localUploadDirectory": "localUploadDirectory",
+	"databaseFilename": "database.db"
 }

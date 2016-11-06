@@ -80,7 +80,8 @@ public class Database implements IDatabase {
             logger.info("Schema created successfully.");
         }
 
-        logger.info("Schema verified; database connection is ready.");
+        logger.info("Schema verified.");
+        logger.info("Database connection is ready.");
     }
 
     /**
@@ -166,17 +167,23 @@ public class Database implements IDatabase {
 
         String query = "INSERT INTO Files (Name, Size, Timestamp, AddedTimestamp) VALUES(?, ?, ?, ?)";
 
-        PreparedStatement statement = connection.prepareStatement(query);
-
-        statement.setString(1, file.getName());
-        statement.setLong(2, file.getSize());
-        statement.setTimestamp(3, file.getTimestamp());
-        statement.setTimestamp(4, new Timestamp((new Date()).getTime()));
+        PreparedStatement statement = null;
 
         try {
+            logger.debug("Preparing query...");
+
+            statement = connection.prepareStatement(query);
+
+            statement.setString(1, file.getName());
+            statement.setLong(2, file.getSize());
+            statement.setTimestamp(3, file.getTimestamp());
+            statement.setTimestamp(4, new Timestamp((new Date()).getTime()));
+
             logger.debug("Executing update...");
 
             statement.executeUpdate();
+
+            logger.debug("Query executed.");
         }
         catch (SQLException ex) {
             if (ex.getErrorCode() == 19) {

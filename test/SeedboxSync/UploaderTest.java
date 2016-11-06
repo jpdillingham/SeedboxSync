@@ -47,6 +47,9 @@ public class UploaderTest {
      */
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
 
+    /**
+     * The temporary folder for the class.
+     */
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 

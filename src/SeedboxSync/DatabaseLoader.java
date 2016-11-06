@@ -25,7 +25,6 @@
  ****************************************************************************/
 
 import java.sql.SQLException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,17 +40,25 @@ public class DatabaseLoader {
 
     /**
      * Instantiates and loads a Database from the specified file.
-     * @param file The file from which the Database is to be loaded.
+     * @param config The Configuration for the application.
      * @return The loaded Database instance.
      * @throws SQLException Thrown if an exception is encountered while instantiating the databse.
      */
-    public static Database load(String file) throws SQLException {
-        logger.debug("Attempting to initialize a new instance of Database from file '" + file + "'...");
+    public static Database load(Configuration config) throws Exception {
+        if (config == null) {
+            throw new Exception("Unable to create Database; provided configuration is null.");
+        }
 
-        Database retVal = new Database(file);
+        logger.debug("Loading database from '" + config.getDatabaseFilename() + "'...");
 
-        logger.debug("Instantiated successfully.");
+        if (config.isValid()) {
+            Database retVal = new Database(config.getDatabaseFilename());
 
-        return retVal;
+            logger.debug("Database loaded successfully.");
+            return retVal;
+        }
+        else {
+            throw new Exception("Invalid configuration; " + config.getValidationMessage());
+        }
     }
 }

@@ -79,12 +79,7 @@ public class Synchronizer implements ISynchronizer {
      * @throws Exception Thrown if an exception is encountered during the synchronization.
      */
     public void synchronize() throws Exception {
-        try {
-            uploader.process();
-            downloader.process();
-        }
-        catch (Exception ex) {
-            logger.error("Exception encountered during synchronization: " + ex.getMessage());
-        }
+        uploader.process();
+        downloader.process();
     }
 }

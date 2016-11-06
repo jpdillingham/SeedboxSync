@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,36 +64,81 @@ public class SeedboxSync {
     public static void main(String[] args) {
         configureLogging();
 
-        if (args != null) {
-            config = loadConfiguration(args[0]);
+        logger.info("Starting SeedboxSync...");
+
+        // determine the filename of the config file.  if a command line argument was supplied, use that.
+        // otherwise, use the default "config.json".
+        String configFile;
+
+        if ((args != null) && (args.length > 0)) {
+            configFile = args[0];
         }
         else {
-            config = loadConfiguration("config.json");
+            configFile = "config.json";
         }
 
-        logger.info("Creating a Synchronizer...");
+        // load the configuration from the config file.
+        // if an exception is raised or the config is invalid an exception is thrown and we will log it and exit.
+        logger.info("Retrieving configuration from '" + configFile + "'...");
 
-        // instantiate a Synchronizer with the fetched configuration
         try {
-            IServer server = new ServerFactory().createServer(config);
-            synchronizer = new Synchronizer(config, server, new Database("database.db"));
+            config = loadConfiguration(configFile);
+
+            logger.info("Configuration loaded and validated successfully.");
         }
         catch (Exception ex) {
-            logger.error("Error creating Synchronizer: " + ex.getMessage());
+            exit("Error: " + ex.getMessage());
         }
 
-        logger.info("Synchronizer created successfully.");
+        // config was loaded and validated.  create the synchronizer.
+        logger.info("Creating Synchronizer...");
 
+        try {
+            Server server = ServerFactory.createServer(config);
+            Database database = DatabaseLoader.load(config);
+            synchronizer = new Synchronizer(config, server, database);
+
+            logger.info("Synchronizer created successfully.");
+        }
+        catch (Exception ex) {
+            exit("Error creating Synchronizer: " + ex.getMessage());
+        }
+
+        // start the application.
+        start();
+    }
+
+    /**
+     * Starts a repeating task to invoke the synchronizer.
+     */
+    private static void start() {
         // create an executor to handle the synchronization
         service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleWithFixedDelay(new Runnable() {
             public void run() {
+                boolean err;
                 logger.info("Starting Synchronization...");
+
                 try {
+                    err = false;
                     synchronizer.synchronize();
-                } catch (Exception ex) {  }
+                }
+                catch (Exception ex) {
+                    // report the error but keep the application running.
+                    logger.error("Exception thrown during synchronization: " + ex.getMessage());
+                    err = true;
+                }
+
+                logger.info("Synchronization " + (err ? "failed." : "complete."));
+                logger.info("Synchronization will repeat in " + config.getInterval() / 60 + " minute(s).");
             }
         }, 0, config.getInterval(), TimeUnit.SECONDS);
+    }
+
+    private static void exit(String message) {
+        logger.error(message);
+        logger.info("Stopping SeedboxSync.");
+        System.exit(0);
     }
 
     /**
@@ -111,28 +155,21 @@ public class SeedboxSync {
     /**
      * Loads the application configuration from file.
      */
-    private static Configuration loadConfiguration(String file) {
+    private static Configuration loadConfiguration(String file) throws Exception {
         Configuration config;
         String configFile = System.getProperty("user.dir") + File.separator + file;
 
-        logger.info("Retrieving configuration from '" + configFile + "'...");
-
-        // attempt to find and load the configuration file.
-        // the file (config.json) needs to be located in the root of the application directory.
-        if ((new File(configFile)).exists()) {
-            try {
-                config = new ConfigurationLoader().load(configFile);
-
-                logger.info("Configuration retrieved successfully.");
-
-                return config;
-            } catch (Exception ex) {
-                logger.error("Error retrieving configuration: " + ex.getMessage());
-            }
+        if (!(new File(configFile)).exists()) {
+            throw new Exception("Configuration file '" + configFile + "' was not found.");
         }
         else {
-            logger.error("Configuration file '" + configFile + "' was not found.");
+            config = new ConfigurationLoader().load(configFile);
+
+            if (!config.isValid()) {
+                throw new Exception("The configuration loaded from '" + configFile + "' was invalid: " + config.getValidationMessage());
+            }
+
+            return config;
         }
-        return null;
     }
 }

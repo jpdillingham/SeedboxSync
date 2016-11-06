@@ -44,14 +44,15 @@ import static org.junit.Assert.assertNotEquals;
  */
 public class DatabaseLoaderTest {
     /**
-     * Filename for the test database file.
-     */
-    private final String testDB = "test.db";
-
-    /**
      * The logger for this class.
      */
     private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
+
+    /**
+     * The temporary folder for the class.
+     */
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * Configure the logger.
@@ -63,6 +64,8 @@ public class DatabaseLoaderTest {
         console.setThreshold(Level.INFO);
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
+
+        folder.newFolder("dbLoader");
     }
 
     /**
@@ -78,14 +81,35 @@ public class DatabaseLoaderTest {
      * @throws SQLException
      */
     @Test
-    public void testLoad() throws SQLException, IOException {
-        Database db = DatabaseLoader.load(testDB);
+    public void testLoad() throws Exception {
+        File file = folder.newFile("dbLoader/dbLoader.db");
+        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                "local", "remoteUp", "localUp", file.getAbsolutePath());
+
+        Database db = DatabaseLoader.load(test);
 
         assertNotEquals(db, null);
-        assertEquals((new File(testDB).exists()), true);
+        assertEquals((file.exists()), true);
 
         db.close();
+    }
 
-        (new File(testDB)).delete();
+    /**
+     * Loads a database with a known bad configuraiton.
+     * @throws Exception
+     */
+    @Test(expected=Exception.class)
+    public void testBadLoad() throws Exception {
+        Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
+        Database db = DatabaseLoader.load(config);
+    }
+
+    /**
+     * Loads a database with a null configuration.
+     * @throws Exception
+     */
+    @Test(expected=Exception.class)
+    public void testNullLoad() throws Exception {
+        Database db = DatabaseLoader.load(null);
     }
 }

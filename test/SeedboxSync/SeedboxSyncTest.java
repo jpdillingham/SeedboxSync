@@ -1,8 +1,8 @@
 /****************************************************************************
  *
- * SynchronizerTest.java
+ * SeedboxSyncTest.java
  *
- * Tests the Uploader class.
+ * Tests the SeedboxSync class.
  *
  ***************************************************************************
  *
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import static org.mockito.Mockito.mock;
 
 /**
- * Tests the Synchronizer class.
+ * Tests the SeedboxSync class.
  */
 public class SeedboxSyncTest {
     /**
@@ -63,7 +63,16 @@ public class SeedboxSyncTest {
      * Tests the constructor.
      */
     @Test
-    public void test() {
-        SeedboxSync.main(new String[] { "test/SeedboxSync/resources/goodConfig.json" });
+    public void testConstructor() {
+        SeedboxSync test = new SeedboxSync();
     }
+
+    /**
+     * Tests main().
+     */
+//    @Test
+//    public void testMain() {
+//        SeedboxSync.main(new String[] { "test/SeedboxSync/resources/goodConfig.json" });
+//    }
+
 }
