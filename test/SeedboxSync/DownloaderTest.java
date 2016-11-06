@@ -61,6 +61,7 @@ public class DownloaderTest {
         console.setThreshold(Level.INFO);
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
+        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
     }
 
     /**

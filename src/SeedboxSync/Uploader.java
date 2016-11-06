@@ -119,13 +119,12 @@ public class Uploader extends Processor {
                     logger.warn("Rename failed.  The file will remain in the queue.");
                 }
 
+                dequeue(file.getName());
+
                 logger.info("Upload complete.");
 
                 if (!queue.isEmpty()) {
-                    logger.info("next");
                     upload();
-                } else {
-                    logger.info("no more files");
                 }
             }
             catch (Exception ex) {

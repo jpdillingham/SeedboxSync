@@ -63,6 +63,7 @@ public class UploaderTest {
         console.setThreshold(Level.INFO);
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
+        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
     }
 
     /**
@@ -138,25 +139,6 @@ public class UploaderTest {
         uploader.enqueue("test");
 
         uploader.process();
-    }
-
-    /**
-     * Tests process() when a transfer is already in process.
-     * @throws IOException
-     */
-    @Test
-    public void testInProgressProcess() throws Exception {
-        IServer server = mock(IServer.class);
-        Uploader uploader = new Uploader(server, "folder" ,"");
-
-        uploader.enqueue("test");
-        assertEquals(uploader.getQueue().size(), 1);
-
-        uploader.transferInProgress = true;
-        uploader.process();
-
-        // assert that the queue still contains our file
-        assertEquals(uploader.getQueue().size(), 1);
     }
 
     /**

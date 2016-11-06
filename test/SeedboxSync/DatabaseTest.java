@@ -63,6 +63,7 @@ public class DatabaseTest {
         console.setThreshold(Level.DEBUG);
         console.activateOptions();
         org.apache.log4j.Logger.getRootLogger().addAppender(console);
+        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
 
         // create folder
         folder.newFolder("db");

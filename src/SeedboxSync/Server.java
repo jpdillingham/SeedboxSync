@@ -189,7 +189,7 @@ public class Server implements IServer {
 
         logger.info("Configuring connection...");
         server.setFileType(FTP.BINARY_FILE_TYPE, FTP.BINARY_FILE_TYPE);
-        server.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+        //server.setFileTransferMode(FTP.BINARY_FILE_TYPE);
         server.setBufferSize(1024 * 1024);
         server.setAutodetectUTF8(true);
         server.setControlKeepAliveTimeout(300);
@@ -317,10 +317,10 @@ public class Server implements IServer {
 
         FileInputStream input = new FileInputStream(sourceFile);
 
-        server.enterLocalPassiveMode();
+        //server.enterLocalPassiveMode();
         server.enterRemotePassiveMode();
 
-        server.storeFile(destinationFile, input);
+        server.appendFile(destinationFile, input);
 
         input.close();
         //server.completePendingCommand();
