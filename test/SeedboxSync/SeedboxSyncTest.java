@@ -76,4 +76,20 @@ public class SeedboxSyncTest {
         SeedboxSync.main(new String[] { "test/SeedboxSync/resources/goodConfig.json" });
     }
 
+    /**
+     * Tests main() with a missing config file.
+     */
+    @Test
+    public void testMainMissingConfig() {
+        SeedboxSync.main(new String[] { "missing" });
+    }
+
+    /**
+     * Tests main() with a known bad config file.
+     */
+    @Test
+    public void testMainBadConfig() {
+        SeedboxSync.main(new String[] { "test/SeedboxSync/resources/badConfig.json" });
+    }
+
 }
