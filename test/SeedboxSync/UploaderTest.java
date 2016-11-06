@@ -190,6 +190,8 @@ public class UploaderTest {
 
         Uploader test = new Uploader(server, "local", "remote");
 
+        test.enqueue("one");
+
         test.process();
     }
 }

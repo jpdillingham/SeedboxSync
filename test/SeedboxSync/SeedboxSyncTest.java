@@ -92,4 +92,9 @@ public class SeedboxSyncTest {
         SeedboxSync.main(new String[] { "test/SeedboxSync/resources/badConfig.json" });
     }
 
+    /**
+     * Tests main() with a partially complete config file.
+     */
+    @Test
+    public void testMainPartialConfig() { SeedboxSync.main(new String[] { "test/SeedboxSync/resources/partialConfig.json" }); }
 }
