@@ -25,12 +25,15 @@
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+
 import org.json.simple.parser.ParseException;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -84,6 +87,7 @@ public class ConfigurationLoaderTest {
         assertEquals(config.getLocalDownloadDirectory(), "localDownloadDirectory");
         assertEquals(config.getRemoteUploadDirectory(), "remoteUploadDirectory");
         assertEquals(config.getLocalUploadDirectory(), "localUploadDirectory");
+        assertEquals(config.isValid(), true);
     }
 
     /**

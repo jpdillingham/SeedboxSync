@@ -27,8 +27,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -59,28 +61,26 @@ public class ConfigurationLoader {
         }
 
         JSONParser parser = new JSONParser();
-        Object obj;
+        JSONObject parsedConfiguration;
 
         try {
-            obj = parser.parse(new FileReader(file));
+            parsedConfiguration = (JSONObject)parser.parse(new FileReader(file));
         }
         catch (ParseException ex) {
             logger.error("File parsing error: " + ex.getMessage());
             throw ex;
         }
 
-        JSONObject jsonObject = (JSONObject)obj;
-
-        String server = fetch("server", jsonObject);
-        Integer port = ((Long)fetch("port", jsonObject)).intValue();
-        String username = fetch("username", jsonObject);
-        String password = fetch("password", jsonObject);
-        Integer interval = ((Long)fetch("interval", jsonObject)).intValue();
-        String remoteDownloadDirectory = fetch("remoteDownloadDirectory", jsonObject);
-        String localDownloadDirectory = fetch("localDownloadDirectory", jsonObject);
-        String remoteUploadDirectory = fetch("remoteUploadDirectory", jsonObject);
-        String localUploadDirectory = fetch("localUploadDirectory", jsonObject);
-        String databaseFilename = fetch("databaseFilename", jsonObject);
+        String server = fetch("server", parsedConfiguration);
+        Integer port = ((Long)fetch("port", parsedConfiguration)).intValue();
+        String username = fetch("username", parsedConfiguration);
+        String password = fetch("password", parsedConfiguration);
+        Integer interval = ((Long)fetch("interval", parsedConfiguration)).intValue();
+        String remoteDownloadDirectory = fetch("remoteDownloadDirectory", parsedConfiguration);
+        String localDownloadDirectory = fetch("localDownloadDirectory", parsedConfiguration);
+        String remoteUploadDirectory = fetch("remoteUploadDirectory", parsedConfiguration);
+        String localUploadDirectory = fetch("localUploadDirectory", parsedConfiguration);
+        String databaseFilename = fetch("databaseFilename", parsedConfiguration);
 
         retVal = new Configuration(server, port, username, password, interval, remoteDownloadDirectory,
                 localDownloadDirectory, remoteUploadDirectory, localUploadDirectory, databaseFilename);

@@ -28,52 +28,52 @@
  */
 public class Configuration {
     /**
-     * The configured server address.
+     * The server address.
      */
     private String server;
 
     /**
-     * The configured server port.
+     * The The server port.
      */
     private Integer port;
 
     /**
-     * The configured username for the server.
+     * The username for the server.
      */
     private String username;
 
     /**
-     * The configured password for the server.
+     * The password for the server.
      */
     private String password;
 
     /**
-     * The configured interval on which the synchronization should take place.
+     * The interval on which synchronization should take place.
      */
     private Integer interval;
 
     /**
-     * The configured remote directory which is to be synchronized.
+     * The remote download directory which is to be synchronized.
      */
     private String remoteDownloadDirectory;
 
     /**
-     * The configured local directory to which files are to be downloaded.
+     * The local directory to which files are to be downloaded.
      */
     private String localDownloadDirectory;
 
     /**
-     * The configured remote directory to which synchronized files are to be uploaded.
+     * The remote directory to which synchronized files are to be uploaded.
      */
     private String remoteUploadDirectory;
 
     /**
-     * The configured local directory from which files are uploaded.
+     * The local directory from which files are to be uploaded.
      */
     private String localUploadDirectory;
 
     /**
-     * The configured database filename for the application.
+     * The filename of the database file to be used for the application.
      */
     private String databaseFilename;
 
@@ -89,10 +89,11 @@ public class Configuration {
      * @param username The username for the server.
      * @param password The password for the server.
      * @param interval The interval on which synchronization should take place.
-     * @param remoteDownloadDirectory The remote directory which is to be synchronized.
+     * @param remoteDownloadDirectory The remote download directory which is to be synchronized.
      * @param localDownloadDirectory The local directory to which files are to be downloaded.
      * @param remoteUploadDirectory The remote directory to which synchronized files are to be uploaded.
      * @param localUploadDirectory The local directory from which files are to be uploaded.
+     * @param databaseFilename The filename of the database file to be used for the application.
      */
     public Configuration(String server, Integer port, String username, String password, Integer interval,
                          String remoteDownloadDirectory, String localDownloadDirectory, String remoteUploadDirectory,
@@ -110,40 +111,40 @@ public class Configuration {
     }
 
     /**
-     * Gets the configured server address.
-     * @return The configured server address.
+     * Gets the server address.
+     * @return The server address.
      */
     public String getServer() {
         return server;
     }
 
     /**
-     * Gets the configured server port.
-     * @return The configured server port.
+     * Gets the server port.
+     * @return The server port.
      */
     public Integer getPort() {
         return port;
     }
 
     /**
-     * Gets the configured username for the server.
-     * @return The configured username for the server.
+     * Gets the username for the server.
+     * @return The username for the server.
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * Gets the configured password for the server.
-     * @return The configured password for the server.
+     * Gets the password for the server.
+     * @return The password for the server.
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Gets the configured interval on which the synchronization should take place.
-     * @return The configured interval on which the synchronization should take place.
+     * Gets the interval on which the synchronization should take place.
+     * @return The interval on which the synchronization should take place.
      */
     public Integer getInterval() {
         return interval;
@@ -196,13 +197,13 @@ public class Configuration {
     public Boolean isValid() {
         String err = "";
 
-        if (server == null || server == "") {
+        if (server == null || server.equals("")) {
             err = "Server is missing or blank.";
         }
         else if (port == null || port <= 0) {
             err = "Server port is null or invalid.";
         }
-        else if (username == null || username == "") {
+        else if (username == null || username.equals("")) {
             err = "Username is missing or blank.";
         }
         else if (password == null) {
@@ -211,23 +212,23 @@ public class Configuration {
         else if (interval == null || interval <= 0) {
             err = "Interval is missing or too low.";
         }
-        else if (remoteDownloadDirectory == null || remoteDownloadDirectory == "") {
+        else if (remoteDownloadDirectory == null || remoteDownloadDirectory.equals("")) {
             err = "Remote download directory is missing or blank.";
         }
-        else if (localDownloadDirectory == null || localDownloadDirectory == "") {
+        else if (localDownloadDirectory == null || localDownloadDirectory.equals("")) {
             err = "Local download directory is missing or blank.";
         }
-        else if (remoteUploadDirectory == null || remoteUploadDirectory == "") {
+        else if (remoteUploadDirectory == null || remoteUploadDirectory.equals("")) {
             err = "Remote upload directory is missing or blank.";
         }
-        else if (localUploadDirectory == null || localUploadDirectory == "") {
+        else if (localUploadDirectory == null || localUploadDirectory.equals("")) {
             err = "Local upload directory is missing or blank.";
         }
-        else if (databaseFilename == null || databaseFilename == "") {
+        else if (databaseFilename == null || databaseFilename.equals("")) {
             err = "Database filename is missing or blank.";
         }
 
-        if (err != "") {
+        if (!err.equals("")) {
             validationMessage = err;
             return false;
         }
