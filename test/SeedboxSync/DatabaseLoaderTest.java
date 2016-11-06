@@ -101,7 +101,7 @@ public class DatabaseLoaderTest {
      */
     @Test
     public void testExistingLoad() throws Exception {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodConfig.json";
+        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/testDatabase.db";
         Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
                 "local", "remoteUp", "localUp", file);
 
