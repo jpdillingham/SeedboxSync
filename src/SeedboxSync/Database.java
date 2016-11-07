@@ -2,7 +2,7 @@
  *
  * Database.java
  *
- * Represents the application Database.
+ * Represents the application Database and handles all database I/O.
  *
  ***************************************************************************
  *
@@ -39,7 +39,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 
 /**
- * Represents the application Database.
+ * Represents the application Database and handles all database I/O.
  */
 public class Database implements IDatabase {
     /**
@@ -103,7 +103,7 @@ public class Database implements IDatabase {
     public File getFile(String fileName) throws SQLException {
         logger.debug("Fetching list of files from the database...");
 
-        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Files " +
+        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Downloads " +
                 "WHERE Name = ?";
 
         PreparedStatement statement = connection.prepareStatement(query);
@@ -137,7 +137,7 @@ public class Database implements IDatabase {
 
         List<File> retVal = new ArrayList<File>();
 
-        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Files";
+        String query = "SELECT Name, Size, Timestamp, AddedTimestamp, DownloadedTimestamp FROM Downloads";
 
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery(query);
@@ -165,7 +165,7 @@ public class Database implements IDatabase {
     public void addFile(File file) throws SQLException {
         logger.debug("Adding file '" + file.getName() + "' to database...");
 
-        String query = "INSERT INTO Files (Name, Size, Timestamp, AddedTimestamp) VALUES(?, ?, ?, ?)";
+        String query = "INSERT INTO Downloads (Name, Size, Timestamp, AddedTimestamp) VALUES(?, ?, ?, ?)";
 
         PreparedStatement statement = null;
 
@@ -216,7 +216,7 @@ public class Database implements IDatabase {
     public void setDownloadedTimestamp(String name) throws SQLException {
         logger.debug("Updating download timestamp for file '" + name + "'...");
 
-        String query = "UPDATE Files SET DownloadedTimestamp = ? WHERE Name = ?";
+        String query = "UPDATE Downloads SET DownloadedTimestamp = ? WHERE Name = ?";
 
         PreparedStatement statement = connection.prepareStatement(query);
 
@@ -245,7 +245,7 @@ public class Database implements IDatabase {
     private Boolean schemaExists() throws SQLException {
         Boolean retVal = false;
 
-        String query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='Files'";
+        String query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='Metadata'";
 
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery(query);
@@ -267,16 +267,38 @@ public class Database implements IDatabase {
      * @throws SQLException Thrown if an exception is encountered while creating the schema.
      */
     private void initializeSchema() throws SQLException {
-        String query = "CREATE TABLE Files (" +
+        // create the table to be used for tracking downloaded files
+        logger.debug("Creating Downloads table...");
+        String downloadsQuery = "CREATE TABLE Downloads (" +
                 "Name TEXT PRIMARY KEY NOT NULL, " +
                 "Size BIGINT NOT NULL, " +
                 "Timestamp DATETIME NOT NULL, " +
                 "AddedTimestamp DATETIME NOT NULL, " +
                 "DownloadedTimestamp DATETIME)";
 
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(query);
-        statement.close();
+        Statement downloadsStatement = connection.createStatement();
+        downloadsStatement.executeUpdate(downloadsQuery);
+        downloadsStatement.close();
+
+        // create the version table
+        logger.debug("Creating Metadata table...");
+        String metadataQuery = "CREATE TABLE Metadata (Key TEXT PRIMARY KEY NOT NULL, Value TEXT NOT NULL)";
+
+        Statement metadataStatement = connection.createStatement();
+        metadataStatement.executeUpdate(metadataQuery);
+        metadataStatement.close();
+
+        // insert the SchemaVersion row in the Metadata table
+        logger.debug("Inserting SchemaVersion...");
+        String insertVersionQuery = "INSERT INTO Metadata (Key, Value) VALUES(?, ?)";
+
+        PreparedStatement insertVersionStatement = connection.prepareStatement(insertVersionQuery);
+
+        insertVersionStatement.setString(1, "SchemaVersion");
+        insertVersionStatement.setString(2, "1.0");
+
+        insertVersionStatement.executeUpdate();
+        insertVersionStatement.close();
     }
 
     /**

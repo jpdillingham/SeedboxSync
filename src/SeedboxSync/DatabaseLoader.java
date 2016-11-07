@@ -24,9 +24,10 @@
  *
  ****************************************************************************/
 
-import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
 
 /**
  * Loads the application Database from disk, or, in the absence of an existing

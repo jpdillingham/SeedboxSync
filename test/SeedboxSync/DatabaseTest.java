@@ -24,16 +24,19 @@
  ****************************************************************************/
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.List;
-import java.sql.SQLException;
+
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Timestamp;
+import java.sql.SQLException;
+
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
