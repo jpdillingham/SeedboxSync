@@ -23,56 +23,44 @@
  *
  ****************************************************************************/
 
-import java.util.List;
 import java.util.ArrayList;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.junit.Before;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.assertEquals;
+
+import org.apache.commons.net.ftp.FTPFile;
+
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 
 /**
  * Tests the Downloader class.
  */
-public class DownloaderTest {
+public class DownloaderTest extends BaseTest {
     /**
-     * The logger for this class.
+     * The temporary folder for the class.
      */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    /**
-     * Configure the logger.
-     */
-    @Before
-    public void configureLogging() {
-        ConsoleAppender console = new ConsoleAppender();
-        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-        console.setThreshold(Level.INFO);
-        console.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
-        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-    }
 
     /**
      * Tests the constructor.
      */
     @Test
     public void testConstructor() {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        Downloader downloader = new Downloader(server, "local", "remote", database);
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
+
+            Downloader downloader = new Downloader(server, "local", "remote", database);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -80,25 +68,32 @@ public class DownloaderTest {
      */
     @Test
     public void testQueue() {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        // enqueue a string and confirm the size
-        test.enqueue("hello world!");
-        assertEquals(test.getQueue().size(), 1);
+            Downloader test = new Downloader(server, "local", "remote", database);
 
-        // try to enqueue the same string.  it should be discarded.
-        test.enqueue("hello world!");
-        assertEquals(test.getQueue().size(), 1);
+            // enqueue a string and confirm the size
+            test.enqueue("hello world!");
+            assertEquals(test.getQueue().size(), 1);
 
-        // remove the string we enqueued
-        test.dequeue("hello world!");
-        assertEquals(test.getQueue().size(), 0);
+            // try to enqueue the same string.  it should be discarded.
+            test.enqueue("hello world!");
+            assertEquals(test.getQueue().size(), 1);
 
-        // try to remove the same string.  it shouldn't raise an error.
-        test.dequeue("hello world!");
+            // remove the string we enqueued
+            test.dequeue("hello world!");
+            assertEquals(test.getQueue().size(), 0);
+
+            // try to remove the same string.  it shouldn't raise an error.
+            test.dequeue("hello world!");
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -107,17 +102,24 @@ public class DownloaderTest {
      */
     @Test
     public void testProcessNoFiles() throws Exception {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        Mockito.when(server.list("remote")).thenReturn(files);
+            ArrayList<FTPFile> files = new ArrayList<FTPFile>();
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            Mockito.when(server.list("remote")).thenReturn(files);
 
-        test.process();
-        test.process();
+            Downloader test = new Downloader(server, "local", "remote", database);
+
+            test.process();
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -126,22 +128,29 @@ public class DownloaderTest {
      */
     @Test
     public void testProcessOneFile() throws Exception {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        FTPFile one = new FTPFile();
-        one.setName("one");
+            ArrayList<FTPFile> files = new ArrayList<FTPFile>();
 
-        files.add(one);
+            FTPFile one = new FTPFile();
+            one.setName("one");
 
-        Mockito.when(server.list("remote")).thenReturn(files);
+            files.add(one);
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            Mockito.when(server.list("remote")).thenReturn(files);
 
-        test.process();
-        test.process();
+            Downloader test = new Downloader(server, "local", "remote", database);
+
+            test.process();
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -150,25 +159,32 @@ public class DownloaderTest {
      */
     @Test
     public void testProcessOneFileDatabaseHit() throws Exception {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        FTPFile one = new FTPFile();
-        one.setName("one");
-        one.setSize(0L);
+            ArrayList<FTPFile> files = new ArrayList<FTPFile>();
 
-        files.add(one);
+            FTPFile one = new FTPFile();
+            one.setName("one");
+            one.setSize(0L);
 
-        Mockito.when(server.list("remote")).thenReturn(files);
+            files.add(one);
 
-        Mockito.when(database.getFile("/one")).thenReturn(new File("one"));
+            Mockito.when(server.list("remote")).thenReturn(files);
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            Mockito.when(database.getFile("/one")).thenReturn(new File("one"));
 
-        test.process();
-        test.process();
+            Downloader test = new Downloader(server, "local", "remote", database);
+
+            test.process();
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -177,24 +193,31 @@ public class DownloaderTest {
      */
     @Test
     public void testProcessOneFileDatabaseMissQueueHit() throws Exception {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        FTPFile one = new FTPFile();
-        one.setName("one");
-        one.setSize(0L);
+            ArrayList<FTPFile> files = new ArrayList<FTPFile>();
 
-        files.add(one);
+            FTPFile one = new FTPFile();
+            one.setName("one");
+            one.setSize(0L);
 
-        Mockito.when(server.list("remote")).thenReturn(files);
+            files.add(one);
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            Mockito.when(server.list("remote")).thenReturn(files);
 
-        test.enqueue("/one:0");
+            Downloader test = new Downloader(server, "local", "remote", database);
 
-        test.process();
+            test.enqueue("/one:0");
+
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -203,34 +226,41 @@ public class DownloaderTest {
      */
     @Test
     public void testProcessMultipleFiles() throws Exception {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        FTPFile one = new FTPFile();
-        one.setName("one");
+            ArrayList<FTPFile> files = new ArrayList<FTPFile>();
 
-        FTPFile two = new FTPFile();
-        two.setName("two");
+            FTPFile one = new FTPFile();
+            one.setName("one");
 
-        FTPFile three = new FTPFile();
-        three.setName("three");
-        three.setType(FTPFile.DIRECTORY_TYPE);
+            FTPFile two = new FTPFile();
+            two.setName("two");
 
-        files.add(one);
-        files.add(two);
-        files.add(three);
+            FTPFile three = new FTPFile();
+            three.setName("three");
+            three.setType(FTPFile.DIRECTORY_TYPE);
 
-        Mockito.when(server.list("remote")).thenReturn(files);
+            files.add(one);
+            files.add(two);
+            files.add(three);
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            Mockito.when(server.list("remote")).thenReturn(files);
 
-        test.process();
+            Downloader test = new Downloader(server, "local", "remote", database);
 
-        test.enqueue("/one:0");
+            test.process();
 
-        test.process();
+            test.enqueue("/one:0");
+
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -239,14 +269,21 @@ public class DownloaderTest {
      */
     @Test(expected=Exception.class)
     public void testProcessServerException() throws Exception {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        Mockito.when(server.list("remote")).thenThrow(Exception.class);
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            Mockito.when(server.list("remote")).thenThrow(Exception.class);
 
-        test.process();
+            Downloader test = new Downloader(server, "local", "remote", database);
+
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -255,28 +292,35 @@ public class DownloaderTest {
      */
     @Test
     public void testProcessDownloadException() throws Exception {
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        ArrayList<FTPFile> files = new ArrayList<FTPFile>();
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        FTPFile one = new FTPFile();
-        one.setName("one");
-        one.setSize(0L);
+            ArrayList<FTPFile> files = new ArrayList<FTPFile>();
 
-        FTPFile two = new FTPFile();
-        two.setName("two");
-        two.setType(FTPFile.DIRECTORY_TYPE);
+            FTPFile one = new FTPFile();
+            one.setName("one");
+            one.setSize(0L);
 
-        files.add(one);
-        files.add(two);
+            FTPFile two = new FTPFile();
+            two.setName("two");
+            two.setType(FTPFile.DIRECTORY_TYPE);
 
-        Mockito.when(server.list("remote")).thenReturn(files);
+            files.add(one);
+            files.add(two);
 
-        Mockito.when(server.download("remote/one", "local/one",0L)).thenThrow(Exception.class);
+            Mockito.when(server.list("remote")).thenReturn(files);
 
-        Downloader test = new Downloader(server, "local", "remote", database);
+            Mockito.when(server.download("remote/one", "local/one", 0L)).thenThrow(Exception.class);
 
-        test.process();
+            Downloader test = new Downloader(server, "local", "remote", database);
+
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 }

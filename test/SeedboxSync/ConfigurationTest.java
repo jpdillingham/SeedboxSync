@@ -23,56 +23,38 @@
  *
  ****************************************************************************/
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  * Tests the Configuration class.
  */
-public class ConfigurationTest {
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
-    /**
-     * Configure the logger.
-     */
-    @Before
-    public void configureLogging() {
-        ConsoleAppender console = new ConsoleAppender();
-        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-        console.setThreshold(Level.INFO);
-        console.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
-        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-    }
-
+public class ConfigurationTest extends BaseTest {
     /**
      * Constructs an instance of Configuration and tests all accessors.
      */
     @Test
     public void testConfiguration() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.getServer(), "server");
-        assertEquals(test.getPort(), (Integer)1);
-        assertEquals(test.getUsername(), "user");
-        assertEquals(test.getPassword(), "password");
-        assertEquals(test.getInterval(), (Integer)1);
-        assertEquals(test.getRemoteDownloadDirectory(), "remote");
-        assertEquals(test.getLocalDownloadDirectory(), "local");
-        assertEquals(test.getRemoteUploadDirectory(), "remoteUp");
-        assertEquals(test.getLocalUploadDirectory(), "localUp");
-        assertEquals(test.isValid(), true);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.getServer(), "server");
+            assertEquals(test.getPort(), (Integer) 1);
+            assertEquals(test.getUsername(), "user");
+            assertEquals(test.getPassword(), "password");
+            assertEquals(test.getInterval(), (Integer) 1);
+            assertEquals(test.getRemoteDownloadDirectory(), "remote");
+            assertEquals(test.getLocalDownloadDirectory(), "local");
+            assertEquals(test.getRemoteUploadDirectory(), "remoteUp");
+            assertEquals(test.getLocalUploadDirectory(), "localUp");
+            assertEquals(test.isValid(), true);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -80,10 +62,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testBlankServer() {
-        Configuration test = new Configuration("", 1, "user", "password", 1, "remote",
+        try {
+            begin();
+
+            Configuration test = new Configuration("", 1, "user", "password", 1, "remote",
                 "local", "remoteUp", "localUp", "db");
 
-        assertEquals(test.isValid(), false);
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -91,10 +80,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingServer() {
-        Configuration test = new Configuration(null, 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration(null, 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -102,10 +98,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidPort() {
-        Configuration test = new Configuration("server", 0, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 0, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -113,10 +116,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingPort() {
-        Configuration test = new Configuration("server", null, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", null, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -124,10 +134,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidUsername() {
-        Configuration test = new Configuration("server", 1, "", "password", 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -135,10 +152,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingUsername() {
-        Configuration test = new Configuration("server", 1, null, "password", 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, null, "password", 1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -146,10 +170,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingPassword() {
-        Configuration test = new Configuration("server", 1, "user", null, 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", null, 1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -157,10 +188,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidInterval() {
-        Configuration test = new Configuration("server", 1, "user", "password", -1, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", -1, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -168,10 +206,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingInterval() {
-        Configuration test = new Configuration("server", 1, "user", "password", null, "remote",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", null, "remote",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -179,10 +224,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidRemoteDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "",
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "",
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -190,10 +242,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingRemoteDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, null,
-                "local", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, null,
+                    "local", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -201,10 +260,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidLocalDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "", "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "", "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -212,10 +278,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingLocalDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                null, "remoteUp", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    null, "remoteUp", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -223,10 +296,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidRemoteUploadDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "", "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "", "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -234,10 +314,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingRemoteUploadDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", null, "localUp", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", null, "localUp", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -245,10 +332,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidLocalUploadDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "", "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", "", "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -256,10 +350,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingLocalUploadDirectory() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", null, "db");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", null, "db");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -267,10 +368,17 @@ public class ConfigurationTest {
      */
     @Test
     public void testInvalidDatabaseFilename() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", "");
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", "");
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -278,9 +386,16 @@ public class ConfigurationTest {
      */
     @Test
     public void testMissingDatabaseFilename() {
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", null);
+        try {
+            begin();
 
-        assertEquals(test.isValid(), false);
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", null);
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
     }
 }

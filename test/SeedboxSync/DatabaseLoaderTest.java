@@ -24,17 +24,9 @@
  ****************************************************************************/
 
 import java.io.File;
-import java.io.IOException;
-
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -44,12 +36,7 @@ import static org.junit.Assert.assertNotEquals;
 /**
  * Tests the DatabaseLoader class.
  */
-public class DatabaseLoaderTest {
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
+public class DatabaseLoaderTest extends BaseTest {
     /**
      * The temporary folder for the class.
      */
@@ -57,26 +44,18 @@ public class DatabaseLoaderTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     /**
-     * Configure the logger.
-     */
-    @Before
-    public void configureLogging() throws IOException {
-        ConsoleAppender console = new ConsoleAppender();
-        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-        console.setThreshold(Level.INFO);
-        console.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
-        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-
-        folder.newFolder("dbLoader");
-    }
-
-    /**
      * Constructs an instance of DatabaseLoader.
      */
     @Test
     public void testConstructor() {
-        DatabaseLoader test = new DatabaseLoader();
+        try {
+            begin();
+
+            DatabaseLoader test = new DatabaseLoader();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -85,16 +64,25 @@ public class DatabaseLoaderTest {
      */
     @Test
     public void testLoad() throws Exception {
-        File file = folder.newFile("dbLoader/dbLoader.db");
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", file.getAbsolutePath());
+        Database db = null;
 
-        Database db = DatabaseLoader.load(test);
+        try {
+            begin();
 
-        assertNotEquals(db, null);
-        assertEquals((file.exists()), true);
+            File file = folder.newFile();
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", file.getAbsolutePath());
 
-        db.close();
+            db = DatabaseLoader.load(test);
+
+            assertNotEquals(db, null);
+            assertEquals((file.exists()), true);
+        }
+        finally {
+            db.close();
+
+            end();
+        }
     }
 
     /**
@@ -103,14 +91,24 @@ public class DatabaseLoaderTest {
      */
     @Test
     public void testExistingLoad() throws Exception {
-        String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/testDatabase.db";
-        Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", file);
+        Database db = null;
 
-        Database db = DatabaseLoader.load(test);
+        try {
+            begin();
 
-        assertNotEquals(db, null);
-        db.close();
+            String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/testDatabase.db";
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "local", "remoteUp", "localUp", file);
+
+            db = DatabaseLoader.load(test);
+
+            assertNotEquals(db, null);
+        }
+        finally {
+            db.close();
+
+            end();
+        }
     }
 
     /**
@@ -119,8 +117,19 @@ public class DatabaseLoaderTest {
      */
     @Test(expected=Exception.class)
     public void testBadLoad() throws Exception {
-        Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
-        Database db = DatabaseLoader.load(config);
+        Database db = null;
+
+        try {
+            begin();
+
+            Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
+            db = DatabaseLoader.load(config);
+        }
+        finally {
+            db.close();
+
+            end();
+        }
     }
 
     /**
@@ -129,6 +138,17 @@ public class DatabaseLoaderTest {
      */
     @Test(expected=Exception.class)
     public void testNullLoad() throws Exception {
-        Database db = DatabaseLoader.load(null);
+        Database db = null;
+
+        try {
+            begin();
+
+            db = DatabaseLoader.load(null);
+        }
+        finally {
+            db.close();
+
+            end();
+        }
     }
 }

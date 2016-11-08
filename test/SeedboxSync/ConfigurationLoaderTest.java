@@ -25,41 +25,15 @@
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-
 import org.json.simple.parser.ParseException;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the ConfigurationLoader class.
  */
-public class ConfigurationLoaderTest {
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
-    /**
-     * Configure the logger.
-     */
-    @Before
-    public void configureLogging() {
-        ConsoleAppender console = new ConsoleAppender();
-        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-        console.setThreshold(Level.INFO);
-        console.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
-        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-    }
-
+public class ConfigurationLoaderTest extends BaseTest {
     /**
      * Constructs an instance of ConfigurationLoader.
      */
@@ -75,19 +49,26 @@ public class ConfigurationLoaderTest {
      */
     @Test
     public void testGoodLoad() throws IOException, ParseException {
-        String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodConfig.json";
-        Configuration config = ConfigurationLoader.load(configFile);
+        try {
+            begin();
 
-        assertEquals(config.getServer(), "server");
-        assertEquals(config.getPort(), (Integer)1);
-        assertEquals(config.getUsername(), "username");
-        assertEquals(config.getPassword(), "password");
-        assertEquals(config.getInterval(), (Integer)3600);
-        assertEquals(config.getRemoteDownloadDirectory(), "remoteDownloadDirectory");
-        assertEquals(config.getLocalDownloadDirectory(), "localDownloadDirectory");
-        assertEquals(config.getRemoteUploadDirectory(), "remoteUploadDirectory");
-        assertEquals(config.getLocalUploadDirectory(), "localUploadDirectory");
-        assertEquals(config.isValid(), true);
+            String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodConfig.json";
+            Configuration config = ConfigurationLoader.load(configFile);
+
+            assertEquals(config.getServer(), "server");
+            assertEquals(config.getPort(), (Integer) 1);
+            assertEquals(config.getUsername(), "username");
+            assertEquals(config.getPassword(), "password");
+            assertEquals(config.getInterval(), (Integer) 3600);
+            assertEquals(config.getRemoteDownloadDirectory(), "remoteDownloadDirectory");
+            assertEquals(config.getLocalDownloadDirectory(), "localDownloadDirectory");
+            assertEquals(config.getRemoteUploadDirectory(), "remoteUploadDirectory");
+            assertEquals(config.getLocalUploadDirectory(), "localUploadDirectory");
+            assertEquals(config.isValid(), true);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -97,8 +78,15 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=ParseException.class)
     public void testBadLoad() throws IOException, ParseException {
-        String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/badConfig.json";
-        Configuration config = ConfigurationLoader.load(configFile);
+        try {
+            begin();
+
+            String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/badConfig.json";
+            Configuration config = ConfigurationLoader.load(configFile);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -108,7 +96,14 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=FileNotFoundException.class)
     public void testMissingLoad() throws IOException, ParseException {
-        Configuration config = ConfigurationLoader.load("blah");
+        try {
+            begin();
+
+            Configuration config = ConfigurationLoader.load("blah");
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -118,7 +113,14 @@ public class ConfigurationLoaderTest {
      */
     @Test(expected=RuntimeException.class)
     public void testPartialLoad() throws IOException, ParseException {
-        String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/partialConfig.json";
-        Configuration config = ConfigurationLoader.load(configFile);
+        try {
+            begin();
+
+            String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/partialConfig.json";
+            Configuration config = ConfigurationLoader.load(configFile);
+        }
+        finally {
+            end();
+        }
     }
 }

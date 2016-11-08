@@ -26,6 +26,7 @@
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,13 +52,18 @@ public class SeedboxSyncTest {
      * Configure the logger.
      */
     @Before
-    public void configureLogging() {
-        ConsoleAppender console = new ConsoleAppender();
-        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-        console.setThreshold(Level.INFO);
-        console.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
-        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
+    public void setup() {
+        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
+
+        if (logger.getAppender("console") != null) {
+            ConsoleAppender console = new ConsoleAppender();
+            console.setName("console");
+            console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
+            console.setThreshold(Level.INFO);
+            console.activateOptions();
+            org.apache.log4j.Logger.getRootLogger().addAppender(console);
+            org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
+        }
     }
 
     /**
@@ -103,4 +109,11 @@ public class SeedboxSyncTest {
      */
     @Test
     public void testMainPartialConfig() { SeedboxSync.main(new String[] { "test/SeedboxSync/resources/partialConfig.json" }); }
+
+    /**
+     * Perform teardown.
+     */
+    @After
+    public void teardown() {
+    }
 }

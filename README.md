@@ -1,4 +1,4 @@
-<h1><img src="http://jpdillingham.github.io/images/seedboxsync.png" height="36">SeedboxSync</h1>
+<h1><img src="http://jpdillingham.github.io/images/seedboxsync.png" height="24">SeedboxSync</h1>
 
 [![Build status](https://travis-ci.org/jpdillingham/SeedboxSync.svg?branch=master)](https://travis-ci.org/jpdillingham/SeedboxSync)
 [![codecov](https://codecov.io/gh/jpdillingham/SeedboxSync/branch/master/graph/badge.svg)](https://codecov.io/gh/jpdillingham/SeedboxSync)

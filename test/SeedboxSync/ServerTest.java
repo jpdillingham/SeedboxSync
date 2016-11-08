@@ -26,6 +26,8 @@
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.Future;
+
+import org.junit.After;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
@@ -56,13 +58,18 @@ public class ServerTest {
      * Configure the logger.
      */
     @Before
-    public void configureLogging() {
-        ConsoleAppender console = new ConsoleAppender();
-        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-        console.setThreshold(Level.INFO);
-        console.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
-        org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
+    public void setup() {
+        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
+
+        if (logger.getAppender("console") != null) {
+            ConsoleAppender console = new ConsoleAppender();
+            console.setName("console");
+            console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
+            console.setThreshold(Level.INFO);
+            console.activateOptions();
+            org.apache.log4j.Logger.getRootLogger().addAppender(console);
+            org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
+        }
     }
 
     /**
@@ -252,5 +259,12 @@ public class ServerTest {
 
             test.upload(file, "upload/test_" + System.currentTimeMillis());
         }
+    }
+
+    /**
+     * Perform teardown.
+     */
+    @After
+    public void teardown() {
     }
 }
