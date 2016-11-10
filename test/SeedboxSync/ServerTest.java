@@ -75,7 +75,7 @@ public class ServerTest extends BaseTest {
 
     /**
      * Constructs a new Configuration using the four-tuple constructor.
-     * */
+     */
     @Test
     public void testConstructorTwo() {
         try {
