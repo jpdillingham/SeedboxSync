@@ -25,33 +25,19 @@
 
 import java.io.IOException;
 import java.io.File;
-import java.util.ArrayList;
 
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static org.junit.Assert.*;
+
+import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
 /**
  * Tests the Uploader class.
  */
-public class UploaderTest {
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
+public class UploaderTest extends BaseTest {
     /**
      * The temporary folder for the class.
      */
@@ -59,31 +45,20 @@ public class UploaderTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     /**
-     * Configure the logger.
-     */
-    @Before
-    public void setup() {
-        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
-
-        if (logger.getAppender("console") != null) {
-            ConsoleAppender console = new ConsoleAppender();
-            console.setName("console");
-            console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-            console.setThreshold(Level.INFO);
-            console.activateOptions();
-            org.apache.log4j.Logger.getRootLogger().addAppender(console);
-            org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-        }
-    }
-
-    /**
      * Tests the constructor.
      */
     @Test
     public void testConstructor() {
-        IServer server = mock(IServer.class);
+        try {
+            begin();
 
-        Uploader uploader = new Uploader(server, "local", "remote");
+            IServer server = mock(IServer.class);
+
+            Uploader uploader = new Uploader(server, "local", "remote");
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -91,24 +66,31 @@ public class UploaderTest {
      */
     @Test
     public void testQueue() {
-        IServer server = mock(IServer.class);
+        try {
+            begin();
 
-        Uploader test = new Uploader(server, "local", "remote");
+            IServer server = mock(IServer.class);
 
-        // enqueue a string and confirm the size
-        test.enqueue("hello world!");
-        assertEquals(test.getQueue().size(), 1);
+            Uploader test = new Uploader(server, "local", "remote");
 
-        // try to enqueue the same string.  it should be discarded.
-        test.enqueue("hello world!");
-        assertEquals(test.getQueue().size(), 1);
+            // enqueue a string and confirm the size
+            test.enqueue("hello world!");
+            assertEquals(test.getQueue().size(), 1);
 
-        // remove the string we enqueued
-        test.dequeue("hello world!");
-        assertEquals(test.getQueue().size(), 0);
+            // try to enqueue the same string.  it should be discarded.
+            test.enqueue("hello world!");
+            assertEquals(test.getQueue().size(), 1);
 
-        // try to remove the same string.  it shouldn't raise an error.
-        test.dequeue("hello world!");
+            // remove the string we enqueued
+            test.dequeue("hello world!");
+            assertEquals(test.getQueue().size(), 0);
+
+            // try to remove the same string.  it shouldn't raise an error.
+            test.dequeue("hello world!");
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -117,24 +99,31 @@ public class UploaderTest {
      */
     @Test
     public void testProcess() throws Exception {
-        File uploadFolder = folder.newFolder("upload");
-        File uploadFile = folder.newFile("upload/file.txt");
+        try {
+            begin();
 
-        IServer server = mock(IServer.class);
-        Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+            File uploadFolder = folder.newFolder("upload");
+            File uploadFile = folder.newFile("upload/file.txt");
 
-        uploader.enqueue(uploadFile.getAbsolutePath());
+            IServer server = mock(IServer.class);
+            Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
 
-        uploader.process();
+            uploader.enqueue(uploadFile.getAbsolutePath());
 
-        // assert that the file was removed from the queue
-        assertEquals(uploader.getQueue().size(), 0);
+            uploader.process();
 
-        // assert that the original file is now missing, and that a file with
-        // [Uploaded] prepended to the name exists.
-        assertEquals(uploadFile.exists(), false);
+            // assert that the file was removed from the queue
+            assertEquals(uploader.getQueue().size(), 0);
 
-        assertEquals(new File(uploadFile.getParent() + "/[Uploaded] file.txt").exists(), true);
+            // assert that the original file is now missing, and that a file with
+            // [Uploaded] prepended to the name exists.
+            assertEquals(uploadFile.exists(), false);
+
+            assertEquals(new File(uploadFile.getParent() + "/[Uploaded] file.txt").exists(), true);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -143,12 +132,19 @@ public class UploaderTest {
      */
     @Test
     public void testMissingDirProcess() throws Exception {
-        IServer server = mock(IServer.class);
-        Uploader uploader = new Uploader(server, "bad folder", "");
+        try {
+            begin();
 
-        uploader.enqueue("test");
+            IServer server = mock(IServer.class);
+            Uploader uploader = new Uploader(server, "bad folder", "");
 
-        uploader.process();
+            uploader.enqueue("test");
+
+            uploader.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -157,15 +153,22 @@ public class UploaderTest {
      */
     @Test
     public void testAllFolderPossibilitiesProcess() throws Exception {
-        File uploadFolder = folder.newFolder("upload");
-        File childFolder = folder.newFolder("upload","test");
-        File file = folder.newFile("upload/file.txt");
-        File uploadedFile = folder.newFile("upload/[Uploaded] file2.txt");
+        try {
+            begin();
 
-        IServer server = mock(IServer.class);
-        Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+            File uploadFolder = folder.newFolder("upload");
+            File childFolder = folder.newFolder("upload", "test");
+            File file = folder.newFile("upload/file.txt");
+            File uploadedFile = folder.newFile("upload/[Uploaded] file2.txt");
 
-        uploader.process();
+            IServer server = mock(IServer.class);
+            Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+
+            uploader.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -174,14 +177,21 @@ public class UploaderTest {
      */
     @Test
     public void testEmptyQueueProcess() throws Exception {
-        File uploadFolder = folder.newFolder("upload");
+        try {
+            begin();
 
-        IServer server = mock(IServer.class);
-        Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+            File uploadFolder = folder.newFolder("upload");
 
-        // assert that the queue is empty
-        assertEquals(uploader.getQueue().size(), 0);
-        uploader.process();
+            IServer server = mock(IServer.class);
+            Uploader uploader = new Uploader(server, uploadFolder.getAbsolutePath(), "");
+
+            // assert that the queue is empty
+            assertEquals(uploader.getQueue().size(), 0);
+            uploader.process();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -190,21 +200,21 @@ public class UploaderTest {
      */
     @Test
     public void testProcessUploadException() throws Exception {
-        IServer server = mock(IServer.class);
+        try {
+            begin();
 
-        Mockito.when(server.upload(new File("local\\one"), "remote/one")).thenThrow(Exception.class);
+            IServer server = mock(IServer.class);
 
-        Uploader test = new Uploader(server, "local", "remote");
+            Mockito.when(server.upload(new File("local\\one"), "remote/one")).thenThrow(Exception.class);
 
-        test.enqueue("local/one");
+            Uploader test = new Uploader(server, "local", "remote");
 
-        test.process();
-    }
+            test.enqueue("local/one");
 
-    /**
-     * Perform teardown.
-     */
-    @After
-    public void teardown() {
+            test.process();
+        }
+        finally {
+            end();
+        }
     }
 }

@@ -26,10 +26,17 @@
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import java.sql.Timestamp;
+
 /**
  * Base class for all tests.
  */
 public class BaseTest {
+    /**
+     * The timestamp corresponding to the start of the test.
+     */
+    private Long startTime;
+
     /**
      * Initializes a new instance of the BaseTest class.
      */
@@ -44,13 +51,15 @@ public class BaseTest {
     protected void log(String message) {
         String formattedDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")).format(new Date());
 
-        System.out.println(formattedDate + " [TEST} " + message);
+        System.out.println(formattedDate + " [TEST] " + message);
     }
 
     /**
      * Logs a message indicating the start of a test to the console.
      */
     protected void begin() {
+        startTime = System.currentTimeMillis();
+
         log("--> Starting test '" + Thread.currentThread().getStackTrace()[2].getMethodName() + "'...");
     }
 
@@ -58,6 +67,9 @@ public class BaseTest {
      * Logs a message indicating the end of a test to the console.
      */
     protected void end() {
-        log("<-- Completed test '" + Thread.currentThread().getStackTrace()[2].getMethodName() + "'.");
+        Long duration = System.currentTimeMillis() - startTime;
+        Double divisor = 1000.0;
+
+        log("<-- Completed test '" + Thread.currentThread().getStackTrace()[2].getMethodName() + "' in " + duration / divisor + " sec");
     }
 }

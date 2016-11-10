@@ -25,12 +25,12 @@
 
 import java.util.ArrayList;
 
+import org.apache.commons.net.ftp.FTPFile;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.assertEquals;
-
-import org.apache.commons.net.ftp.FTPFile;
 
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;

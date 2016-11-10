@@ -27,25 +27,22 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.junit.After;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
 import org.apache.commons.net.ftp.FTPFile;
-import org.junit.Before;
+
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  * Tests the Server class.
  */
-public class ServerTest {
+public class ServerTest extends BaseTest {
     /**
-     * The logger for this class.
+     * The temporary folder for the class.
      */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * A flag used to indicate that the code is being tested under CI.
@@ -55,36 +52,25 @@ public class ServerTest {
     private Boolean CI_Flag = true;
 
     /**
-     * Configure the logger.
-     */
-    @Before
-    public void setup() {
-        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
-
-        if (logger.getAppender("console") != null) {
-            ConsoleAppender console = new ConsoleAppender();
-            console.setName("console");
-            console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-            console.setThreshold(Level.INFO);
-            console.activateOptions();
-            org.apache.log4j.Logger.getRootLogger().addAppender(console);
-            org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-        }
-    }
-
-    /**
      * Constructs a new Configuration using the three-tuple constructor.
      */
     @Test
     public void testConstructorOne() {
-        Server test = new Server("address", "user", "password");
+        try {
+            begin();
 
-        assertEquals(test.getAddress(), "address");
-        assertEquals(test.getUsername(), "user");
-        assertEquals(test.getPassword(), "password");
+            Server test = new Server("address", "user", "password");
 
-        // port should default to 21
-        assertEquals(test.getPort(), (Integer)21);
+            assertEquals(test.getAddress(), "address");
+            assertEquals(test.getUsername(), "user");
+            assertEquals(test.getPassword(), "password");
+
+            // port should default to 21
+            assertEquals(test.getPort(), (Integer) 21);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -92,12 +78,19 @@ public class ServerTest {
      * */
     @Test
     public void testConstructorTwo() {
-        Server test = new Server("address", "user", "password", 1);
+        try {
+            begin();
 
-        assertEquals(test.getAddress(), "address");
-        assertEquals(test.getUsername(), "user");
-        assertEquals(test.getPassword(), "password");
-        assertEquals(test.getPort(), (Integer)1);
+            Server test = new Server("address", "user", "password", 1);
+
+            assertEquals(test.getAddress(), "address");
+            assertEquals(test.getUsername(), "user");
+            assertEquals(test.getPassword(), "password");
+            assertEquals(test.getPort(), (Integer) 1);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -106,11 +99,18 @@ public class ServerTest {
      */
     @Test(expected=Exception.class)
     public void testBadConnect() throws Exception {
-        Server test = new Server("this can't be the name of a server.", "","");
+        try {
+            begin();
 
-        test.connect();
+            Server test = new Server("this can't be the name of a server.", "", "");
 
-        assertEquals(test.isConnected(), false);
+            test.connect();
+
+            assertEquals(test.isConnected(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -119,11 +119,18 @@ public class ServerTest {
      */
     @Test
     public void testGoodConnect() throws Exception {
-        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+        try {
+            begin();
 
-        test.connect();
+            Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
-        assertEquals(test.isConnected(), true);
+            test.connect();
+
+            assertEquals(test.isConnected(), true);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -132,23 +139,30 @@ public class ServerTest {
      */
     @Test
     public void testReconnect() throws Exception {
-        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+        try {
+            begin();
 
-        test.connect();
+            Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
-        assertEquals(test.isConnected(), true);
+            test.connect();
 
-        test.reconnect();
+            assertEquals(test.isConnected(), true);
 
-        assertEquals(test.isConnected(), true);
+            test.reconnect();
 
-        test.disconnect();
+            assertEquals(test.isConnected(), true);
 
-        assertEquals(test.isConnected(), false);
+            test.disconnect();
 
-        test.reconnect();
+            assertEquals(test.isConnected(), false);
 
-        assertEquals(test.isConnected(), true);
+            test.reconnect();
+
+            assertEquals(test.isConnected(), true);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -157,15 +171,22 @@ public class ServerTest {
      */
     @Test
     public void testDisconnect() throws Exception {
-        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+        try {
+            begin();
 
-        test.connect();
+            Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
-        assertEquals(test.isConnected(), true);
+            test.connect();
 
-        test.disconnect();
+            assertEquals(test.isConnected(), true);
 
-        assertEquals(test.isConnected(), false);
+            test.disconnect();
+
+            assertEquals(test.isConnected(), false);
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -174,28 +195,35 @@ public class ServerTest {
      */
     @Test
     public void testList() throws Exception {
-        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
-        test.connect();
+        try {
+            begin();
 
-        test.disconnect();
+            Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+            test.connect();
 
-        List<FTPFile> files = test.list("");
+            test.disconnect();
 
-        assertNotEquals(files, null);
+            List<FTPFile> files = test.list("");
 
-        test.reconnect();
+            assertNotEquals(files, null);
 
-        files = test.list("");
+            test.reconnect();
 
-        assertNotEquals(files, null);
+            files = test.list("");
 
-        // skip this assertion if we are testing with CI.  it fails
-        // for some reason, likely due to environment.
-        if (!CI_Flag) {
-            assertTrue(files.size() > 0);
+            assertNotEquals(files, null);
+
+            // skip this assertion if we are testing with CI.  it fails
+            // for some reason, likely due to environment.
+            if (!CI_Flag) {
+                assertTrue(files.size() > 0);
+            }
+            else {
+                log("List size assertion skipped because CI_Flag=true");
+            }
         }
-        else {
-            logger.info("List size assertion skipped because CI_Flag=true");
+        finally {
+            end();
         }
     }
 
@@ -205,38 +233,41 @@ public class ServerTest {
      */
     @Test
     public void testDownload() throws Exception {
-        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+        try {
+            begin();
 
-        logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");
-        test.connect();
-        test.disconnect();
+            Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
-        File destinationFile1 = new File("temp1.zip");
-        File destinationFile2 = new File("temp2.zip");
+            log("Connecting to 'speedtest.tele2.net'; connecting anonymously");
+            test.connect();
+            test.disconnect();
 
-        logger.info("Downloading test files...");
+            File destinationFile1 = folder.newFile("temp1.zip");
+            File destinationFile2 = folder.newFile("temp2.zip");
 
-        Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 0L + 1024);
-        Future<Boolean> download2 = test.download("1MB.zip", destinationFile2, 0L + (1024 * 1024));
+            log("Downloading test files...");
 
-        // wait for the download to complete
-        while (!download1.isDone() && !download2.isDone()) {
-            Thread.sleep(10);
+            Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 0L + 1024);
+            Future<Boolean> download2 = test.download("1MB.zip", destinationFile2, 0L + (1024 * 1024));
+
+            // wait for the download to complete
+            while (!download1.isDone() && !download2.isDone()) {
+                Thread.sleep(10);
+            }
+
+            if (!CI_Flag) {
+                assertNotEquals(destinationFile1.length(), 0);
+                assertNotEquals(destinationFile2.length(), 0);
+            }
+
+            log("Disconnecting from server...");
+            test.disconnect();
+
+            assertEquals(test.isConnected(), false);
         }
-
-        if (!CI_Flag) {
-            assertNotEquals(destinationFile1.length(), 0);
-            assertNotEquals(destinationFile2.length(), 0);
+        finally {
+            end();
         }
-
-        logger.info("Disconnecting from server...");
-        test.disconnect();
-
-        assertEquals(test.isConnected(), false);
-
-        logger.info("Deleting temp files...");
-        destinationFile1.deleteOnExit();
-        destinationFile2.deleteOnExit();
     }
 
     /**
@@ -245,26 +276,26 @@ public class ServerTest {
      */
     @Test
     public void testUpload() throws Exception {
-        Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
+        try {
+            begin();
 
-        logger.info("Connecting to 'speedtest.tele2.net'; connecting anonymously");
-        test.connect();
+            Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
 
-        File file = new File("test/SeedboxSync/resources/badConfig.json");
+            log("Connecting to 'speedtest.tele2.net'; connecting anonymously");
+            test.connect();
 
-        if (!CI_Flag) {
-            test.upload(file, "upload/test_" + System.currentTimeMillis());
+            File file = new File("test/SeedboxSync/resources/badConfig.json");
 
-            test.disconnect();
+            if (!CI_Flag) {
+                test.upload(file, "upload/test_" + System.currentTimeMillis());
 
-            test.upload(file, "upload/test_" + System.currentTimeMillis());
+                test.disconnect();
+
+                test.upload(file, "upload/test_" + System.currentTimeMillis());
+            }
         }
-    }
-
-    /**
-     * Perform teardown.
-     */
-    @After
-    public void teardown() {
+        finally {
+            end();
+        }
     }
 }

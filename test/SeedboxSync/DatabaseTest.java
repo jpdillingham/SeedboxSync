@@ -26,13 +26,6 @@
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.junit.After;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Timestamp;
 import java.sql.SQLException;
 

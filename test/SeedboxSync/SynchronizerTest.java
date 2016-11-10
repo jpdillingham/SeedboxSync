@@ -23,71 +23,32 @@
  *
  ****************************************************************************/
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 /**
  * Tests the Synchronizer class.
  */
-public class SynchronizerTest {
-    /**
-     * The logger for this class.
-     */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    /**
-     * Configure the logger.
-     */
-    @Before
-    public void setup() {
-        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
-
-        if (logger.getAppender("console") != null) {
-            ConsoleAppender console = new ConsoleAppender();
-            console.setName("console");
-            console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-            console.setThreshold(Level.INFO);
-            console.activateOptions();
-            org.apache.log4j.Logger.getRootLogger().addAppender(console);
-            org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-        }
-    }
-
+public class SynchronizerTest extends BaseTest {
     /**
      * Tests the constructor.
      */
     @Test
     public void testConstructor() throws Exception {
-        Configuration configuration = new Configuration("server", 1, "user", "pass", 1, "remoteDownload", "localDownload", "remoteUpload", "localUpload", "db");
-        IServer server = mock(IServer.class);
-        IDatabase database = mock(IDatabase.class);
+        try {
+            begin();
 
-        Synchronizer test = new Synchronizer(configuration, server, database);
+            Configuration configuration = new Configuration("server", 1, "user", "pass", 1, "remoteDownload", "localDownload", "remoteUpload", "localUpload", "db");
+            IServer server = mock(IServer.class);
+            IDatabase database = mock(IDatabase.class);
 
-        test.synchronize();
-    }
+            Synchronizer test = new Synchronizer(configuration, server, database);
 
-    /**
-     * Perform teardown.
-     */
-    @After
-    public void teardown() {
+            test.synchronize();
+        }
+        finally {
+            end();
+        }
     }
 }

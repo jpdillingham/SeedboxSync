@@ -23,69 +23,64 @@
  *
  ****************************************************************************/
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests the SeedboxSync class.
  */
-public class SeedboxSyncTest {
+public class SeedboxSyncTest extends BaseTest {
     /**
-     * The logger for this class.
+     * The temporary folder for the class.
      */
-    private static Logger logger = LoggerFactory.getLogger(new Throwable().getStackTrace()[0].getClassName());
-
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    /**
-     * Configure the logger.
-     */
-    @Before
-    public void setup() {
-        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
-
-        if (logger.getAppender("console") != null) {
-            ConsoleAppender console = new ConsoleAppender();
-            console.setName("console");
-            console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
-            console.setThreshold(Level.INFO);
-            console.activateOptions();
-            org.apache.log4j.Logger.getRootLogger().addAppender(console);
-            org.apache.log4j.Logger.getRootLogger().setAdditivity(false);
-        }
-    }
 
     /**
      * Tests the constructor.
      */
     @Test
     public void testConstructor() {
-        SeedboxSync test = new SeedboxSync();
+        try {
+            begin();
+
+            SeedboxSync test = new SeedboxSync();
+        }
+        finally {
+            end();
+        }
     }
 
     /**
      * Tests main() with the default config file.
      */
     @Test
-    public void vestMainDefault() { SeedboxSync.main(new String[] { }); }
+    public void vestMainDefault() {
+        try {
+            begin();
+
+            SeedboxSync.main(new String[]{});
+        }
+        finally {
+            end();
+        }
+    }
+
 
     /**
      * Tests main() with an explicitly defined config file.
      */
     @Test
     public void testMain() {
-        SeedboxSync.main(new String[] { "test/SeedboxSync/resources/goodConfig.json" });
+        try {
+            begin();
+
+            SeedboxSync.main(new String[] { "test/SeedboxSync/resources/goodConfig.json" });
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -93,7 +88,14 @@ public class SeedboxSyncTest {
      */
     @Test
     public void testMainMissingConfig() {
-        SeedboxSync.main(new String[] { "missing" });
+        try {
+            begin();
+
+            SeedboxSync.main(new String[]{"missing"});
+        }
+        finally {
+            end();
+        }
     }
 
     /**
@@ -101,19 +103,28 @@ public class SeedboxSyncTest {
      */
     @Test
     public void testMainBadConfig() {
-        SeedboxSync.main(new String[] { "test/SeedboxSync/resources/badConfig.json" });
+        try {
+            begin();
+
+            SeedboxSync.main(new String[]{"test/SeedboxSync/resources/badConfig.json"});
+        }
+        finally {
+            end();
+        }
     }
 
     /**
      * Tests main() with a partially complete config file.
      */
     @Test
-    public void testMainPartialConfig() { SeedboxSync.main(new String[] { "test/SeedboxSync/resources/partialConfig.json" }); }
+    public void testMainPartialConfig() {
+        try {
+            begin();
 
-    /**
-     * Perform teardown.
-     */
-    @After
-    public void teardown() {
+            SeedboxSync.main(new String[]{"test/SeedboxSync/resources/partialConfig.json"});
+        }
+        finally {
+            end();
+        }
     }
 }
