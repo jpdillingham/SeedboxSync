@@ -26,8 +26,6 @@
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import java.sql.Timestamp;
-
 /**
  * Base class for all tests.
  */

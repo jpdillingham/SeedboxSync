@@ -40,7 +40,14 @@ public class ConfigurationLoaderTest extends BaseTest {
      */
     @Test
     public void testConstructor() {
-        ConfigurationLoader test = new ConfigurationLoader();
+        try {
+            begin();
+
+            ConfigurationLoader test = new ConfigurationLoader();
+        }
+        finally {
+            end();
+        }
     }
 
     /**

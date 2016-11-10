@@ -50,7 +50,6 @@ public class DatabaseTest extends BaseTest {
      */
     @Before
     public void setup() throws IOException {
-        // create folder
         folder.newFolder("db");
     }
 
