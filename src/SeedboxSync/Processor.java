@@ -101,7 +101,8 @@ public abstract class Processor {
     }
 
     /**
-     * Processes.
+     * Processes.  Functionality defined by extending classes.
+     * @throws Exception Thrown when an exception is encountered during processing.
      */
     public abstract void process() throws Exception;
 }

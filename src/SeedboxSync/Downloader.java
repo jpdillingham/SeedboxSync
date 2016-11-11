@@ -2,7 +2,7 @@
  *
  * Downloader.java
  *
- * Coordinates the uploading of files.
+ * Coordinates the downloading of files.
  *
  ***************************************************************************
  *
@@ -24,9 +24,12 @@
  ****************************************************************************/
 
 import java.util.List;
-import java.sql.Timestamp;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Timestamp;
+
 import org.apache.commons.net.ftp.FTPFile;
 
 /**
@@ -45,9 +48,9 @@ public class Downloader extends Processor {
 
     /**
      * Initializes a new instance of the Downloader class with the specified server and directories.
-     * @param server
-     * @param localDirectory
-     * @param remoteDirectory
+     * @param server The IServer instance enabling file transfers.
+     * @param localDirectory The local directory to/from which files are transferred.
+     * @param remoteDirectory The remote directory to/from which files are transferred.
      */
     public Downloader(IServer server, String localDirectory, String remoteDirectory, IDatabase database) {
         super(server, localDirectory, remoteDirectory);
@@ -57,6 +60,7 @@ public class Downloader extends Processor {
 
     /**
      * Scans the remote download directory and enqueues new files, then uploads the next file in the queue, if applicable.
+     * @throws Exception Thrown if an exception is encountered during the synchronization.
      */
     public void process() throws Exception {
         logger.info("Processing downloads...");
