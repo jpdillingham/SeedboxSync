@@ -24,14 +24,16 @@
  ****************************************************************************/
 
 import java.io.File;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import org.apache.log4j.PatternLayout;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The main application class.
@@ -150,6 +152,7 @@ public class SeedboxSync {
 
     /**
      * Loads the application configuration from file.
+     * @returns The loaded Configuration
      */
     private static Configuration loadConfiguration(String file) throws Exception {
         Configuration config;
