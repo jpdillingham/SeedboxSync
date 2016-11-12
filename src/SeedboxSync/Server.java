@@ -25,7 +25,6 @@
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.concurrent.Future;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -38,9 +37,6 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.io.CopyStreamAdapter;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 
 /**
  * Represents an FTP server.
@@ -259,8 +255,7 @@ public class Server implements IServer {
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    @Async
-    public Future<Boolean> download(String sourceFile, String destinationFile, Long size) throws Exception {
+    public void download(String sourceFile, String destinationFile, Long size) throws Exception {
         // reconnect to the server to reset active/passive mode settings
         reconnect();
 
@@ -285,9 +280,6 @@ public class Server implements IServer {
 
         logger.info("Transfer complete.");
         out.close();
-
-        // TODO: make this actually asynchronous
-        return new AsyncResult<Boolean>(true);
     }
 
     /**
@@ -297,20 +289,17 @@ public class Server implements IServer {
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    @Async
-    public Future<Boolean> download(String sourceFile, File destinationFile, Long size) throws Exception {
-        return download(sourceFile, destinationFile.getAbsolutePath(), size);
+    public void download(String sourceFile, File destinationFile, Long size) throws Exception {
+        download(sourceFile, destinationFile.getAbsolutePath(), size);
     }
 
     /**
      * Uploads the specified file.
      * @param sourceFile The filename of the file to upload.
      * @param destinationFile The destination filename.
-     * @return A value indicating whether the upload completed successfully.
      * @throws Exception Thrown if an exception is encountered during the upload.
      */
-    @Async
-    public Future<Boolean> upload(String sourceFile, String destinationFile) throws Exception {
+    public void upload(String sourceFile, String destinationFile) throws Exception {
         // reconnect to the server to reset active/passive mode settings
         reconnect();
 
@@ -333,9 +322,6 @@ public class Server implements IServer {
         server.completePendingCommand();
 
         logger.info("Upload complete.");
-
-        // TODO: make this actually asynchronous
-        return new AsyncResult<Boolean>(true);
     }
 
     /**
@@ -345,9 +331,8 @@ public class Server implements IServer {
      * @return A value indicating whether the upload completed successfully.
      * @throws Exception Thrown if an exception is encountered during the upload.
      */
-    @Async
-    public Future<Boolean> upload(File sourceFile, String destinationFile) throws Exception {
-        return upload(sourceFile.getAbsolutePath(), destinationFile);
+    public void upload(File sourceFile, String destinationFile) throws Exception {
+        upload(sourceFile.getAbsolutePath(), destinationFile);
     }
 
     /**

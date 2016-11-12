@@ -205,7 +205,7 @@ public class UploaderTest extends BaseTest {
 
             IServer server = mock(IServer.class);
 
-            Mockito.when(server.upload(new File("local\\one"), "remote/one")).thenThrow(Exception.class);
+            Mockito.doThrow(new Exception()).when(server).upload(new File("local\\one"), "remote/one");
 
             Uploader test = new Uploader(server, "local", "remote");
 

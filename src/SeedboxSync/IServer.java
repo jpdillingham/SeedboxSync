@@ -24,12 +24,9 @@
  ****************************************************************************/
 
 import java.util.List;
-import java.util.concurrent.Future;
 import java.io.File;
 
 import org.apache.commons.net.ftp.FTPFile;
-
-import org.springframework.scheduling.annotation.Async;
 
 /**
  * Defines the interface for Server objects.
@@ -96,10 +93,9 @@ public interface IServer {
      * @param sourceFile The filename of the file to download.
      * @param destinationFile The file to which the downloaded file should be saved.
      * @param size The size of the file in bytes.
-     * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    Future<Boolean> download(String sourceFile, String destinationFile, Long size) throws Exception;
+    void download(String sourceFile, String destinationFile, Long size) throws Exception;
 
     /**
      * Downloads the specified file.
@@ -109,7 +105,7 @@ public interface IServer {
      * @return A value indicating whether the download completed successfully.
      * @throws Exception Thrown if an exception is encountered during the download.
      */
-    Future<Boolean> download(String sourceFile, File destinationFile, Long size) throws Exception;
+    void download(String sourceFile, File destinationFile, Long size) throws Exception;
 
     /**
      * Uploads the specified file.
@@ -118,8 +114,7 @@ public interface IServer {
      * @return A value indicating whether the upload completed successfully.
      * @throws Exception Thrown if an exception is encountered during the upload.
      */
-    @Async
-    Future<Boolean> upload(String sourceFile, String destinationFile) throws Exception;
+    void upload(String sourceFile, String destinationFile) throws Exception;
 
     /**
      * Uploads the specified file.
@@ -128,6 +123,5 @@ public interface IServer {
      * @return A value indicating whether the upload completed successfully.
      * @throws Exception Thrown if an exception is encountered during the upload.
      */
-    @Async
-    Future<Boolean> upload(File sourceFile, String destinationFile) throws Exception;
+    void upload(File sourceFile, String destinationFile) throws Exception;
 }

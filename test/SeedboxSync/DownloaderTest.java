@@ -312,8 +312,7 @@ public class DownloaderTest extends BaseTest {
             files.add(two);
 
             Mockito.when(server.list("remote")).thenReturn(files);
-
-            Mockito.when(server.download("remote/one", "local/one", 0L)).thenThrow(Exception.class);
+            Mockito.doThrow(new Exception()).when(server).download("remote/one", "local/one", 0L);
 
             Downloader test = new Downloader(server, "local", "remote", database);
 
