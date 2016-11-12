@@ -65,7 +65,7 @@ public class DatabaseTest extends BaseTest {
             begin();
 
             java.io.File file = folder.newFile("db/constructor.db");
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
         }
         finally {
             test.close();
@@ -86,7 +86,7 @@ public class DatabaseTest extends BaseTest {
             begin();
 
             java.io.File file = folder.newFile("db/good.db");
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
         }
         finally {
             test.close();
@@ -106,7 +106,7 @@ public class DatabaseTest extends BaseTest {
         try {
             begin();
 
-            test = new Database("/.");
+            test = new Database(new java.io.File("/."));
 
             assertEquals(test, null);
         }
@@ -127,7 +127,7 @@ public class DatabaseTest extends BaseTest {
             begin();
 
             java.io.File file = folder.newFile("db/goodAdd.db");
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
 
             test.addFile(new File("test", 0L, new Timestamp(0L)));
 
@@ -154,7 +154,7 @@ public class DatabaseTest extends BaseTest {
             begin();
 
             java.io.File file = folder.newFile("db/duplicate.db");
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
 
             test.addFile(new File("testduplicate", 0L, new Timestamp(0L)));
 
@@ -182,7 +182,7 @@ public class DatabaseTest extends BaseTest {
             java.io.File file = folder.newFile("db/download.db");
 
             // create new db
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
 
             // add a file with null timestamp
             test.addFile(new File("test", 0L, new Timestamp(0L)));
@@ -216,7 +216,7 @@ public class DatabaseTest extends BaseTest {
             begin();
 
             java.io.File file = folder.newFile("db/get.db");
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
 
             test.addFile(new File("test", 0L, new Timestamp(0L)));
             test.addFile(new File("test2", 0L, new Timestamp(0L)));
@@ -247,7 +247,7 @@ public class DatabaseTest extends BaseTest {
             begin();
 
             java.io.File file = folder.newFile("db/badGet.db");
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
 
             File testFile = test.getFile(new File("test"));
 
@@ -271,7 +271,7 @@ public class DatabaseTest extends BaseTest {
             begin();
 
             java.io.File file = folder.newFile("db/double.db");
-            test = new Database(file.getAbsolutePath());
+            test = new Database(file);
         }
         finally {
             test.close();

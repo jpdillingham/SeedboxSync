@@ -39,7 +39,7 @@ public class SynchronizerTest extends BaseTest {
         try {
             begin();
 
-            Configuration configuration = new Configuration("server", 1, "user", "pass", 1, "remoteDownload", "localDownload", "remoteUpload", "localUpload", "db");
+            Configuration configuration = new Configuration("server", 1, "user", "pass", 1, "remoteDownload", "localDownload", "remoteUpload", "localUpload");
             IServer server = mock(IServer.class);
             IDatabase database = mock(IDatabase.class);
 

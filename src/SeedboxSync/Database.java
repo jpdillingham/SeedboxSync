@@ -50,7 +50,7 @@ public class Database implements IDatabase {
     /**
      * The file backing the Database.
      */
-    private String file;
+    private java.io.File file;
 
     /**
      * The SQLite database connection.
@@ -62,10 +62,10 @@ public class Database implements IDatabase {
      * @param file The file from which the database is to be initialized.
      * @throws SQLException Thrown if the database can't be initialized.
      */
-    public Database(String file) throws SQLException {
+    public Database(java.io.File file) throws SQLException {
         this.file = file;
 
-        logger.info("Establishing database connection to '" + file + "'...");
+        logger.info("Establishing database connection to '" + file.getName() + "'...");
 
         createConnection();
 
@@ -73,7 +73,7 @@ public class Database implements IDatabase {
         logger.info("Verifying schema...");
 
         if (!schemaExists()) {
-            logger.info("Application schema is missing from '" + file + "'... creating...");
+            logger.info("Application schema is missing from '" + file.getName() + "'... creating...");
 
             initializeSchema();
 

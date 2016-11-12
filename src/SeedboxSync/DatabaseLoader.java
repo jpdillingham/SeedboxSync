@@ -41,25 +41,20 @@ public class DatabaseLoader {
 
     /**
      * Instantiates and loads a Database from the specified file.
-     * @param config The Configuration for the application.
+     * @param file The File from which to load the database.
      * @return The loaded Database instance.
      * @throws SQLException Thrown if an exception is encountered while instantiating the databse.
      */
-    public static Database load(Configuration config) throws Exception {
-        if (config == null) {
-            throw new Exception("Unable to create Database; provided configuration is null.");
+    public static Database load(java.io.File file) throws Exception {
+        if (file == null) {
+            throw new Exception("Unable to create Database; provided filename is null.");
         }
 
-        logger.debug("Loading database from '" + config.getDatabaseFilename() + "'...");
+        logger.debug("Loading database from '" + file.getName() + "'...");
 
-        if (config.isValid()) {
-            Database retVal = new Database(config.getDatabaseFilename());
+        Database retVal = new Database(file);
+        logger.debug("Database loaded successfully.");
 
-            logger.debug("Database loaded successfully.");
-            return retVal;
-        }
-        else {
-            throw new Exception("Invalid configuration; " + config.getValidationMessage());
-        }
+        return retVal;
     }
 }

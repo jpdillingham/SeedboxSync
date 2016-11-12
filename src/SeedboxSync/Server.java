@@ -135,7 +135,7 @@ public class Server implements IServer {
 
         this.server = new FTPClient();
 
-        logger.info("Binding transfer stream listener...");
+        logger.debug("Binding transfer stream listener...");
         configureStreamListener();
 
         logger.info("FTP client is ready.");
@@ -186,7 +186,6 @@ public class Server implements IServer {
 
         logger.info("Configuring connection...");
         server.setFileType(FTP.BINARY_FILE_TYPE, FTP.BINARY_FILE_TYPE);
-        //server.setFileTransferMode(FTP.BINARY_FILE_TYPE);
         server.setBufferSize(1024 * 1024);
         server.setAutodetectUTF8(true);
         server.setControlKeepAliveTimeout(300);

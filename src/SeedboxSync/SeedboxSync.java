@@ -98,7 +98,7 @@ public class SeedboxSync {
 
         try {
             Server server = ServerFactory.createServer(config);
-            Database database = DatabaseLoader.load(config);
+            Database database = DatabaseLoader.load(new java.io.File("database.db"));
             synchronizer = new Synchronizer(config, server, database);
 
             logger.info("Synchronizer created successfully.");

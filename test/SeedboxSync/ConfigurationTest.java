@@ -39,7 +39,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.getServer(), "server");
             assertEquals(test.getPort(), (Integer) 1);
@@ -66,7 +66,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("", 1, "user", "password", 1, "remote",
-                "local", "remoteUp", "localUp", "db");
+                "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -84,7 +84,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration(null, 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -102,7 +102,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 0, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -120,7 +120,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", null, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -138,7 +138,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -156,7 +156,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, null, "password", 1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -174,7 +174,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", null, 1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -192,7 +192,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", -1, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -210,7 +210,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", null, "remote",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -228,7 +228,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "",
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -246,7 +246,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, null,
-                    "local", "remoteUp", "localUp", "db");
+                    "local", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -264,7 +264,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "", "remoteUp", "localUp", "db");
+                    "", "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -282,7 +282,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    null, "remoteUp", "localUp", "db");
+                    null, "remoteUp", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -300,7 +300,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "", "localUp", "db");
+                    "local", "", "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -318,7 +318,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", null, "localUp", "db");
+                    "local", null, "localUp");
 
             assertEquals(test.isValid(), false);
         }
@@ -336,7 +336,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "", "db");
+                    "local", "remoteUp", "");
 
             assertEquals(test.isValid(), false);
         }
@@ -354,43 +354,7 @@ public class ConfigurationTest extends BaseTest {
             begin();
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", null, "db");
-
-            assertEquals(test.isValid(), false);
-        }
-        finally {
-            end();
-        }
-    }
-
-    /**
-     * Constructs an instance of Configuration with an invalid database filename.
-     */
-    @Test
-    public void testInvalidDatabaseFilename() {
-        try {
-            begin();
-
-            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", "");
-
-            assertEquals(test.isValid(), false);
-        }
-        finally {
-            end();
-        }
-    }
-
-    /**
-     * Constructs an instance of Configuration with a missing database filename.
-     */
-    @Test
-    public void testMissingDatabaseFilename() {
-        try {
-            begin();
-
-            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", null);
+                    "local", "remoteUp", null);
 
             assertEquals(test.isValid(), false);
         }

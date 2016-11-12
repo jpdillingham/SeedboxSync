@@ -70,16 +70,14 @@ public class DatabaseLoaderTest extends BaseTest {
             begin();
 
             File file = folder.newFile();
-            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", file.getAbsolutePath());
 
-            db = DatabaseLoader.load(test);
+            db = DatabaseLoader.load(file);
 
             assertNotEquals(db, null);
             assertEquals((file.exists()), true);
         }
         finally {
-            db.close();
+            if (db != null) db.close();
 
             end();
         }
@@ -96,23 +94,20 @@ public class DatabaseLoaderTest extends BaseTest {
         try {
             begin();
 
-            String file = System.getProperty("user.dir") + "/test/SeedboxSync/resources/testDatabase.db";
-            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp", file);
-
-            db = DatabaseLoader.load(test);
+            java.io.File file = new java.io.File(System.getProperty("user.dir") + "/test/SeedboxSync/resources/testDatabase.db");
+            db = DatabaseLoader.load(file);
 
             assertNotEquals(db, null);
         }
         finally {
-            db.close();
+            if (db != null) db.close();
 
             end();
         }
     }
 
     /**
-     * Loads a database with a known bad configuraiton.
+     * Loads a database with a known bad filename.
      * @throws Exception
      */
     @Test(expected=Exception.class)
@@ -122,8 +117,8 @@ public class DatabaseLoaderTest extends BaseTest {
         try {
             begin();
 
-            Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
-            db = DatabaseLoader.load(config);
+            java.io.File file = new java.io.File(".");
+            db = DatabaseLoader.load(file);
         }
         finally {
             db.close();

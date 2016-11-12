@@ -50,7 +50,7 @@ public class ServerFactoryTest extends BaseTest {
         try {
             begin();
 
-            Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
+            Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp");
             Server test = ServerFactory.createServer(config);
 
             assertEquals(test.getAddress(), "server");
@@ -71,7 +71,7 @@ public class ServerFactoryTest extends BaseTest {
         try {
             begin();
 
-            Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp", "db");
+            Configuration config = new Configuration("", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp");
             Server test = ServerFactory.createServer(config);
         }
         finally {

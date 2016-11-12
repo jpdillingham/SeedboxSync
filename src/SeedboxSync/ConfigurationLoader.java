@@ -80,10 +80,9 @@ public class ConfigurationLoader {
         String localDownloadDirectory = fetch("localDownloadDirectory", parsedConfiguration);
         String remoteUploadDirectory = fetch("remoteUploadDirectory", parsedConfiguration);
         String localUploadDirectory = fetch("localUploadDirectory", parsedConfiguration);
-        String databaseFilename = fetch("databaseFilename", parsedConfiguration);
 
         retVal = new Configuration(server, port, username, password, interval, remoteDownloadDirectory,
-                localDownloadDirectory, remoteUploadDirectory, localUploadDirectory, databaseFilename);
+                localDownloadDirectory, remoteUploadDirectory, localUploadDirectory);
 
         logger.debug("Instantiated successfully.");
 
