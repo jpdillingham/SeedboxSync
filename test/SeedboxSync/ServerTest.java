@@ -247,7 +247,7 @@ public class ServerTest extends BaseTest {
 
             log("Downloading test files...");
 
-            Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getName(), 0L + 1024);
+            Future<Boolean> download1 = test.download("1KB.zip", destinationFile1.getAbsolutePath(), 0L + 1024);
             Future<Boolean> download2 = test.download("1MB.zip", destinationFile2, 0L + (1024 * 1024));
 
             // wait for the download to complete
