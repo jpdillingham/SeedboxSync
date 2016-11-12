@@ -28,6 +28,7 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.DailyRollingFileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 
@@ -143,11 +144,22 @@ public class SeedboxSync {
      * Configures the logger.
      */
     private static void configureLogging() {
+        PatternLayout layout = new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n");
+
         ConsoleAppender console = new ConsoleAppender();
-        console.setLayout(new PatternLayout("%d{yyyy-MM-dd' 'HH:mm:ss.SSS} [%-5p] [%c] - %m%n"));
+        console.setLayout(layout);
         console.setThreshold(Level.INFO);
         console.activateOptions();
-        org.apache.log4j.Logger.getRootLogger().addAppender(console);
+
+        DailyRollingFileAppender file = new DailyRollingFileAppender();
+        file.setFile("log/app.log");
+        file.setDatePattern("'.'yyyy-MM-dd");
+        file.setLayout(layout);
+        file.activateOptions();
+
+        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
+        logger.addAppender(console);
+        logger.addAppender(file);
     }
 
     /**
