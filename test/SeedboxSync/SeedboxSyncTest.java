@@ -58,7 +58,7 @@ public class SeedboxSyncTest extends BaseTest {
      * Tests main() with the default config file.
      * @throws Exception
      */
-    @Test
+    @Test(expected=Exception.class)
     public void testMainDefault() throws Exception {
         try {
             begin();
