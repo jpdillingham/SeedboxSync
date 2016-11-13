@@ -90,7 +90,7 @@ public class SeedboxSync {
             logger.info("Configuration loaded and validated successfully.");
         }
         catch (Exception ex) {
-            logger.error("Error: " + ex.getMessage());
+            logger.error("Error loading configuration: " + ex.getMessage());
             return;
         }
 
@@ -174,13 +174,7 @@ public class SeedboxSync {
             throw new Exception("Configuration file '" + configFile + "' was not found.");
         }
         else {
-            config = new ConfigurationLoader().load(configFile);
-
-            if (!config.isValid()) {
-                throw new Exception("The configuration loaded from '" + configFile + "' was invalid: " + config.getValidationMessage());
-            }
-
-            return config;
+            return new ConfigurationLoader().load(configFile);
         }
     }
 }

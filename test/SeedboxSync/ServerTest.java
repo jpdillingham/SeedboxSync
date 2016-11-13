@@ -288,6 +288,9 @@ public class ServerTest extends BaseTest {
 
                 test.upload(file, "upload/test_" + System.currentTimeMillis());
             }
+            else {
+                log("Upload tests skipped because CI_Flag=true");
+            }
         }
         finally {
             end();

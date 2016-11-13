@@ -23,7 +23,12 @@
  *
  ****************************************************************************/
 
+import java.io.IOException;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
 import static org.junit.Assert.*;
 
 /**
@@ -31,15 +36,24 @@ import static org.junit.Assert.*;
  */
 public class ConfigurationTest extends BaseTest {
     /**
+     * The temporary folder for the class.
+     */
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
+    /**
      * Constructs an instance of Configuration and tests all accessors.
      */
     @Test
-    public void testConfiguration() {
+    public void testConfiguration() throws IOException {
         try {
             begin();
 
+            java.io.File downloadDir = folder.newFolder("download");
+            java.io.File uploadDir = folder.newFolder("upload");
+
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
-                    "local", "remoteUp", "localUp");
+                    downloadDir.getAbsolutePath(), "remoteUp", uploadDir.getAbsolutePath());
 
             assertEquals(test.getServer(), "server");
             assertEquals(test.getPort(), (Integer) 1);
@@ -47,9 +61,17 @@ public class ConfigurationTest extends BaseTest {
             assertEquals(test.getPassword(), "password");
             assertEquals(test.getInterval(), (Integer) 1);
             assertEquals(test.getRemoteDownloadDirectory(), "remote");
-            assertEquals(test.getLocalDownloadDirectory(), "local");
+            assertEquals(test.getLocalDownloadDirectory(), downloadDir.getAbsolutePath());
             assertEquals(test.getRemoteUploadDirectory(), "remoteUp");
-            assertEquals(test.getLocalUploadDirectory(), "localUp");
+            assertEquals(test.getLocalUploadDirectory(), uploadDir.getAbsolutePath());
+            assertEquals(test.isValid(), true);
+
+            // swap folders
+            test.setLocalDownloadDirectory(uploadDir.getAbsolutePath());
+            test.setLocalUploadDirectory(downloadDir.getAbsolutePath());
+
+            assertEquals(test.getLocalDownloadDirectory(), uploadDir.getAbsolutePath());
+            assertEquals(test.getLocalUploadDirectory(), downloadDir.getAbsolutePath());
             assertEquals(test.isValid(), true);
         }
         finally {
@@ -355,6 +377,48 @@ public class ConfigurationTest extends BaseTest {
 
             Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
                     "local", "remoteUp", null);
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
+    }
+
+    /**
+     * Constructs an instance of Configuration with a local download directory that does not exist on the disk.
+     * @throws IOException
+     */
+    @Test
+    public void testNotFoundLocalDownloadDirectory() throws IOException {
+        try {
+            begin();
+
+            java.io.File uploadDir = folder.newFolder("up0");
+
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    "down0", "remoteUp", uploadDir.getAbsolutePath());
+
+            assertEquals(test.isValid(), false);
+        }
+        finally {
+            end();
+        }
+    }
+
+    /**
+     * Constructs an instance of Configuration with a local upload directory that does not exist on the disk.
+     * @throws IOException
+     */
+    @Test
+    public void testNotFoundLocalUploadDirectory() throws IOException {
+        try {
+            begin();
+
+            java.io.File downloadDir = folder.newFolder("down1");
+
+            Configuration test = new Configuration("server", 1, "user", "password", 1, "remote",
+                    downloadDir.getAbsolutePath(), "remoteUp", "up1");
 
             assertEquals(test.isValid(), false);
         }

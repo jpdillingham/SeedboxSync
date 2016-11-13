@@ -28,13 +28,22 @@ import java.io.FileNotFoundException;
 
 import org.json.simple.parser.ParseException;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
 import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the ConfigurationLoader class.
  */
 public class ConfigurationLoaderTest extends BaseTest {
+    /**
+     * The temporary folder for the class.
+     */
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     /**
      * Constructs an instance of ConfigurationLoader.
      */
@@ -60,8 +69,15 @@ public class ConfigurationLoaderTest extends BaseTest {
         try {
             begin();
 
+            java.io.File downloadDir = folder.newFolder("download");
+            java.io.File uploadDir = folder.newFolder("upload");
+
+
             String configFile = System.getProperty("user.dir") + "/test/SeedboxSync/resources/goodConfig.json";
             Configuration config = ConfigurationLoader.load(configFile);
+
+            config.setLocalDownloadDirectory(downloadDir.getAbsolutePath());
+            config.setLocalUploadDirectory(uploadDir.getAbsolutePath());
 
             assertEquals(config.getServer(), "server");
             assertEquals(config.getPort(), (Integer) 1);
@@ -69,9 +85,9 @@ public class ConfigurationLoaderTest extends BaseTest {
             assertEquals(config.getPassword(), "password");
             assertEquals(config.getInterval(), (Integer) 3600);
             assertEquals(config.getRemoteDownloadDirectory(), "remoteDownloadDirectory");
-            assertEquals(config.getLocalDownloadDirectory(), "localDownloadDirectory");
+            assertEquals(config.getLocalDownloadDirectory(), downloadDir.getAbsolutePath());
             assertEquals(config.getRemoteUploadDirectory(), "remoteUploadDirectory");
-            assertEquals(config.getLocalUploadDirectory(), "localUploadDirectory");
+            assertEquals(config.getLocalUploadDirectory(), uploadDir.getAbsolutePath());
             assertEquals(config.isValid(), true);
         }
         finally {

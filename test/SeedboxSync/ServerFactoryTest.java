@@ -23,10 +23,19 @@
  *
  ****************************************************************************/
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
 import static org.junit.Assert.assertEquals;
 
 public class ServerFactoryTest extends BaseTest {
+    /**
+     * The temporary folder for the class.
+     */
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     /**
      * Constructs an instance of ServerFactory.
      */
@@ -50,7 +59,12 @@ public class ServerFactoryTest extends BaseTest {
         try {
             begin();
 
-            Configuration config = new Configuration("server", 1, "user", "password", 1, "remote", "local", "remoteUp", "localUp");
+            java.io.File downloadDir = folder.newFolder("download");
+            java.io.File uploadDir = folder.newFolder("upload");
+
+            Configuration config = new Configuration("server", 1, "user", "password", 1, "remote",
+                    downloadDir.getAbsolutePath(), "remoteUp", uploadDir.getAbsolutePath());
+
             Server test = ServerFactory.createServer(config);
 
             assertEquals(test.getAddress(), "server");
