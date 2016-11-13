@@ -63,8 +63,9 @@ public class SeedboxSync {
     /**
      * The main entry point for the application.
      * @param args The command-line arguments passed to the application when starting.
+     * @throws Exception Thrown on any uncaught Exception.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         configureLogging();
 
         logger.info("Starting SeedboxSync...");
@@ -91,7 +92,7 @@ public class SeedboxSync {
         }
         catch (Exception ex) {
             logger.error("Error loading configuration: " + ex.getMessage());
-            return;
+            throw ex;
         }
 
         // config was loaded and validated.  create the synchronizer.
@@ -106,7 +107,7 @@ public class SeedboxSync {
         }
         catch (Exception ex) {
             logger.error("Error creating Synchronizer: " + ex.getMessage());
-            return;
+            throw ex;
         }
 
         // start the application.

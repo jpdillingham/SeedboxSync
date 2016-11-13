@@ -5,8 +5,7 @@
 	"password": "password",
 	"interval": 3600,
 	"remoteDownloadDirectory": "remoteDownloadDirectory",
-	"localDownloadDirectory": "localDownloadDirectory",
+	"localDownloadDirectory": "test/SeedboxSync/resources/folder",
 	"remoteUploadDirectory": "remoteUploadDirectory",
-	"localUploadDirectory": "localUploadDirectory",
-	"databaseFilename": "database.db"
+	"localUploadDirectory": "test/SeedboxSync/resources/folder"
 }

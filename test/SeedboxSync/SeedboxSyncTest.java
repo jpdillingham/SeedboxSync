@@ -23,6 +23,8 @@
  *
  ****************************************************************************/
 
+import java.io.File;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -54,9 +56,10 @@ public class SeedboxSyncTest extends BaseTest {
 
     /**
      * Tests main() with the default config file.
+     * @throws Exception
      */
     @Test
-    public void vestMainDefault() {
+    public void testMainDefault() throws Exception {
         try {
             begin();
 
@@ -70,9 +73,10 @@ public class SeedboxSyncTest extends BaseTest {
 
     /**
      * Tests main() with an explicitly defined config file.
+     * @throws Exception
      */
     @Test
-    public void testMain() {
+    public void testMain() throws Exception {
         try {
             begin();
 
@@ -85,9 +89,10 @@ public class SeedboxSyncTest extends BaseTest {
 
     /**
      * Tests main() with a missing config file.
+     * @throws Exception
      */
-    @Test
-    public void testMainMissingConfig() {
+    @Test(expected=Exception.class)
+    public void testMainMissingConfig() throws Exception {
         try {
             begin();
 
@@ -100,9 +105,10 @@ public class SeedboxSyncTest extends BaseTest {
 
     /**
      * Tests main() with a known bad config file.
+     * @throws Exception
      */
-    @Test
-    public void testMainBadConfig() {
+    @Test(expected=Exception.class)
+    public void testMainBadConfig() throws Exception {
         try {
             begin();
 
@@ -115,9 +121,10 @@ public class SeedboxSyncTest extends BaseTest {
 
     /**
      * Tests main() with a partially complete config file.
+     * @throws Exception
      */
-    @Test
-    public void testMainPartialConfig() {
+    @Test(expected=Exception.class)
+    public void testMainPartialConfig() throws Exception {
         try {
             begin();
 
