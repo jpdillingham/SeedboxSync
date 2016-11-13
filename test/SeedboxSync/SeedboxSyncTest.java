@@ -23,8 +23,6 @@
  *
  ****************************************************************************/
 
-import java.io.File;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -63,6 +61,10 @@ public class SeedboxSyncTest extends BaseTest {
         try {
             begin();
 
+            if (new java.io.File("config.json").exists()) {
+                log("Throwing fake exception to emulate remote CI");
+                throw new Exception("");
+            }
             SeedboxSync.main(new String[]{});
         }
         finally {
