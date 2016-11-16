@@ -8,3 +8,43 @@
 A Java console application for syncing files with a seedbox account via FTP.
 
 In reality it can be used to do a two-way synchronization for any FTP account, but it was created with seedboxes in mind.
+
+# Prepare
+
+Configure the torrent client from your seedbox provider to move completed downloads to a specific folder upon completion, and to monitor a folder
+for new torrent files.  The configuration for the ruTorrent is shown below as an example.
+
+[![ruTorrent Example](http://jpdillingham.github.io/images/rutorrent-setup.PNG)]
+
+Your client settings may differ.
+
+# Install
+
+This application requires the [Java JRE 8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html), so you'll need to download and
+install that first.
+
+Download the latest release from the Releases tab above and place the file in a folder on the host machine.  You'll create a configuration file, and the application
+creates a database file, both stored in the root directory.
+
+# Configure
+
+Choose (and/or create) two folders: one to contain downloaded files and another to contain files to upload.  You'll also want to gather the login information
+for your seedbox account.
+
+Using your favorite text editor, create a file named ```config.json``` and paste the following text into it:
+
+```
+{
+	"server": "[server address]",
+	"port": [port, probably 21],
+	"username": "[your username]",
+	"password": "[your password]",
+	"interval": [number of seconds between synchronizations, in seconds],
+	"remoteDownloadDirectory": "[path to the completed downloads folder on your FTP]",
+	"localDownloadDirectory": "[path to your chosen downloads folder]",
+	"remoteUploadDirectory": "[path to the watch folder on your FTP]",
+	"localUploadDirectory": "[path to your chosen upload folder]"
+}
+```
+
+Replace the values in brackets with your settings.
