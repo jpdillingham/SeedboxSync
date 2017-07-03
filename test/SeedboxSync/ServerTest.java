@@ -201,7 +201,7 @@ public class ServerTest extends BaseTest {
             Server test = new Server("speedtest.tele2.net", "anonymous", "anonymous");
             test.connect();
 
-            test.disconnect();
+            test.disconnect();  // force disconnect to test reconnect functionality of Server
 
             List<FTPFile> files = test.list("");
 
